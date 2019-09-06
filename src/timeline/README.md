@@ -5,3 +5,5 @@ The Timeline is fully CRUD enabled.
 https://millihealth.atlassian.net/jira/software/projects/MDD/boards/8
 
 with tags of Timeline
+
+Current plans is to base it on:  https://github.com/yotamberk/timeline-plus
