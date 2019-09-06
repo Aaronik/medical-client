@@ -1,5 +1,8 @@
 Core UX for the Milli Doctor Dashboard.
 
+https://millihealth.atlassian.net/jira/software/projects/MDD/boards/8
+
+
 Folder organization follows the general react layout with a few customizations
 for the millimed application domain.
 
