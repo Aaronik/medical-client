@@ -13,7 +13,7 @@ export class FullName implements IFullName {
     suffix?: string
     prefix?: string
 
-    constructor(fName: string, lName: string, mName?: string | undefined, suffix?: string | undefined, prefix?: string | undefined) {
+    constructor(fName: string, lName: string, mName?: string, suffix?: string, prefix?: string) {
         this.fName = fName
         this.mName = mName
         this.lName = lName
