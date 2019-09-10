@@ -16,7 +16,13 @@ class App extends Component {
 
 
 	render() {
-		return (<div>Survey</div>)
+    return (
+      <div className='container'>
+        <div className='text-center'>
+          <h1>Survey</h1>
+        </div>
+      </div>
+    )
 	}
 }
 
