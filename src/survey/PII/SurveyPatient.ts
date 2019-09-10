@@ -6,12 +6,12 @@ export interface ISurveyPatient {
 
 export default class SurveyPatient extends Patient implements ISurveyPatient{
     constructor() {
-        super();
+        super()
     }
 
     // Returns the JSON required to create a survey fragment for a Person.
     getSurveyJSON(): string {
-        return "somejson";
+        return "somejson"
     }
 
 }
