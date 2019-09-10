@@ -1,6 +1,7 @@
-import React, { Component } from 'react'
-import * as Survey from "survey-react"
-import './App.css'
+import React, { Component } from 'react';
+import * as Survey from "survey-react";
+import './App.scss';
+
 
 class App extends Component {
 
