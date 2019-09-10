@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import * as Survey from "survey-react";
 import './App.scss';
 
+
 class App extends Component {
 
 	// PsudoCode to get a patient's FullName.
@@ -15,8 +16,8 @@ class App extends Component {
 
 
 	render() {
-		return (<div>Survey</div>);
+		return (<div>Survey</div>)
 	}
 }
 
-export default App;
+export default App

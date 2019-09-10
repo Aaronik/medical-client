@@ -1,4 +1,4 @@
-import { FullName } from "./FullName";
+import { FullName } from "./FullName"
 
 export interface IPatient {
     fullName: FullName
