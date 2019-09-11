@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import Button from 'react-bootstrap/Button'
 import * as Survey from "survey-react"
 import './App.scss'
 
@@ -19,6 +20,7 @@ class App extends Component {
       <div className='container'>
         <div className='text-center'>
           <h1>Survey</h1>
+          <Button>Test React-Bootstrap Button</Button>
         </div>
       </div>
     )
