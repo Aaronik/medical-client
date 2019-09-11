@@ -20,3 +20,10 @@ for the millimed application domain.
     - __timeline__
       - __assets__
 
+
+
+Creating dev env
+1. git clone https://github.com/MilliHealth/millimed.git millimed  
+2. cd millimed  
+3. npm install  
+
