@@ -4,11 +4,12 @@ import Button from 'react-bootstrap/Button'
 import Navbar from 'react-bootstrap/Navbar'
 import Nav from 'react-bootstrap/Nav'
 import * as Survey from "survey-react"
+import TimelineDemo from './timeline/components/demo'
 import './App.scss'
 
 const HomeStubContainer = () => <div>Home</div>
 const SurveyStubContainer = () => <div>Survey</div>
-const TimelineStubContainer = () => <div>Timeline</div>
+const TimelineStubContainer = () => <TimelineDemo/>
 const PageNotFound = () => <div>Page Not Found!! :(</div>
 
 class App extends Component {
