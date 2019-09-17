@@ -1,21 +1,20 @@
-import React, { Component } from 'react'
+import React from 'react'
 import { BrowserRouter as Router, Route, Link, Switch } from "react-router-dom"
-import Button from 'react-bootstrap/Button'
+import { Provider } from 'react-redux'
 import Navbar from 'react-bootstrap/Navbar'
 import Nav from 'react-bootstrap/Nav'
-import * as Survey from "survey-react"
-import TimelineDemo from './timeline/components/demo'
+
+import TimelineContainer from './timeline/components/container'
+import store from './store'
 import './App.scss'
 
 const HomeStubContainer = () => <div>Home</div>
 const SurveyStubContainer = () => <div>Survey</div>
-const TimelineStubContainer = () => <TimelineDemo/>
 const PageNotFound = () => <div>Page Not Found!! :(</div>
 
-class App extends Component {
-
-	render() {
-    return (
+const App = () => {
+  return (
+    <Provider store={store}>
       <Router>
         <Navbar bg="dark" variant="dark">
           <Navbar.Brand><Link to="/">Milli</Link></Navbar.Brand>
@@ -26,12 +25,12 @@ class App extends Component {
         <Switch>
           <Route path="/" exact component={HomeStubContainer} />
           <Route path="/survey" component={SurveyStubContainer} />
-          <Route path="/timeline" component={TimelineStubContainer} />
+          <Route path="/timeline" component={TimelineContainer} />
           <Route component={PageNotFound} />
         </Switch>
       </Router>
-    )
-	}
+    </Provider>
+  )
 }
 
 export default App
