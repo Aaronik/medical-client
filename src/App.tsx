@@ -5,6 +5,7 @@ import Navbar from 'react-bootstrap/Navbar'
 import Nav from 'react-bootstrap/Nav'
 
 import TimelineContainer from './timeline/components/container'
+import LoginContainer from './login/components/container'
 import store from './store'
 import './App.scss'
 
@@ -20,12 +21,14 @@ const App = () => {
           <Navbar.Brand><Link to="/">Milli</Link></Navbar.Brand>
           <Nav.Link><Link to="/survey">Survey</Link></Nav.Link>
           <Nav.Link><Link to="/timeline">Timeline</Link></Nav.Link>
+          <Nav.Link><Link to="/login">Login</Link></Nav.Link>
         </Navbar>
 
         <Switch>
           <Route path="/" exact component={HomeStubContainer} />
           <Route path="/survey" component={SurveyStubContainer} />
           <Route path="/timeline" component={TimelineContainer} />
+          <Route path="/login" component={LoginContainer} />
           <Route component={PageNotFound} />
         </Switch>
       </Router>

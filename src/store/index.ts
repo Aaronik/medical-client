@@ -9,8 +9,11 @@ export type TTimelineDatum = {
   end?: string
 }
 
+type TAuthData = {}
+
 export type TStoreState = {
   timelineData: TTimelineDatum[]
+  auth: TAuthData
 }
 
 const startingState: TStoreState = {
@@ -20,7 +23,8 @@ const startingState: TStoreState = {
     {id: uuid(), content: 'First time experiencing enui', start: '2013-04-18'},
     {id: uuid(), content: 'Developed jogging habbit', start: '2013-04-16', end: '2013-04-19'},
     {id: uuid(), content: 'Jogged into bees nest', start: '2013-04-25'},
-  ]
+  ],
+  auth: {}
 }
 
 // Action type naming conventions:
@@ -36,7 +40,7 @@ const startingState: TStoreState = {
 
 type TAction =
   { type: 'RANDOM_TIMELINE_DATUM_GENERATED', datum: TTimelineDatum } |
-  { type: 'PLACEHOLDER' } // only here until there are 2 or more of these actions (required by exhaustiveness check)
+  { type: 'LOGIN_1', payload: any }
 
 const reducer = (state: TStoreState = startingState, action: TAction): TStoreState => {
 
@@ -48,7 +52,8 @@ const reducer = (state: TStoreState = startingState, action: TAction): TStoreSta
     case 'RANDOM_TIMELINE_DATUM_GENERATED':
       newState.timelineData.push(action.datum)
       break
-    case 'PLACEHOLDER': // TODO delete once there are >= 2 store actions
+    case 'LOGIN_1':
+      newState.auth = action.payload
       break
     default:
       // Exhastiveness check (make sure all types are accounted for in switch statement)
@@ -61,5 +66,8 @@ const reducer = (state: TStoreState = startingState, action: TAction): TStoreSta
 
 const store = createStore(reducer)
 export default store
+
+// Type dispatch more tightly than it comes out of the box
+export const dispatch = (action: TAction) => store.dispatch(action)
 export type TStore = typeof store
 
