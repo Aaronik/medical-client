@@ -18,7 +18,7 @@
     "react-router-dom": "^5.0.1",
     "react-scripts": "3.1.1",
     "redux": "^4.0.4",
-    "survey-react": "^1.1.8",
+    "survey-react": "^1.1.12",
     "timeline-plus": "^2.4.0",
     "typescript": "3.6.2",
     "uuid": "^3.3.3"

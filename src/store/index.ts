@@ -40,7 +40,8 @@ const startingState: TStoreState = {
 
 type TAction =
   { type: 'RANDOM_TIMELINE_DATUM_GENERATED', datum: TTimelineDatum } |
-  { type: 'LOGIN_1', payload: any }
+  { type: 'LOGIN_1', payload: any } |
+  { type: 'LOGOUT_1', payload: any }
 
 const reducer = (state: TStoreState = startingState, action: TAction): TStoreState => {
 
@@ -54,7 +55,12 @@ const reducer = (state: TStoreState = startingState, action: TAction): TStoreSta
       break
     case 'LOGIN_1':
       newState.auth = action.payload
+      console.log("Login! Current state is ", newState.auth)
       break
+    case 'LOGOUT_1':
+      newState.auth = action.payload
+      console.log("Logout! Current state is ", newState.auth)
+      break;
     default:
       // Exhastiveness check (make sure all types are accounted for in switch statement)
       (function(action: never){})(action)
