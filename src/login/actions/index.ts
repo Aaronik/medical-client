@@ -130,7 +130,7 @@ function updateMySessionToken(response : any) {
 function clearMySession(response: any) {
   //handle success
   console.log(response);
-  myToken = null
+  myToken = ''
   dispatch({ type: 'LOGOUT_1', payload: response })
 }
 
