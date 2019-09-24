@@ -14,7 +14,7 @@ class LoginContainer extends React.Component<TProps, {}> {
   // calling the action, just directly assign instead of being verbose and wrapping.
   private onButtonPress = actions.loginWhatever
   private onLogOutPress = actions.logoutWhatever
-  
+
   render() {
     return (
       <div>
@@ -22,7 +22,7 @@ class LoginContainer extends React.Component<TProps, {}> {
         <span>&nbsp;</span>
         <Button onClick={this.onLogOutPress}>LOG OUT BUBBA</Button>
         <h1>Data:</h1>
-        <pre style={{display: 'block', overflow: 'auto', height: '500px', border: 'solid 1px'}}>{JSON.stringify(this.props.auth, null, 2)}</pre>
+        <pre style={{border: 'solid 1px'}}>{JSON.stringify(this.props.auth, null, 2)}</pre>
       </div>
     )
   }

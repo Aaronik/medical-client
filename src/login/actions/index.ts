@@ -21,7 +21,7 @@ var protocol = 'http'
 // TODO @Aaron disable login controls until host map and host are resolved
 function loadHostMap() {
   console.log("Loading Host Map")
-  // TODO 
+  // TODO
   axios({
     // This host url is the dynamic discovery service. You can use it to select hosts
     // from the serviceMap under the flagship node.
@@ -99,11 +99,11 @@ function handleLoadFlagshipHosts(response: any) {
     } else {
       var randRound = Math.max(Math.round(Math.random() * flagshipCluster.length-1), flagshipCluster.length-1);
       console.log("Selecting host at : " + randRound)
-      
+
       var host = flagshipCluster[randRound];
       var hostName = host.fullUrl;
       myFlagshipHost = hostName;
-      
+
       console.log("selected host " + myFlagshipHost)
       addTokenToRequest()
     }
@@ -139,7 +139,7 @@ function clearMySession(response: any) {
 
 // calling the token endpoint means you generate a csrf token
 // server side. Logging in needs nothing but user / pwd (Basic Auth)
-export const addTokenToRequest = async () => {
+const addTokenToRequest = async () => {
   axios({
     //url: 'http://localhost:80/',
     url: getFlagshipEndpointUrl('/token'),
