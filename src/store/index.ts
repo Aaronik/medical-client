@@ -2,6 +2,11 @@ import { createStore } from 'redux'
 import uuid from 'uuid/v4'
 import { cloneDeep } from 'lodash'
 
+export type TStoreState = {
+  timelineData: TTimelineDatum[]
+  auth: TAuthData
+}
+
 export type TTimelineDatum = {
   id: string
   content: string
@@ -9,11 +14,37 @@ export type TTimelineDatum = {
   end?: string
 }
 
-type TAuthData = {}
+type TDiscoveryHost = {
+  hostUrl: string
+  port: number
+  token: string
+  secure: boolean
+  fullUrl: string
+}
 
-export type TStoreState = {
-  timelineData: TTimelineDatum[]
-  auth: TAuthData
+export type TDiscoveryResponse = {
+  hosts: TDiscoveryHost[]
+  serviceToken: string
+  serviceMap: object // Docs are unclear on this
+  unannounced: boolean
+}
+
+export type TAuthenticationResponse = {
+  expiresAt: number
+  sessionToken64: string
+  userNameHash64: string
+  reasonCode: 'NONE'
+  validity: 'VALID'
+}
+
+export type TLogoutResponse = {
+  message: string
+}
+
+type TAuthData = {
+  token: string
+  apiUrl: string
+  sampleResponse: any
 }
 
 const startingState: TStoreState = {
@@ -24,7 +55,11 @@ const startingState: TStoreState = {
     {id: uuid(), content: 'Developed jogging habbit', start: '2013-04-16', end: '2013-04-19'},
     {id: uuid(), content: 'Jogged into bees nest', start: '2013-04-25'},
   ],
-  auth: {}
+  auth: {
+    token: "",
+    apiUrl: "",
+    sampleResponse: {}
+  }
 }
 
 // Action type naming conventions:
@@ -41,7 +76,9 @@ const startingState: TStoreState = {
 type TAction =
   { type: 'RANDOM_TIMELINE_DATUM_GENERATED', datum: TTimelineDatum } |
   { type: 'LOGIN_1', payload: any } |
-  { type: 'LOGOUT_1', payload: any }
+  { type: 'LOGIN_2', payload: any } |
+  { type: 'LOGIN_3', payload: any } |
+  { type: 'LOGOUT', payload: any }
 
 const reducer = (state: TStoreState = startingState, action: TAction): TStoreState => {
 
@@ -54,12 +91,16 @@ const reducer = (state: TStoreState = startingState, action: TAction): TStoreSta
       newState.timelineData.push(action.datum)
       break
     case 'LOGIN_1':
-      newState.auth = action.payload
-      console.log("Login! Current state is ", newState.auth)
+      newState.auth.sampleResponse = action.payload
       break
-    case 'LOGOUT_1':
-      newState.auth = action.payload
-      console.log("Logout! Current state is ", newState.auth)
+    case 'LOGIN_2':
+      newState.auth.sampleResponse = action.payload
+      break
+    case 'LOGIN_3':
+      newState.auth.sampleResponse = action.payload
+      break
+    case 'LOGOUT':
+      newState.auth.sampleResponse = action.payload
       break;
     default:
       // Exhastiveness check (make sure all types are accounted for in switch statement)
