@@ -17,10 +17,17 @@ const constructApiUrl = (path: string): string => {
   return SERVER_ACCEPTED_PROTOCOL + '://' + getApiUrl() + path
 }
 
-export const loadHostMap = async () => {
+// Helper to wrap axios calls in standard error handling practice
+const safely = async <T>(axiosPromise: Promise<AxiosResponse<T>>) => {
+  axiosPromise.catch(err => {
+    const errString = JSON.stringify(err, null, 2)
+    alert(errString)
+  })
+  return axiosPromise
+}
 
-  // TODO every fetch must be try/catched or .catched
-  const resp = await axios({
+export const loadHostMap = async () => {
+  const resp = await safely<TDiscoveryResponse>(axios({
     url: getDiscoveryServiceUrl("/api/milli/dynamicdiscovery/mesh/hosts?serviceKey=flagship"),
     headers: {
       'Accept': 'application/json',
@@ -28,7 +35,7 @@ export const loadHostMap = async () => {
     },
     method: "get",
     withCredentials: true
-  }) as AxiosResponse<TDiscoveryResponse>
+  }))
 
   dispatch({ type: 'LOGIN_1', payload: resp.data })
 }
@@ -36,7 +43,8 @@ export const loadHostMap = async () => {
 export const getToken = async () => {
   const apiUrl = getApiUrl()
 
-  const resp = await axios({
+  // Response is ambiguous, waiting on Bow for types
+  const resp = await safely(axios({
     url: constructApiUrl('/token'),
     headers: {
       'Accept': 'application/json text/html',
@@ -44,7 +52,7 @@ export const getToken = async () => {
     },
     method: "get",
     withCredentials: true
-  })
+  }))
 
   dispatch({ type: 'LOGIN_2', payload: resp.data })
 }
@@ -52,7 +60,7 @@ export const getToken = async () => {
 export const authenticate = async (username: string, password: string) => {
   const authString = btoa(`${username}:${password}`)
 
-  const resp = await axios({
+  const resp = await safely<TAuthenticationResponse>(axios({
     url: constructApiUrl('/flagship/api/authenticate'),
     headers: {
       'Authorization': 'Basic ' + authString,
@@ -62,13 +70,13 @@ export const authenticate = async (username: string, password: string) => {
     method: "post",
     data: { x: '1' }, // API will puke apparently without any data
     withCredentials: true,
-  }) as AxiosResponse<TAuthenticationResponse>
+  }))
 
   dispatch({ type: 'LOGIN_3', payload: resp.data })
 }
 
 export const logout = async () => {
-  const resp = await axios({
+  const resp = await safely<TLogoutResponse>(axios({
     url: constructApiUrl('/flagship/api/logout'),
     headers: {
       'Accept': 'application/json',
@@ -78,7 +86,7 @@ export const logout = async () => {
     data: { x: 1 },
     method: "delete",
     withCredentials: true,
-  }) as AxiosResponse<TLogoutResponse>
+  }))
 
   dispatch({ type: 'LOGOUT', payload: resp.data })
 }
