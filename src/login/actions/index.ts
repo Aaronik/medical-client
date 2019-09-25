@@ -18,10 +18,11 @@ const constructApiUrl = (path: string): string => {
 }
 
 // Helper to wrap axios calls in standard error handling practice
+// Pass in the type of the expected response
 const safely = async <T>(axiosPromise: Promise<AxiosResponse<T>>) => {
   axiosPromise.catch(err => {
     const errString = JSON.stringify(err, null, 2)
-    alert(errString)
+    dispatch({ type: 'ERROR', payload: errString })
   })
   return axiosPromise
 }

@@ -3,9 +3,12 @@ import uuid from 'uuid/v4'
 import { cloneDeep } from 'lodash'
 
 export type TStoreState = {
+  errors: TError[]
   timelineData: TTimelineDatum[]
   auth: TAuthData
 }
+
+export type TError = string
 
 export type TTimelineDatum = {
   id: string
@@ -48,6 +51,7 @@ type TAuthData = {
 }
 
 const startingState: TStoreState = {
+  errors: [],
   timelineData: [ // Stub data for now
     {id: uuid(), content: 'Stubbed my toe', start: '2013-04-20'},
     {id: uuid(), content: 'First experienced allergy to the word "forever"', start: '2013-04-14'},
@@ -74,11 +78,13 @@ const startingState: TStoreState = {
 //   needs to "save" something.
 
 type TAction =
+  { type: 'ERROR', payload: string } |
+  { type: 'CLEAR_ERRORS' } |
   { type: 'RANDOM_TIMELINE_DATUM_GENERATED', datum: TTimelineDatum } |
-  { type: 'LOGIN_1', payload: any } |
+  { type: 'LOGIN_1', payload: TDiscoveryResponse } |
   { type: 'LOGIN_2', payload: any } |
-  { type: 'LOGIN_3', payload: any } |
-  { type: 'LOGOUT', payload: any }
+  { type: 'LOGIN_3', payload: TAuthenticationResponse } |
+  { type: 'LOGOUT', payload: TLogoutResponse }
 
 const reducer = (state: TStoreState = startingState, action: TAction): TStoreState => {
 
@@ -87,6 +93,12 @@ const reducer = (state: TStoreState = startingState, action: TAction): TStoreSta
   let newState = cloneDeep(state)
 
   switch (action.type) {
+    case 'ERROR':
+      newState.errors.push(action.payload)
+      break
+    case 'CLEAR_ERRORS':
+      newState.errors = []
+      break
     case 'RANDOM_TIMELINE_DATUM_GENERATED':
       newState.timelineData.push(action.datum)
       break
@@ -103,7 +115,7 @@ const reducer = (state: TStoreState = startingState, action: TAction): TStoreSta
       newState.auth.sampleResponse = action.payload
       break;
     default:
-      // Exhastiveness check (make sure all types are accounted for in switch statement)
+      // Exhastiveness check (make sure all actions are accounted for in switch statement)
       (function(action: never){})(action)
       break
   }
