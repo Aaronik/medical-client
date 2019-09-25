@@ -42,8 +42,6 @@ export const loadHostMap = async () => {
 }
 
 export const getToken = async () => {
-  const apiUrl = getApiUrl()
-
   // Response is ambiguous, waiting on Bow for types
   const resp = await safely(axios({
     url: constructApiUrl('/token'),

@@ -22,9 +22,9 @@ const App = () => {
       <Router>
         <Navbar bg="dark" variant="dark">
           <Navbar.Brand><Link to="/">Milli</Link></Navbar.Brand>
-          <Nav.Link><Link to="/survey">Survey</Link></Nav.Link>
-          <Nav.Link><Link to="/timeline">Timeline</Link></Nav.Link>
-          <Nav.Link><Link to="/login">Login</Link></Nav.Link>
+          <Nav.Link as={Link} to="/survey">Survey</Nav.Link>
+          <Nav.Link as={Link} to="/timeline">Timeline</Nav.Link>
+          <Nav.Link as={Link} to="/login">Login</Nav.Link>
         </Navbar>
 
         <Alert />
