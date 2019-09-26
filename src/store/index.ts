@@ -8,7 +8,10 @@ export type TStoreState = {
   auth: TAuthData
 }
 
-export type TError = string
+export type TError = {
+  id: string
+  message: string
+}
 
 export type TTimelineDatum = {
   id: string
@@ -80,6 +83,7 @@ const startingState: TStoreState = {
 type TAction =
   { type: 'ERROR', payload: string } |
   { type: 'CLEAR_ERRORS' } |
+  { type: 'CLEAR_ERROR', payload: string } |
   { type: 'RANDOM_TIMELINE_DATUM_GENERATED', datum: TTimelineDatum } |
   { type: 'LOGIN_1', payload: TDiscoveryResponse } |
   { type: 'LOGIN_2', payload: any } |
@@ -93,12 +97,21 @@ const reducer = (state: TStoreState = startingState, action: TAction): TStoreSta
   let newState = cloneDeep(state)
 
   switch (action.type) {
-    case 'ERROR':
-      newState.errors.push(action.payload)
+    case 'ERROR': {
+      const error = {
+        id: uuid(),
+        message: action.payload
+      }
+
+      newState.errors.push(error)
       break
+    }
     case 'CLEAR_ERRORS':
       newState.errors = []
       break
+    case 'CLEAR_ERROR':
+      newState.errors = newState.errors.filter(e => e.id !== action.payload)
+      break;
     case 'RANDOM_TIMELINE_DATUM_GENERATED':
       newState.timelineData.push(action.datum)
       break

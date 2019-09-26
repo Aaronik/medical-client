@@ -13,7 +13,7 @@ const Alert = (props: TProps) => (
   <div>
     {
       props.errors.map(e => (
-        <RBAlert dismissible onClose={actions.clearErrors}variant="danger" key={e}>{e}</RBAlert>
+        <RBAlert dismissible onClose={() => actions.clearError(e.id)}variant="danger" key={e.id}>{e.message}</RBAlert>
       ))
     }
   </div>
