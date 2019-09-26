@@ -1,73 +1,21 @@
-import { createStore } from 'redux'
-import uuid from 'uuid/v4'
-import { cloneDeep } from 'lodash'
+import { createStore, combineReducers } from 'redux'
+
+import authReducer from '../auth/reducers'
+import * as authTypes from '../auth/types.d'
+
+import errorReducer from '../error/reducers'
+import * as errorTypes from '../error/types.d'
+
+import timelineReducer from '../timeline/reducers'
+import * as timelineTypes from '../timeline/types.d'
 
 export type TStoreState = {
-  errors: TError[]
-  timelineData: TTimelineDatum[]
-  auth: TAuthData
+  errors: errorTypes.TBranchState
+  timeline: timelineTypes.TBranchState
+  auth: authTypes.TBranchState
 }
 
-export type TError = {
-  id: string
-  message: string
-}
-
-export type TTimelineDatum = {
-  id: string
-  content: string
-  start: string
-  end?: string
-}
-
-type TDiscoveryHost = {
-  hostUrl: string
-  port: number
-  token: string
-  secure: boolean
-  fullUrl: string
-}
-
-export type TDiscoveryResponse = {
-  hosts: TDiscoveryHost[]
-  serviceToken: string
-  serviceMap: object // Docs are unclear on this
-  unannounced: boolean
-}
-
-export type TAuthenticationResponse = {
-  expiresAt: number
-  sessionToken64: string
-  userNameHash64: string
-  reasonCode: 'NONE'
-  validity: 'VALID'
-}
-
-export type TLogoutResponse = {
-  message: string
-}
-
-type TAuthData = {
-  token: string
-  apiUrl: string
-  sampleResponse: any
-}
-
-const startingState: TStoreState = {
-  errors: [],
-  timelineData: [ // Stub data for now
-    {id: uuid(), content: 'Stubbed my toe', start: '2013-04-20'},
-    {id: uuid(), content: 'First experienced allergy to the word "forever"', start: '2013-04-14'},
-    {id: uuid(), content: 'First time experiencing enui', start: '2013-04-18'},
-    {id: uuid(), content: 'Developed jogging habbit', start: '2013-04-16', end: '2013-04-19'},
-    {id: uuid(), content: 'Jogged into bees nest', start: '2013-04-25'},
-  ],
-  auth: {
-    token: "",
-    apiUrl: "",
-    sampleResponse: {}
-  }
-}
+export type TAction = authTypes.TAction | errorTypes.TAction | timelineTypes.TAction
 
 // Action type naming conventions:
 // Consider the following flow:
@@ -80,63 +28,13 @@ const startingState: TStoreState = {
 //   so it would never be something imperative like SAVE_NEW_THING. The action doesn't know the store
 //   needs to "save" something.
 
-type TAction =
-  { type: 'ERROR', payload: string } |
-  { type: 'CLEAR_ERRORS' } |
-  { type: 'CLEAR_ERROR', payload: string } |
-  { type: 'RANDOM_TIMELINE_DATUM_GENERATED', datum: TTimelineDatum } |
-  { type: 'LOGIN_1', payload: TDiscoveryResponse } |
-  { type: 'LOGIN_2', payload: any } |
-  { type: 'LOGIN_3', payload: TAuthenticationResponse } |
-  { type: 'LOGOUT', payload: TLogoutResponse }
+const reducer = combineReducers<TStoreState>({
+  auth: authReducer,
+  errors: errorReducer,
+  timeline: timelineReducer
+})
 
-const reducer = (state: TStoreState = startingState, action: TAction): TStoreState => {
-
-  // We clonedeep here so the reference changes using a strict equality comparison
-  // https://react-redux.js.org/using-react-redux/connect-mapstate#return-values-determine-if-your-component-re-renders
-  let newState = cloneDeep(state)
-
-  switch (action.type) {
-    case 'ERROR': {
-      const error = {
-        id: uuid(),
-        message: action.payload
-      }
-
-      newState.errors.push(error)
-      break
-    }
-    case 'CLEAR_ERRORS':
-      newState.errors = []
-      break
-    case 'CLEAR_ERROR':
-      newState.errors = newState.errors.filter(e => e.id !== action.payload)
-      break;
-    case 'RANDOM_TIMELINE_DATUM_GENERATED':
-      newState.timelineData.push(action.datum)
-      break
-    case 'LOGIN_1':
-      newState.auth.sampleResponse = action.payload
-      break
-    case 'LOGIN_2':
-      newState.auth.sampleResponse = action.payload
-      break
-    case 'LOGIN_3':
-      newState.auth.sampleResponse = action.payload
-      break
-    case 'LOGOUT':
-      newState.auth.sampleResponse = action.payload
-      break;
-    default:
-      // Exhastiveness check (make sure all actions are accounted for in switch statement)
-      (function(action: never){})(action)
-      break
-  }
-
-  return newState
-}
-
-const store = createStore(reducer)
+const store = createStore<TStoreState, TAction, unknown, unknown>(reducer)
 export default store
 
 // Type dispatch more tightly than it comes out of the box

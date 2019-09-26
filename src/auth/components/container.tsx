@@ -5,11 +5,12 @@ import ButtonGroup from 'react-bootstrap/ButtonGroup'
 import Container from 'react-bootstrap/Container'
 import { connect } from 'react-redux'
 import * as actions from '../actions'
+import * as T from '../types.d'
 
 import { TStoreState } from '../../store'
 
 type TProps = {
-  auth: any
+  auth: T.TBranchState
 }
 
 class LoginContainer extends React.Component<TProps, {}> {

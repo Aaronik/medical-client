@@ -2,11 +2,12 @@ import React from 'react'
 import { Alert as RBAlert } from 'react-bootstrap'
 import { connect } from 'react-redux'
 
-import { TStoreState, TError } from '../../store'
+import { TStoreState } from '../../store'
 import * as actions from '../actions'
+import * as T from '../types.d'
 
 type TProps = {
-  errors: TError[]
+  errors: T.TError[]
 }
 
 const Alert = (props: TProps) => (

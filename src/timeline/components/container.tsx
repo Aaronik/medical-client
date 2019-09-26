@@ -3,13 +3,14 @@ import * as timeline from 'timeline-plus'
 import Button from 'react-bootstrap/Button'
 import { connect } from 'react-redux'
 
-import { TStoreState, TTimelineDatum } from '../../store'
+import { TStoreState } from '../../store'
 import * as actions from '../actions'
+import * as T from '../types.d'
 
 require('timeline-plus/dist/timeline.css')
 
 type TProps = {
-  timelineData: TTimelineDatum[]
+  timelineData: T.TTimelineDatum[]
 }
 
 class TimelineContainer extends React.Component<TProps, {}> {
@@ -56,5 +57,5 @@ class TimelineContainer extends React.Component<TProps, {}> {
 }
 
 export default connect((storeState: TStoreState) => {
-  return { timelineData: storeState.timelineData }
+  return { timelineData: storeState.timeline }
 })(TimelineContainer)

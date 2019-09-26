@@ -6,7 +6,7 @@ import Navbar from 'react-bootstrap/Navbar'
 import Nav from 'react-bootstrap/Nav'
 
 import TimelineContainer from './timeline/components/container'
-import LoginContainer from './login/components/container'
+import AuthContainer from './auth/components/container'
 import Alert from './error/components/Alert'
 import store from './store'
 import './App.scss'
@@ -33,7 +33,7 @@ const App = () => {
           <Route path="/" exact component={HomeStubContainer} />
           <Route path="/survey" component={SurveyStubContainer} />
           <Route path="/timeline" component={TimelineContainer} />
-          <Route path="/login" component={LoginContainer} />
+          <Route path="/login" component={AuthContainer} />
           <Route component={PageNotFound} />
         </Switch>
       </Router>

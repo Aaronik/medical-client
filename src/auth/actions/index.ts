@@ -1,5 +1,6 @@
 import axios, { AxiosResponse } from 'axios'
-import store, { dispatch, TDiscoveryResponse, TAuthenticationResponse, TLogoutResponse } from '../../store'
+import store, { dispatch } from '../../store'
+import * as T from '../types.d'
 
 const SERVER_ACCEPTED_PROTOCOL = 'http'
 const DISCOERY_URL = "ec2-3-19-237-167.us-east-2.compute.amazonaws.com:9000"
@@ -28,7 +29,7 @@ const safely = async <T>(axiosPromise: Promise<AxiosResponse<T>>) => {
 }
 
 export const loadHostMap = async () => {
-  const resp = await safely<TDiscoveryResponse>(axios({
+  const resp = await safely<T.TDiscoveryResponse>(axios({
     url: getDiscoveryServiceUrl("/api/milli/dynamicdiscovery/mesh/hosts?serviceKey=flagship"),
     headers: {
       'Accept': 'application/json',
@@ -59,7 +60,7 @@ export const getToken = async () => {
 export const authenticate = async (username: string, password: string) => {
   const authString = btoa(`${username}:${password}`)
 
-  const resp = await safely<TAuthenticationResponse>(axios({
+  const resp = await safely<T.TAuthenticationResponse>(axios({
     url: constructApiUrl('/flagship/api/authenticate'),
     headers: {
       'Authorization': 'Basic ' + authString,
@@ -75,7 +76,7 @@ export const authenticate = async (username: string, password: string) => {
 }
 
 export const logout = async () => {
-  const resp = await safely<TLogoutResponse>(axios({
+  const resp = await safely<T.TLogoutResponse>(axios({
     url: constructApiUrl('/flagship/api/logout'),
     headers: {
       'Accept': 'application/json',
