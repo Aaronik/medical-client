@@ -18,10 +18,6 @@ class LoginContainer extends React.Component<TProps, {}> {
     actions.loadHostMap()
   }
 
-  private onGetTokenClick() {
-    actions.getToken()
-  }
-
   private onAuthenticateClick() {
     actions.authenticate('boomama', '11111')
   }
@@ -30,16 +26,20 @@ class LoginContainer extends React.Component<TProps, {}> {
     actions.logout()
   }
 
+  private fetchUser() {
+    actions.fetchUser()
+  }
+
   render() {
     return (
       <Container>
         <ButtonToolbar>
           <ButtonGroup>
             <Button variant="success" onClick={this.onLoadHostMapClick}>Load Host Map</Button>
-            <Button variant="info" onClick={this.onGetTokenClick}>Get Token</Button>
-            <Button variant="secondary" onClick={this.onGetTokenClick}>Authenticate</Button>
+            <Button variant="secondary" onClick={this.onAuthenticateClick}>Authenticate</Button>
             <Button variant="primary" onClick={this.onLogoutPress}>Log Out</Button>
           </ButtonGroup>
+          <Button variant="info" onClick={this.fetchUser}>Fetch User</Button>
         </ButtonToolbar>
         <h1>Data:</h1>
         <pre style={{border: 'solid 1px'}}>{JSON.stringify(this.props.auth, null, 2)}</pre>

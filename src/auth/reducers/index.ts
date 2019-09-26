@@ -1,8 +1,9 @@
-import { cloneDeep } from 'lodash'
+import { cloneDeep, random } from 'lodash'
 import * as T from '../types.d'
 
 const startingState = {
-  token: "",
+  sessionToken: "",
+  userUrn: "",
   apiUrl: "",
   sampleResponse: {}
 }
@@ -14,18 +15,25 @@ const reducer = (state: T.TBranchState = startingState, action: T.TAction): T.TB
   let newState = cloneDeep(state)
 
   switch (action.type) {
-    case 'LOGIN_1':
+    case 'LOADED_HOST_MAP': {
+      const { hosts } = action.payload
+      const randomHostIndex = random(0, hosts.length - 1)
+      newState.apiUrl = hosts[randomHostIndex].fullUrl
       newState.sampleResponse = action.payload
       break
-    case 'LOGIN_2':
-      newState.sampleResponse = action.payload
-      break
-    case 'LOGIN_3':
+    }
+    case 'AUTHENTICATED':
+      newState.sessionToken = action.payload.sessionToken
+      newState.userUrn = action.payload.userUrn
       newState.sampleResponse = action.payload
       break
     case 'LOGOUT':
+      newState = cloneDeep(startingState)
       newState.sampleResponse = action.payload
-      break;
+      break
+    case 'SAMPLE':
+      newState.sampleResponse = action.payload
+      break
     default:
       // Exhastiveness check (make sure all actions are accounted for in switch statement)
       (function(action: never){})(action)

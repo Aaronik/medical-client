@@ -2,20 +2,12 @@ import axios, { AxiosResponse } from 'axios'
 import store, { dispatch } from '../../store'
 import * as T from '../types.d'
 
-const SERVER_ACCEPTED_PROTOCOL = 'http'
-const DISCOERY_URL = "ec2-3-19-237-167.us-east-2.compute.amazonaws.com:9000"
-
 const getApiUrl = () => store.getState().auth.apiUrl
-const getApiToken = () => store.getState().auth.token
-
-// returns the discovery service url, we use this to load the host map
-const getDiscoveryServiceUrl = (path: string): string => {
-  return SERVER_ACCEPTED_PROTOCOL + '://' + DISCOERY_URL + path
-}
+const getApiToken = () => store.getState().auth.sessionToken
 
 // returns a full url from the selected flagship host
 const constructApiUrl = (path: string): string => {
-  return SERVER_ACCEPTED_PROTOCOL + '://' + getApiUrl() + path
+  return 'http://' + getApiUrl() + path
 }
 
 // Helper to wrap axios calls in standard error handling practice
@@ -29,32 +21,17 @@ const safely = async <T>(axiosPromise: Promise<AxiosResponse<T>>) => {
 }
 
 export const loadHostMap = async () => {
+  const discoveryServiceUrl =
+    'http://ec2-3-19-237-167.us-east-2.compute.amazonaws.com:9000' +
+    '/api/milli/dynamicdiscovery/mesh/hosts?serviceKey=flagship'
+
+
   const resp = await safely<T.TDiscoveryResponse>(axios({
-    url: getDiscoveryServiceUrl("/api/milli/dynamicdiscovery/mesh/hosts?serviceKey=flagship"),
-    headers: {
-      'Accept': 'application/json',
-      'Content-Type': 'application/jsoncharset=UTF-8'
-    },
-    method: "get",
-    withCredentials: true
+    url: discoveryServiceUrl,
+    method: 'GET'
   }))
 
-  dispatch({ type: 'LOGIN_1', payload: resp.data })
-}
-
-export const getToken = async () => {
-  // Response is ambiguous, waiting on Bow for types
-  const resp = await safely(axios({
-    url: constructApiUrl('/token'),
-    headers: {
-      'Accept': 'application/json text/html',
-      'Content-Type': 'application/jsoncharset=UTF-8',
-    },
-    method: "get",
-    withCredentials: true
-  }))
-
-  dispatch({ type: 'LOGIN_2', payload: resp.data })
+  dispatch({ type: 'LOADED_HOST_MAP', payload: resp.data })
 }
 
 export const authenticate = async (username: string, password: string) => {
@@ -62,31 +39,30 @@ export const authenticate = async (username: string, password: string) => {
 
   const resp = await safely<T.TAuthenticationResponse>(axios({
     url: constructApiUrl('/flagship/api/authenticate'),
-    headers: {
-      'Authorization': 'Basic ' + authString,
-      'Accept': 'application/json text/html',
-      'Content-Type': 'application/json charset=UTF-8',
-    },
-    method: "post",
-    data: { x: '1' }, // API will puke apparently without any data
-    withCredentials: true,
+    headers: { 'Authorization': 'Basic ' + authString },
+    method: 'POST',
+    data: {}
   }))
 
-  dispatch({ type: 'LOGIN_3', payload: resp.data })
+  dispatch({ type: 'AUTHENTICATED', payload: resp.data })
 }
 
 export const logout = async () => {
   const resp = await safely<T.TLogoutResponse>(axios({
     url: constructApiUrl('/flagship/api/logout'),
-    headers: {
-      'Accept': 'application/json',
-      'Content-Type': 'multipart/form-data',
-      'Session-Token': getApiToken()
-    },
-    data: { x: 1 },
-    method: "delete",
-    withCredentials: true,
+    headers: { 'Session-Token': getApiToken() },
+    method: 'DELETE',
+    data: {}
   }))
 
   dispatch({ type: 'LOGOUT', payload: resp.data })
+}
+
+export const fetchUser = async () => {
+  const resp = await safely<any>(axios({
+    url: constructApiUrl('/flagship/api/users/get?milliUserUrn=' + store.getState().auth.userUrn),
+    method: 'GET'
+  }))
+
+  dispatch({ type: 'SAMPLE', payload: resp.data })
 }
