@@ -1,24 +1,8 @@
-import axios, { AxiosResponse } from 'axios'
-import store, { dispatch } from 'store'
+import axios from 'axios'
+import { dispatch } from 'store'
 import * as T from 'auth/types.d'
-
-const getApiUrl = () => store.getState().auth.apiUrl
-const getApiToken = () => store.getState().auth.sessionToken
-
-// returns a full url from the selected flagship host
-const constructApiUrl = (path: string): string => {
-  return 'http://' + getApiUrl() + path
-}
-
-// Helper to wrap axios calls in standard error handling practice
-// Pass in the type of the expected response
-const safely = async <T>(axiosPromise: Promise<AxiosResponse<T>>) => {
-  axiosPromise.catch(err => {
-    const errString = JSON.stringify(err, null, 2)
-    dispatch({ type: 'ERROR', payload: errString })
-  })
-  return axiosPromise
-}
+import { safely } from 'util/action'
+import api from 'api'
 
 export const loadHostMap = async () => {
   const discoveryServiceUrl =
@@ -26,10 +10,7 @@ export const loadHostMap = async () => {
     '/api/milli/dynamicdiscovery/mesh/hosts?serviceKey=flagship'
 
 
-  const resp = await safely<T.TDiscoveryResponse>(axios({
-    url: discoveryServiceUrl,
-    method: 'GET'
-  }))
+  const resp = await safely<T.TDiscoveryResponse>(axios(discoveryServiceUrl))
 
   dispatch({ type: 'LOADED_HOST_MAP', payload: resp.data })
 }
@@ -37,8 +18,8 @@ export const loadHostMap = async () => {
 export const authenticate = async (username: string, password: string) => {
   const authString = btoa(`${username}:${password}`)
 
-  const resp = await safely<T.TAuthenticationResponse>(axios({
-    url: constructApiUrl('/flagship/api/authenticate'),
+  const resp = await safely<T.TAuthenticationResponse>(api({
+    url: '/flagship/api/authenticate',
     headers: { 'Authorization': 'Basic ' + authString },
     method: 'POST',
     data: {}
@@ -48,21 +29,11 @@ export const authenticate = async (username: string, password: string) => {
 }
 
 export const logout = async () => {
-  const resp = await safely<T.TLogoutResponse>(axios({
-    url: constructApiUrl('/flagship/api/logout'),
-    headers: { 'Session-Token': getApiToken() },
+  const resp = await safely<T.TLogoutResponse>(api({
+    url: '/flagship/api/logout',
     method: 'DELETE',
     data: {}
   }))
 
   dispatch({ type: 'LOGOUT', payload: resp.data })
-}
-
-export const fetchUser = async () => {
-  const resp = await safely<any>(axios({
-    url: constructApiUrl('/flagship/api/users/get?milliUserUrn=' + store.getState().auth.userUrn),
-    method: 'GET'
-  }))
-
-  dispatch({ type: 'SAMPLE', payload: resp.data })
 }

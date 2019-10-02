@@ -6,8 +6,9 @@ import Navbar from 'react-bootstrap/Navbar'
 import Nav from 'react-bootstrap/Nav'
 
 import TimelineContainer from 'timeline/components/container'
-import AuthContainer from 'auth/components/container'
+import AuthDropdown from 'auth/components/dropdown'
 import Alert from 'error/components/Alert'
+import { loadHostMap } from 'auth/actions'
 import store from 'store'
 import 'App.scss'
 
@@ -15,31 +16,37 @@ const HomeStubContainer = () => <div>Home</div>
 const SurveyStubContainer = () => <div>Survey</div>
 const PageNotFound = () => <div>Page Not Found!! :(</div>
 
-const App = () => {
+export default class App extends React.Component {
+  componentWillMount() {
+    loadHostMap()
+  }
 
-  return (
-    <Provider store={store}>
-      <Router>
-        <Navbar bg="dark" variant="dark">
-          <Navbar.Brand><Link to="/">Milli</Link></Navbar.Brand>
-          <Nav.Link as={Link} to="/survey">Survey</Nav.Link>
-          <Nav.Link as={Link} to="/timeline">Timeline</Nav.Link>
-          <Nav.Link as={Link} to="/login">Login</Nav.Link>
-        </Navbar>
+  render() {
+    return (
+      <Provider store={store}>
+        <Router>
+          <Navbar bg="dark" variant="dark" className="justify-content-between">
+            <Nav>
+              <Navbar.Brand><Link to="/">Milli</Link></Navbar.Brand>
+              <Nav.Link as={Link} to="/survey">Survey</Nav.Link>
+              <Nav.Link as={Link} to="/timeline">Timeline</Nav.Link>
+            </Nav>
+            <Nav>
+              <AuthDropdown/>
+            </Nav>
+          </Navbar>
 
-        <Alert />
+          <Alert />
 
-        <Switch>
-          <Route path="/" exact component={HomeStubContainer} />
-          <Route path="/survey" component={SurveyStubContainer} />
-          <Route path="/timeline" component={TimelineContainer} />
-          <Route path="/login" component={AuthContainer} />
-          <Route component={PageNotFound} />
-        </Switch>
-      </Router>
+          <Switch>
+            <Route path="/" exact component={HomeStubContainer} />
+            <Route path="/survey" component={SurveyStubContainer} />
+            <Route path="/timeline" component={TimelineContainer} />
+            <Route component={PageNotFound} />
+          </Switch>
+        </Router>
 
-    </Provider>
-  )
+      </Provider>
+    )
+  }
 }
-
-export default App

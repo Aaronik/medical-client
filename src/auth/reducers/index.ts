@@ -28,7 +28,8 @@ const reducer = (state: T.TBranchState = startingState, action: T.TAction): T.TB
       newState.sampleResponse = action.payload
       break
     case 'LOGOUT':
-      newState = cloneDeep(startingState)
+      newState.sessionToken = startingState.sessionToken
+      newState.userUrn = startingState.userUrn
       newState.sampleResponse = action.payload
       break
     case 'SAMPLE':
