@@ -5,11 +5,11 @@ import { Provider } from 'react-redux'
 import Navbar from 'react-bootstrap/Navbar'
 import Nav from 'react-bootstrap/Nav'
 
-import TimelineContainer from './timeline/components/container'
-import AuthContainer from './auth/components/container'
-import Alert from './error/components/Alert'
-import store from './store'
-import './App.scss'
+import TimelineContainer from 'timeline/components/container'
+import AuthContainer from 'auth/components/container'
+import Alert from 'error/components/Alert'
+import store from 'store'
+import 'App.scss'
 
 const HomeStubContainer = () => <div>Home</div>
 const SurveyStubContainer = () => <div>Survey</div>

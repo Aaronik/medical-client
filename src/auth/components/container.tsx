@@ -4,10 +4,10 @@ import ButtonToolbar from 'react-bootstrap/ButtonToolbar'
 import ButtonGroup from 'react-bootstrap/ButtonGroup'
 import Container from 'react-bootstrap/Container'
 import { connect } from 'react-redux'
-import * as actions from '../actions'
-import * as T from '../types.d'
+import * as actions from 'auth/actions'
+import * as T from 'auth/types.d'
 
-import { TStoreState } from '../../store'
+import { TStoreState } from 'store'
 
 type TProps = {
   auth: T.TBranchState

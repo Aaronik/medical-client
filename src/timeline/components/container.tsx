@@ -3,9 +3,9 @@ import * as timeline from 'timeline-plus'
 import Button from 'react-bootstrap/Button'
 import { connect } from 'react-redux'
 
-import { TStoreState } from '../../store'
-import * as actions from '../actions'
-import * as T from '../types.d'
+import { TStoreState } from 'store'
+import * as actions from 'timeline/actions'
+import * as T from 'timeline/types.d'
 
 require('timeline-plus/dist/timeline.css')
 

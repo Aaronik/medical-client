@@ -1,6 +1,6 @@
 import uuid from 'uuid/v4'
 import { cloneDeep } from 'lodash'
-import * as T from '../types.d'
+import * as T from 'error/types.d'
 
 const startingState: T.TBranchState = []
 

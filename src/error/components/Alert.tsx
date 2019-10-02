@@ -2,9 +2,9 @@ import React from 'react'
 import { Alert as RBAlert } from 'react-bootstrap'
 import { connect } from 'react-redux'
 
-import { TStoreState } from '../../store'
-import * as actions from '../actions'
-import * as T from '../types.d'
+import { TStoreState } from 'store'
+import * as actions from 'error/actions'
+import * as T from 'error/types.d'
 
 type TProps = {
   errors: T.TError[]

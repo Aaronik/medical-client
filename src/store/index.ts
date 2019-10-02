@@ -1,13 +1,13 @@
 import { createStore, combineReducers } from 'redux'
 
-import authReducer from '../auth/reducers'
-import * as authTypes from '../auth/types.d'
+import authReducer from 'auth/reducers'
+import * as authTypes from 'auth/types.d'
 
-import errorReducer from '../error/reducers'
-import * as errorTypes from '../error/types.d'
+import errorReducer from 'error/reducers'
+import * as errorTypes from 'error/types.d'
 
-import timelineReducer from '../timeline/reducers'
-import * as timelineTypes from '../timeline/types.d'
+import timelineReducer from 'timeline/reducers'
+import * as timelineTypes from 'timeline/types.d'
 
 export type TStoreState = {
   errors: errorTypes.TBranchState

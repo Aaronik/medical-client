@@ -1,6 +1,6 @@
 import uuid from 'uuid/v4'
 import { cloneDeep } from 'lodash'
-import * as T from '../types.d'
+import * as T from 'timeline/types.d'
 
 const startingState: T.TBranchState = [ // Stub data for now
   {id: uuid(), content: 'Stubbed my toe', start: '2013-04-20'},

@@ -1,4 +1,4 @@
-import Patient from "../../common/Patient"
+import Patient from "common/Patient"
 
 export interface ISurveyPatient {
 

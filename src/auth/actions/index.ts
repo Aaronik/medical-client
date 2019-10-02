@@ -1,6 +1,6 @@
 import axios, { AxiosResponse } from 'axios'
-import store, { dispatch } from '../../store'
-import * as T from '../types.d'
+import store, { dispatch } from 'store'
+import * as T from 'auth/types.d'
 
 const getApiUrl = () => store.getState().auth.apiUrl
 const getApiToken = () => store.getState().auth.sessionToken

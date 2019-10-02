@@ -1,5 +1,5 @@
 import { cloneDeep, random } from 'lodash'
-import * as T from '../types.d'
+import * as T from 'auth/types.d'
 
 const startingState = {
   sessionToken: "",
