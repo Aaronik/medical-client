@@ -1,6 +1,7 @@
 import React from 'react'
 import * as timeline from 'timeline-plus'
 import Button from 'react-bootstrap/Button'
+import Container from 'react-bootstrap/Container'
 import { connect } from 'react-redux'
 
 import { TStoreState } from 'store'
@@ -48,14 +49,14 @@ class TimelineContainer extends React.Component<TProps, {}> {
 
   render() {
     return (
-      <div>
+      <Container>
         <div id='timeline-container' ref={this.timelineTargetRef}></div>
         <Button onClick={this.onButtonPress}>Add Random Event to Timeline</Button>
-      </div>
+      </Container>
     )
   }
 }
 
-export default connect((storeState: TStoreState) => {
+export default connect((storeState: TStoreState): TProps => {
   return { timelineData: storeState.timeline }
 })(TimelineContainer)
