@@ -12,6 +12,8 @@ import * as timelineTypes from 'timeline/types.d'
 import userReducer from 'user/reducers'
 import * as userTypes from 'user/types.d'
 
+import * as surveyTypes from 'survey/types.d'
+
 export type TStoreState = {
   errors: errorTypes.TBranchState
   timeline: timelineTypes.TBranchState
@@ -23,7 +25,8 @@ export type TAction =
   authTypes.TAction |
   errorTypes.TAction |
   timelineTypes.TAction |
-  userTypes.TAction
+  userTypes.TAction |
+  surveyTypes.TAction
 
 const reducer = combineReducers<TStoreState>({
   auth: authReducer,

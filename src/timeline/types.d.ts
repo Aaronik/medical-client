@@ -8,5 +8,5 @@ export type TTimelineDatum = {
 export type TBranchState = TTimelineDatum[]
 
 export type TAction =
-  { type: 'RANDOM_TIMELINE_DATUM_GENERATED', datum: TTimelineDatum } |
+  { type: 'TIMELINE_DATA_GENERATED', payload: TTimelineDatum } |
   { type: 'STUB' }

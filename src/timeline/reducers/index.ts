@@ -1,14 +1,7 @@
-import uuid from 'uuid/v4'
 import { cloneDeep } from 'lodash'
 import * as T from 'timeline/types.d'
 
-const startingState: T.TBranchState = [ // Stub data for now
-  {id: uuid(), content: 'Stubbed my toe', start: '2013-04-20'},
-  {id: uuid(), content: 'First experienced allergy to the word "forever"', start: '2013-04-14'},
-  {id: uuid(), content: 'First time experiencing enui', start: '2013-04-18'},
-  {id: uuid(), content: 'Developed jogging habbit', start: '2013-04-16', end: '2013-04-19'},
-  {id: uuid(), content: 'Jogged into bees nest', start: '2013-04-25'},
-]
+const startingState: T.TBranchState = []
 
 const reducer = (state: T.TBranchState = startingState, action: T.TAction): T.TBranchState => {
 
@@ -17,8 +10,8 @@ const reducer = (state: T.TBranchState = startingState, action: T.TAction): T.TB
   let newState = cloneDeep(state)
 
   switch (action.type) {
-    case 'RANDOM_TIMELINE_DATUM_GENERATED':
-      newState.push(action.datum)
+    case 'TIMELINE_DATA_GENERATED':
+      newState.push(action.payload)
       break
     case 'STUB': // for some reason the exhaustiveness check requires >= 2
       break

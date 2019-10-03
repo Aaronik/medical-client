@@ -6,6 +6,7 @@ import Navbar from 'react-bootstrap/Navbar'
 import Nav from 'react-bootstrap/Nav'
 
 import TimelineContainer from 'timeline/components/container'
+import SurveyContainer from 'survey/components/container'
 import AuthDropdown from 'auth/components/dropdown'
 import Alert from 'error/components/Alert'
 import { loadHostMap } from 'auth/actions'
@@ -13,7 +14,6 @@ import store from 'store'
 import 'App.scss'
 
 const HomeStubContainer = () => <div>Home</div>
-const SurveyStubContainer = () => <div>Survey</div>
 const PageNotFound = () => <div>Page Not Found!! :(</div>
 
 export default class App extends React.Component {
@@ -40,7 +40,7 @@ export default class App extends React.Component {
 
           <Switch>
             <Route path="/" exact component={HomeStubContainer} />
-            <Route path="/survey" component={SurveyStubContainer} />
+            <Route path="/survey" component={SurveyContainer} />
             <Route path="/timeline" component={TimelineContainer} />
             <Route component={PageNotFound} />
           </Switch>
