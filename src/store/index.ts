@@ -38,6 +38,10 @@ const reducer = combineReducers<TStoreState>({
 const store = createStore<TStoreState, TAction, unknown, unknown>(reducer)
 export default store
 
+// TODO temporary, just a nice to have for development
+// @ts-ignore
+window.store = store
+
 // Type dispatch more tightly than it comes out of the box
 export const dispatch = (action: TAction) => store.dispatch(action)
 export type TStore = typeof store
