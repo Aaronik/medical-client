@@ -12,8 +12,6 @@ import * as timelineTypes from 'timeline/types.d'
 import userReducer from 'user/reducers'
 import * as userTypes from 'user/types.d'
 
-import * as surveyTypes from 'survey/types.d'
-
 export type TStoreState = {
   errors: errorTypes.TBranchState
   timeline: timelineTypes.TBranchState
@@ -25,8 +23,7 @@ export type TAction =
   authTypes.TAction |
   errorTypes.TAction |
   timelineTypes.TAction |
-  userTypes.TAction |
-  surveyTypes.TAction
+  userTypes.TAction
 
 const reducer = combineReducers<TStoreState>({
   auth: authReducer,
@@ -46,3 +43,7 @@ window.store = store
 export const dispatch = (action: TAction) => store.dispatch(action)
 export type TStore = typeof store
 
+// helpers
+export const isSignedIn = () => (
+  !!store.getState().auth.sessionToken
+)

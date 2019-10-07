@@ -1,20 +1,14 @@
 import React from 'react'
 import * as timeline from 'timeline-plus'
-import Button from 'react-bootstrap/Button'
 import Container from 'react-bootstrap/Container'
-import { connect } from 'react-redux'
 
-import { TStoreState } from 'store'
-import * as actions from 'timeline/actions'
 import * as T from 'timeline/types.d'
 
-require('timeline-plus/dist/timeline.css')
-
 type TProps = {
-  timelineData: T.TTimelineDatum[]
+  data: T.TTimelineDatum[]
 }
 
-class TimelineContainer extends React.Component<TProps, {}> {
+export default class Timeline extends React.Component<TProps, {}> {
 
   timelineTargetRef: React.Ref<HTMLDivElement>
 
@@ -36,27 +30,14 @@ class TimelineContainer extends React.Component<TProps, {}> {
     const options = {}
 
     container.innerHTML = ''
-    new timeline.Timeline(container, this.props.timelineData, options)
-  }
-
-  private addRandomTimelineDatum() {
-    actions.createNewRandomTimelineData()
-  }
-
-  private onButtonPress = () => {
-    this.addRandomTimelineDatum()
+    new timeline.Timeline(container, this.props.data, options)
   }
 
   render() {
     return (
       <Container>
         <div id='timeline-container' ref={this.timelineTargetRef}></div>
-        <Button onClick={this.onButtonPress}>Add Random Event to Timeline</Button>
       </Container>
     )
   }
 }
-
-export default connect((storeState: TStoreState): TProps => {
-  return { timelineData: storeState.timeline }
-})(TimelineContainer)

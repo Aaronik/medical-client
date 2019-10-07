@@ -1,7 +1,7 @@
 import { cloneDeep } from 'lodash'
 import * as T from 'timeline/types.d'
 
-const startingState: T.TBranchState = []
+const startingState: T.TBranchState = {}
 
 const reducer = (state: T.TBranchState = startingState, action: T.TAction): T.TBranchState => {
 
@@ -9,11 +9,20 @@ const reducer = (state: T.TBranchState = startingState, action: T.TAction): T.TB
   // https://react-redux.js.org/using-react-redux/connect-mapstate#return-values-determine-if-your-component-re-renders
   let newState = cloneDeep(state)
 
+  const payload = action.payload
+
   switch (action.type) {
-    case 'TIMELINE_DATA_GENERATED':
-      newState.push(action.payload)
+    case 'TIMELINE_DATUM_GENERATED':
+      newState[payload.patientId] =
+        newState[payload.patientId] ?
+        newState[payload.patientId].concat([action.payload.datum]) :
+        [action.payload.datum]
       break
-    case 'STUB': // for some reason the exhaustiveness check requires >= 2
+    case 'TIMELINE_DATA_GENERATED':
+      newState[payload.patientId] =
+        newState[payload.patientId] ?
+        newState[payload.patientId].concat(action.payload.data) :
+        action.payload.data
       break
     default:
       // Exhastiveness check (make sure all actions are accounted for in switch statement)

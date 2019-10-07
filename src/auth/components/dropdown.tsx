@@ -3,14 +3,13 @@ import NavDropdown from 'react-bootstrap/NavDropdown'
 import { connect } from 'react-redux'
 import { authenticate, logout } from 'auth/actions'
 import { fetchUser } from 'user/actions'
-import { TBranchState as TAuthState } from 'auth/types.d'
-import { TBranchState as TUserState } from 'user/types.d'
+import { TUser } from 'user/types.d'
 
 import { TStoreState } from 'store'
 
 type TProps = {
-  auth: TAuthState
-  user: TUserState
+  isSignedIn: boolean
+  user: TUser
 }
 
 class LoginDropdown extends React.Component<TProps, {}> {
@@ -27,13 +26,9 @@ class LoginDropdown extends React.Component<TProps, {}> {
   }
 
   get headerText() {
+    if (!this.props.user) return "You hain't signed in and fetched the user yet"
     const { name, userName } = this.props.user
-    if (!name) return "You hain't signed in and fethed the user yet"
     return `${name} (${userName})`
-  }
-
-  get isSignedIn(): boolean {
-    return !!this.props.auth.sessionToken
   }
 
   render() {
@@ -41,8 +36,8 @@ class LoginDropdown extends React.Component<TProps, {}> {
       <NavDropdown drop="left" id="auth-dropdown" title="Profile">
         <NavDropdown.Header>{this.headerText}</NavDropdown.Header>
         <NavDropdown.Divider/>
-        <NavDropdown.Item disabled={this.isSignedIn} onClick={this.onAuthenticateClick}>Sign In</NavDropdown.Item>
-        <NavDropdown.Item disabled={!this.isSignedIn} onClick={this.onLogoutPress}>Sign Out</NavDropdown.Item>
+        <NavDropdown.Item disabled={this.props.isSignedIn} onClick={this.onAuthenticateClick}>Sign In</NavDropdown.Item>
+        <NavDropdown.Item disabled={!this.props.isSignedIn} onClick={this.onLogoutPress}>Sign Out</NavDropdown.Item>
         <NavDropdown.Divider/>
         <NavDropdown.Item onClick={this.fetchUser}>Fetch Signed In User</NavDropdown.Item>
       </NavDropdown>
@@ -51,5 +46,8 @@ class LoginDropdown extends React.Component<TProps, {}> {
 }
 
 export default connect((storeState: TStoreState) => {
-  return { auth: storeState.auth, user: storeState.user }
+  return {
+    isSignedIn: !!storeState.auth.sessionToken,
+    user: storeState.user.users[storeState.auth.userUrn]
+  }
 })(LoginDropdown)

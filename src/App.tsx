@@ -1,31 +1,28 @@
 import React from 'react'
 import { BrowserRouter as Router, Route, Link, Switch } from "react-router-dom"
 import { Provider } from 'react-redux'
+import { StylesManager } from 'survey-react'
 
 import Navbar from 'react-bootstrap/Navbar'
 import Nav from 'react-bootstrap/Nav'
 
-import TimelineContainer from 'timeline/components/container'
-import SurveyContainer from 'survey/components/container'
+import DoctorDashboard from 'doctor-dashboard/components'
+import PatientContainer from 'doctor-dashboard/components/PatientContainer'
 import AuthDropdown from 'auth/components/dropdown'
 import Alert from 'error/components/Alert'
 import { loadHostMap } from 'auth/actions'
 import store from 'store'
 import 'App.scss'
 
-const HomeStubContainer = () => <div>Home</div>
+// Things to do once when the page loads
+loadHostMap()
+document.title = 'Milli Health'
+StylesManager.applyTheme('bootstrap')
+require('timeline-plus/dist/timeline.css')
+
 const PageNotFound = () => <div>Page Not Found!! :(</div>
 
 export default class App extends React.Component {
-  componentWillMount() {
-    loadHostMap()
-    this.setDocumentTitle()
-  }
-
-  private setDocumentTitle() {
-    document.title = 'Milli Health'
-  }
-
   render() {
     return (
       <Provider store={store}>
@@ -33,8 +30,6 @@ export default class App extends React.Component {
           <Navbar bg="dark" variant="dark" className="justify-content-between">
             <Nav>
               <Navbar.Brand><Link to="/">Milli</Link></Navbar.Brand>
-              <Nav.Link as={Link} to="/survey">Survey</Nav.Link>
-              <Nav.Link as={Link} to="/timeline">Timeline</Nav.Link>
             </Nav>
             <Nav>
               <AuthDropdown/>
@@ -44,9 +39,8 @@ export default class App extends React.Component {
           <Alert />
 
           <Switch>
-            <Route path="/" exact component={HomeStubContainer} />
-            <Route path="/survey" component={SurveyContainer} />
-            <Route path="/timeline" component={TimelineContainer} />
+            <Route path="/" exact component={DoctorDashboard} />
+            <Route path="/patients/:patientId" component={PatientContainer} />
             <Route component={PageNotFound} />
           </Switch>
         </Router>
