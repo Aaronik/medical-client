@@ -19,6 +19,11 @@ const PageNotFound = () => <div>Page Not Found!! :(</div>
 export default class App extends React.Component {
   componentWillMount() {
     loadHostMap()
+    this.setDocumentTitle()
+  }
+
+  private setDocumentTitle() {
+    document.title = 'Milli Health'
   }
 
   render() {
