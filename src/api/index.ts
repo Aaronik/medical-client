@@ -12,6 +12,7 @@ const getCsrfToken = () => store.getState().auth.csrfToken
 const api = (config: AxiosRequestConfig) => (
   axios(Object.assign({}, config, {
     url: 'http://' + getApiUrl() + config.url,
+    withCredentials: true,
     headers: Object.assign({}, {
       'Session-Token': getApiToken(),
       'Csrf-Token': getCsrfToken()
