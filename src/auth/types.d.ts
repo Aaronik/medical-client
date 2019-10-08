@@ -42,12 +42,11 @@ export type TBranchState = {
   sessionToken: string
   apiUrl: string
   userUrn: string
-  sampleResponse: any
+  csrfToken: string
 }
 
 export type TAction =
   { type: 'LOADED_HOST_MAP', payload: TDiscoveryResponse } |
-  { type: 'AUTHENTICATED', payload: TAuthenticationResponse } |
-  { type: 'SAMPLE', payload: any } |
+  { type: 'AUTHENTICATED', payload: TAuthenticationResponse & { csrfToken: string } } |
   { type: 'LOGOUT', payload: TLogoutResponse }
 

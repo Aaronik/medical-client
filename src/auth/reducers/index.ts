@@ -5,7 +5,7 @@ const startingState = {
   sessionToken: "",
   userUrn: "",
   apiUrl: "",
-  sampleResponse: {}
+  csrfToken: ""
 }
 
 const reducer = (state: T.TBranchState = startingState, action: T.TAction): T.TBranchState => {
@@ -19,21 +19,16 @@ const reducer = (state: T.TBranchState = startingState, action: T.TAction): T.TB
       const { hosts } = action.payload
       const randomHostIndex = random(0, hosts.length - 1)
       newState.apiUrl = hosts[randomHostIndex].fullUrl
-      newState.sampleResponse = action.payload
       break
     }
     case 'AUTHENTICATED':
       newState.sessionToken = action.payload.sessionToken
       newState.userUrn = action.payload.userUrn
-      newState.sampleResponse = action.payload
+      newState.csrfToken = action.payload.csrfToken
       break
     case 'LOGOUT':
       newState.sessionToken = startingState.sessionToken
       newState.userUrn = startingState.userUrn
-      newState.sampleResponse = action.payload
-      break
-    case 'SAMPLE':
-      newState.sampleResponse = action.payload
       break
     default:
       // Exhastiveness check (make sure all actions are accounted for in switch statement)

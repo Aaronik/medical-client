@@ -25,7 +25,11 @@ export const authenticate = async (username: string, password: string) => {
     data: {}
   }))
 
-  dispatch({ type: 'AUTHENTICATED', payload: resp.data })
+  const payload = Object.assign(resp.data, {
+    csrfToken: resp.headers['csrf-token']
+  })
+
+  dispatch({ type: 'AUTHENTICATED', payload })
 }
 
 export const logout = async () => {
