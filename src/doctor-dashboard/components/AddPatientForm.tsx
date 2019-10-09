@@ -1,6 +1,7 @@
 import React from 'react'
-import { Survey } from 'survey-react'
 import Container from 'react-bootstrap/Container'
+
+import Survey from 'common/components/survey'
 
 const surveyJson = {
  "pages": [
@@ -51,24 +52,13 @@ type TProps = {
 }
 
 export default class AddPatientForm extends React.Component<TProps, {}> {
-  survey = React.createRef<Survey>()
-
-  private onComplete = (resp: { data: TSurveyResult }) => {
-    this.props.onComplete(resp.data)
-    // TODO do whatever needs to be done here to make the survey
-    // come back...
-    // https://github.com/surveyjs/survey-library/issues/1855
-  }
-
   render() {
 
     return (
       <Container>
-        <Survey
-          ref={this.survey}
-          // showCompletedPage={false}
+        <Survey<TSurveyResult>
           json={surveyJson}
-          onComplete={this.onComplete}
+          onComplete={this.props.onComplete}
         />
       </Container>
     )

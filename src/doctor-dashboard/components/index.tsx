@@ -45,6 +45,7 @@ class DoctorDashboard extends React.Component<TProps, TState> {
   }
 
   private onAddPatientFormComplete = (resp: TSurveyResult) => {
+    console.log('onAddPatientFormComplete, resp:', resp)
     addPatient(resp)
     this.setState({ isAddPatientActive: false })
   }
