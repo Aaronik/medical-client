@@ -6,11 +6,16 @@ import api from 'api'
 
 export const loadHostMap = async () => {
   const discoveryServiceUrl =
-    'http://ec2-3-19-237-167.us-east-2.compute.amazonaws.com:9000' +
+    // 'http://ec2-3-19-237-167.us-east-2.compute.amazonaws.com:9000' + // dev
+    'http://ec2-18-191-250-56.us-east-2.compute.amazonaws.com:9000' + // staging
     '/api/milli/dynamicdiscovery/mesh/hosts?serviceKey=flagship'
 
 
   const resp = await safely<T.TDiscoveryResponse>(axios(discoveryServiceUrl))
+
+  // No hosts were returned. We can't continue, so all we can do is show an error.
+  if (resp.data.hosts.length === 0)
+    return dispatch({ type: 'ERROR', payload: 'Fatal error: Discovery returned an empty host map. Please try using the service again later.' })
 
   dispatch({ type: 'LOADED_HOST_MAP', payload: resp.data })
 }
