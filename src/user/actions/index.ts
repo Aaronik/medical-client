@@ -10,13 +10,19 @@ export const fetchUser = async () => {
     url: '/flagship/api/users/get?milliUserUrn=' + store.getState().auth.userUrn
   }))
 
-  dispatch({ type: 'USER_FETCHED', payload: resp.data })
+  const payload: T.TUser = {
+    id: resp.data.urn,
+    name: resp.data.name,
+    userName: resp.data.userName
+  }
+
+  dispatch({ type: 'USER_FETCHED', payload })
 }
 
 export const addPatient = async (patientInfo: TPatientInfo) => {
   const payload = {
     name: [patientInfo.name.first, patientInfo.name.middle, patientInfo.name.last].join(' '),
-    userUrn: uuid(),
+    id: uuid(),
     userName: ''
   }
   dispatch({ type: 'PATIENT_ADDED', payload })

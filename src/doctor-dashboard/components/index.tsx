@@ -54,12 +54,12 @@ class DoctorDashboard extends React.Component<TProps, TState> {
     const bodyContents = this.props.patients.map(patient => {
 
       const onClick = () => {
-        this.props.history.push('/patients/' + patient.userUrn)
+        this.props.history.push('/patients/' + patient.id)
       }
 
       return (
-        <tr key={patient.userUrn} onClick={onClick}>
-          <td>{patient.userUrn}</td>
+        <tr key={patient.id} onClick={onClick}>
+          <td>{patient.id}</td>
           <td>{patient.name}</td>
         </tr>
       )

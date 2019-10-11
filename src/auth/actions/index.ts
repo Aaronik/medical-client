@@ -6,8 +6,8 @@ import api from 'api'
 
 export const loadHostMap = async () => {
   const discoveryServiceUrl =
-    // 'http://ec2-3-19-237-167.us-east-2.compute.amazonaws.com:9000' + // dev
-    'http://ec2-18-191-250-56.us-east-2.compute.amazonaws.com:9000' + // staging
+    'http://ec2-3-19-237-167.us-east-2.compute.amazonaws.com:9000' + // dev
+    // 'http://ec2-18-191-250-56.us-east-2.compute.amazonaws.com:9000' + // staging
     '/api/milli/dynamicdiscovery/mesh/hosts?serviceKey=flagship'
 
 

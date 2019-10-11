@@ -1,11 +1,11 @@
 export type TUserResponse = {
-  userUrn: string
+  urn: string
   name: string
   userName: string
 }
 
 export type TUser = {
-  userUrn: string
+  id: string
   name: string
   userName: string
 }
@@ -16,5 +16,5 @@ export type TBranchState = {
 }
 
 export type TAction =
-  { type: 'USER_FETCHED', payload: TUserResponse} |
+  { type: 'USER_FETCHED', payload: TUser} |
   { type: 'PATIENT_ADDED', payload: TUser }

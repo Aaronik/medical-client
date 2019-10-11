@@ -20,7 +20,7 @@ type TState = {}
 
 class PatientContainer extends React.Component<TProps, TState> {
   private onAddPatientEventComplete = (res: TSurveyResult) => {
-    const patientId = this.props.patient.userUrn
+    const patientId = this.props.patient.id
 
     const data: TTimelineDatum[] = res.events.map(event => {
       return {
