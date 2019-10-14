@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { RouteComponentProps } from 'react-router-dom'
 import Container from 'react-bootstrap/Container'
 import Button from 'react-bootstrap/Button'
@@ -10,51 +10,42 @@ import { TUser } from 'user/types.d'
 import AddPatientForm, { TSurveyResult } from 'doctor-dashboard/components/AddPatientForm'
 import { addPatient } from 'user/actions'
 
-const SignInToSeeDashboardComponent = () => {
+const SignInToSeeDashboardComponent = ({ goToSignIn }: { goToSignIn: () => void }) => {
   return (
     <Container>
       <Row className='justify-content-around p-5'>
         <h1>Please Sign In to see Doctor Dashboard.</h1>
       </Row>
       <Row className="p-b5">
+        <Button onClick={goToSignIn} block size="lg">Go To Sign In</Button>
       </Row>
     </Container>
   )
 }
 
-type TProps = {
+interface TProps extends RouteComponentProps {
   isSignedIn: boolean
   patients: TUser[]
-  history: RouteComponentProps["history"]
 }
 
-type TState = {
-  isAddPatientActive: boolean
-}
+const DoctorDashboard: React.FunctionComponent<TProps> = ({ isSignedIn, patients, history }) => {
 
-class DoctorDashboard extends React.Component<TProps, TState> {
+  const [ isAddPatientActive, setIsAddPatientActive ] = useState(false)
 
-  state = {
-    isAddPatientActive: false
+  const onAddPatientButtonClick = () => {
+    setIsAddPatientActive(!isAddPatientActive)
   }
 
-  private onAddPatientButtonClick = () => {
-    this.setState({
-      isAddPatientActive: !this.state.isAddPatientActive
-    })
-  }
-
-  private onAddPatientFormComplete = (resp: TSurveyResult) => {
-    console.log('onAddPatientFormComplete, resp:', resp)
+  const onAddPatientFormComplete = (resp: TSurveyResult) => {
     addPatient(resp)
-    this.setState({ isAddPatientActive: false })
+    setIsAddPatientActive(false)
   }
 
-  private get patientTableBody() {
-    const bodyContents = this.props.patients.map(patient => {
+  const patientTableBody = () => {
+    const bodyContents = patients.map(patient => {
 
       const onClick = () => {
-        this.props.history.push('/patients/' + patient.id)
+        history.push('/patients/' + patient.id)
       }
 
       return (
@@ -72,49 +63,45 @@ class DoctorDashboard extends React.Component<TProps, TState> {
     )
   }
 
-  render() {
-    const { props, state } = this
+  if (!isSignedIn) return <SignInToSeeDashboardComponent goToSignIn={() => history.push('/signin')}/>
 
-    if (!props.isSignedIn) return <SignInToSeeDashboardComponent/>
+  const addPatientFormClassName = isAddPatientActive ? "" : "d-none"
+  const patientTableClassName   = isAddPatientActive ? "d-none" : ""
 
-    const addPatientFormClassName = state.isAddPatientActive ? "" : "d-none"
-    const patientTableClassName   = state.isAddPatientActive ? "d-none" : ""
-
-    return (
-      <Container>
-        <Row className='justify-content-around p-5'>
-          <h1>Welcome back, Doctor.</h1>
-        </Row>
-        <Row className="p-b5">
-          <Button variant="primary" size="lg" block onClick={this.onAddPatientButtonClick}>
-            Add New Patient
-          </Button>
-        </Row>
-        <Row className={addPatientFormClassName}>
-          <AddPatientForm onComplete={this.onAddPatientFormComplete}/>
-        </Row>
-        <br/>
-        <Row className={patientTableClassName}>
-          <h3>Your patients:</h3>
-          <Table responsive striped bordered hover>
-            <thead>
-              <tr>
-                <th>id</th>
-                <th>Name</th>
-              </tr>
-            </thead>
-            { this.patientTableBody }
-          </Table>
-        </Row>
-      </Container>
-    )
-  }
+  return (
+    <Container>
+      <Row className='justify-content-around p-5'>
+        <h1>Welcome back, Doctor.</h1>
+      </Row>
+      <Row className="p-b5">
+        <Button variant="primary" size="lg" block onClick={onAddPatientButtonClick}>
+          Add New Patient
+        </Button>
+      </Row>
+      <Row className={addPatientFormClassName}>
+        <AddPatientForm onComplete={onAddPatientFormComplete}/>
+      </Row>
+      <br/>
+      <Row className={patientTableClassName}>
+        <h3>Your patients:</h3>
+        <Table responsive striped bordered hover>
+          <thead>
+            <tr>
+              <th>id</th>
+              <th>Name</th>
+            </tr>
+          </thead>
+          { patientTableBody() }
+        </Table>
+      </Row>
+    </Container>
+  )
 }
 
 export default connect((storeState: TStoreState, dispatchProps: RouteComponentProps<{ patientId: string }>): TProps => {
   return {
+    ...dispatchProps,
     isSignedIn: isSignedIn(),
-    patients: Object.values(storeState.user.patients),
-    history: dispatchProps.history
+    patients: Object.values(storeState.user.patients)
   }
 })(DoctorDashboard)

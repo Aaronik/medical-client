@@ -1,53 +1,49 @@
 import React from 'react'
+import { RouteComponentProps, withRouter } from 'react-router-dom'
 import NavDropdown from 'react-bootstrap/NavDropdown'
 import { connect } from 'react-redux'
-import { authenticate, logout } from 'auth/actions'
+import { logout } from 'auth/actions'
 import { fetchUser } from 'user/actions'
 import { TUser } from 'user/types.d'
 
 import { TStoreState } from 'store'
 
-type TProps = {
+interface IProps extends RouteComponentProps {
   isSignedIn: boolean
   user: TUser
 }
 
-class LoginDropdown extends React.Component<TProps, {}> {
-  private onAuthenticateClick() {
-    authenticate('boomama', '11111')
+const LoginDropdown: React.FunctionComponent<IProps> = ({ user, isSignedIn, history }) => {
+
+  const onSignInClick = () => {
+    history.push('/signin')
   }
 
-  private onLogoutPress() {
+  const onLogoutPress = () => {
     logout()
   }
 
-  private fetchUser() {
-    fetchUser()
-  }
-
-  get headerText() {
-    if (!this.props.user) return "You hain't signed in and fetched the user yet"
-    const { name, userName } = this.props.user
+  const headerText = () => {
+    if (!user) return "You hain't signed in and fetched the user yet"
+    const { name, userName } = user
     return `${name} (${userName})`
   }
 
-  render() {
-    return (
-      <NavDropdown drop="left" id="auth-dropdown" title="Profile">
-        <NavDropdown.Header>{this.headerText}</NavDropdown.Header>
-        <NavDropdown.Divider/>
-        <NavDropdown.Item disabled={this.props.isSignedIn} onClick={this.onAuthenticateClick}>Sign In</NavDropdown.Item>
-        <NavDropdown.Item disabled={!this.props.isSignedIn} onClick={this.onLogoutPress}>Sign Out</NavDropdown.Item>
-        <NavDropdown.Divider/>
-        <NavDropdown.Item onClick={this.fetchUser}>Fetch Signed In User</NavDropdown.Item>
-      </NavDropdown>
-    )
-  }
+  return (
+    <NavDropdown drop="left" id="auth-dropdown" title="Profile">
+      <NavDropdown.Header>{headerText()}</NavDropdown.Header>
+      <NavDropdown.Divider/>
+      <NavDropdown.Item disabled={isSignedIn} onClick={onSignInClick}>Sign In</NavDropdown.Item>
+      <NavDropdown.Item disabled={!isSignedIn} onClick={onLogoutPress}>Sign Out</NavDropdown.Item>
+      <NavDropdown.Divider/>
+      <NavDropdown.Item onClick={() => fetchUser()}>Fetch Signed In User</NavDropdown.Item>
+    </NavDropdown>
+  )
 }
 
-export default connect((storeState: TStoreState) => {
+export default withRouter(connect((storeState: TStoreState) => {
   return {
     isSignedIn: !!storeState.auth.sessionToken,
     user: storeState.user.users[storeState.auth.userUrn]
   }
-})(LoginDropdown)
+})(LoginDropdown))
