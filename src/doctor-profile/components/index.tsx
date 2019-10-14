@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import { connect } from 'react-redux'
 import { RouteComponentProps } from 'react-router-dom'
 import Container from 'react-bootstrap/Container'
@@ -7,22 +7,15 @@ import Col from 'react-bootstrap/Col'
 import Row from 'react-bootstrap/Row'
 import Button from 'react-bootstrap/Button'
 
-import { TStoreState, isSignedIn } from 'store'
+import { TStoreState } from 'store'
 import { TUser } from 'user/types.d'
 import 'App.scss'
 
 interface IProps extends RouteComponentProps {
-  isSignedIn: boolean
   user: TUser
 }
 
 const DoctorProfile: React.FunctionComponent<IProps> = ({ user, history }) => {
-
-  useEffect(() => {
-    if (!user) history.push('/signin')
-  })
-
-  if (!user) return <h1>Sign in first</h1>
 
   return (
     <Container>
@@ -81,7 +74,6 @@ const DoctorProfile: React.FunctionComponent<IProps> = ({ user, history }) => {
 export default connect((storeState: TStoreState, dispatchProps: RouteComponentProps): IProps => {
   return {
     ...dispatchProps,
-    isSignedIn: isSignedIn(),
     user: storeState.user.users[storeState.auth.userUrn]
   }
 })(DoctorProfile)

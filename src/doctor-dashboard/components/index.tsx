@@ -5,30 +5,16 @@ import Button from 'react-bootstrap/Button'
 import Row from 'react-bootstrap/Row'
 import Table from 'react-bootstrap/Table'
 import { connect } from 'react-redux'
-import { TStoreState, isSignedIn } from 'store'
+import { TStoreState } from 'store'
 import { TUser } from 'user/types.d'
 import AddPatientForm, { TSurveyResult } from 'doctor-dashboard/components/AddPatientForm'
 import { addPatient } from 'user/actions'
 
-const SignInToSeeDashboardComponent = ({ goToSignIn }: { goToSignIn: () => void }) => {
-  return (
-    <Container>
-      <Row className='justify-content-around p-5'>
-        <h1>Please Sign In to see Doctor Dashboard.</h1>
-      </Row>
-      <Row className="p-b5">
-        <Button onClick={goToSignIn} block size="lg">Go To Sign In</Button>
-      </Row>
-    </Container>
-  )
-}
-
 interface TProps extends RouteComponentProps {
-  isSignedIn: boolean
   patients: TUser[]
 }
 
-const DoctorDashboard: React.FunctionComponent<TProps> = ({ isSignedIn, patients, history }) => {
+const DoctorDashboard: React.FunctionComponent<TProps> = ({ patients, history }) => {
 
   const [ isAddPatientActive, setIsAddPatientActive ] = useState(false)
 
@@ -62,8 +48,6 @@ const DoctorDashboard: React.FunctionComponent<TProps> = ({ isSignedIn, patients
       </tbody>
     )
   }
-
-  if (!isSignedIn) return <SignInToSeeDashboardComponent goToSignIn={() => history.push('/signin')}/>
 
   const addPatientFormClassName = isAddPatientActive ? "" : "d-none"
   const patientTableClassName   = isAddPatientActive ? "d-none" : ""
@@ -101,7 +85,6 @@ const DoctorDashboard: React.FunctionComponent<TProps> = ({ isSignedIn, patients
 export default connect((storeState: TStoreState, dispatchProps: RouteComponentProps<{ patientId: string }>): TProps => {
   return {
     ...dispatchProps,
-    isSignedIn: isSignedIn(),
     patients: Object.values(storeState.user.patients)
   }
 })(DoctorDashboard)

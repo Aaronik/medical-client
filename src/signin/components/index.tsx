@@ -6,15 +6,14 @@ import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
 import Spinner from 'react-bootstrap/Spinner'
 import { connect } from 'react-redux'
-import { TStoreState, isSignedIn } from 'store'
+import { TStoreState } from 'store'
 import { authenticate } from 'auth/actions'
 import { fetchUser } from 'user/actions'
 
 interface TProps extends RouteComponentProps {
-  isSignedIn: boolean
 }
 
-const Signin: React.FunctionComponent<TProps> = ({ isSignedIn, history }) => {
+const Signin: React.FunctionComponent<TProps> = ({ history }) => {
 
   const [ username, setUsername ] = useState('boomama')
   const [ password, setPassword ] = useState('11111')
@@ -83,5 +82,5 @@ const Signin: React.FunctionComponent<TProps> = ({ isSignedIn, history }) => {
 }
 
 export default connect((storeState: TStoreState, dispatchProps: RouteComponentProps<{ patientId: string }>): TProps => {
-  return { ...dispatchProps, isSignedIn: isSignedIn() }
+  return dispatchProps
 })(Signin)

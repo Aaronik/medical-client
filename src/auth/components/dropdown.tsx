@@ -8,11 +8,10 @@ import { TUser } from 'user/types.d'
 import { TStoreState } from 'store'
 
 interface IProps extends RouteComponentProps {
-  isSignedIn: boolean
   user: TUser
 }
 
-const LoginDropdown: React.FunctionComponent<IProps> = ({ user, isSignedIn, history }) => {
+const LoginDropdown: React.FunctionComponent<IProps> = ({ user, history }) => {
 
   const onLogoutPress = () => {
     logout()
@@ -27,12 +26,11 @@ const LoginDropdown: React.FunctionComponent<IProps> = ({ user, isSignedIn, hist
 
   return (
     <NavDropdown drop="left" id="auth-dropdown" title="Profile">
-      { isSignedIn && <NavDropdown.Header>{headerText()}</NavDropdown.Header> }
-      { isSignedIn && <NavDropdown.Divider/> }
-      { isSignedIn && <NavDropdown.Item as={Link} to="/profile">Profile</NavDropdown.Item> }
-      { isSignedIn && <NavDropdown.Divider/> }
-      <NavDropdown.Item as={Link} to="/signin">Sign In</NavDropdown.Item>
-      <NavDropdown.Item disabled={!isSignedIn} onClick={onLogoutPress}>Sign Out</NavDropdown.Item>
+      <NavDropdown.Header>{headerText()}</NavDropdown.Header>
+      <NavDropdown.Divider/>
+      <NavDropdown.Item as={Link} to="/profile">Profile</NavDropdown.Item>
+      <NavDropdown.Divider/>
+      <NavDropdown.Item onClick={onLogoutPress}>Sign Out</NavDropdown.Item>
     </NavDropdown>
   )
 }
@@ -40,7 +38,6 @@ const LoginDropdown: React.FunctionComponent<IProps> = ({ user, isSignedIn, hist
 export default withRouter(connect((storeState: TStoreState, dispatchProps: RouteComponentProps) => {
   return {
     ...dispatchProps,
-    isSignedIn: !!storeState.auth.sessionToken,
     user: storeState.user.users[storeState.auth.userUrn]
   }
 })(LoginDropdown))
