@@ -1,9 +1,8 @@
 import React from 'react'
-import { RouteComponentProps, withRouter } from 'react-router-dom'
+import { Link, RouteComponentProps, withRouter } from 'react-router-dom'
 import NavDropdown from 'react-bootstrap/NavDropdown'
 import { connect } from 'react-redux'
 import { logout } from 'auth/actions'
-import { fetchUser } from 'user/actions'
 import { TUser } from 'user/types.d'
 
 import { TStoreState } from 'store'
@@ -15,34 +14,32 @@ interface IProps extends RouteComponentProps {
 
 const LoginDropdown: React.FunctionComponent<IProps> = ({ user, isSignedIn, history }) => {
 
-  const onSignInClick = () => {
-    history.push('/signin')
-  }
-
   const onLogoutPress = () => {
     logout()
+    history.push('/')
   }
 
   const headerText = () => {
-    if (!user) return "You hain't signed in and fetched the user yet"
+    if (!user) return ""
     const { name, userName } = user
     return `${name} (${userName})`
   }
 
   return (
     <NavDropdown drop="left" id="auth-dropdown" title="Profile">
-      <NavDropdown.Header>{headerText()}</NavDropdown.Header>
-      <NavDropdown.Divider/>
-      <NavDropdown.Item disabled={isSignedIn} onClick={onSignInClick}>Sign In</NavDropdown.Item>
+      { isSignedIn && <NavDropdown.Header>{headerText()}</NavDropdown.Header> }
+      { isSignedIn && <NavDropdown.Divider/> }
+      { isSignedIn && <NavDropdown.Item as={Link} to="/profile">Profile</NavDropdown.Item> }
+      { isSignedIn && <NavDropdown.Divider/> }
+      <NavDropdown.Item as={Link} to="/signin">Sign In</NavDropdown.Item>
       <NavDropdown.Item disabled={!isSignedIn} onClick={onLogoutPress}>Sign Out</NavDropdown.Item>
-      <NavDropdown.Divider/>
-      <NavDropdown.Item onClick={() => fetchUser()}>Fetch Signed In User</NavDropdown.Item>
     </NavDropdown>
   )
 }
 
-export default withRouter(connect((storeState: TStoreState) => {
+export default withRouter(connect((storeState: TStoreState, dispatchProps: RouteComponentProps) => {
   return {
+    ...dispatchProps,
     isSignedIn: !!storeState.auth.sessionToken,
     user: storeState.user.users[storeState.auth.userUrn]
   }

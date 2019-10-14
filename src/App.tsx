@@ -10,6 +10,7 @@ import DoctorDashboard from 'doctor-dashboard/components'
 import PatientContainer from 'doctor-dashboard/components/PatientContainer'
 import AuthDropdown from 'auth/components/dropdown'
 import SigninContainer from 'signin/components'
+import DoctorProfileContainer from 'doctor-profile/components'
 import Alert from 'error/components/Alert'
 import { loadHostMap } from 'auth/actions'
 import store from 'store'
@@ -42,6 +43,7 @@ const App: React.FunctionComponent = () => (
         <Route path="/" exact component={DoctorDashboard} />
         <Route path="/patients/:patientId" component={PatientContainer} />
         <Route path="/signin" component={SigninContainer} />
+        <Route path="/profile" component={DoctorProfileContainer} />
         <Route component={PageNotFound} />
       </Switch>
     </Router>
