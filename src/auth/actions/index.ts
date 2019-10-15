@@ -1,7 +1,7 @@
 import axios from 'axios'
 import { dispatch } from 'store'
 import * as T from 'auth/types.d'
-import { safely } from 'util/action'
+import { safely } from 'util/safely'
 import api from 'api'
 
 export const loadHostMap = async () => {

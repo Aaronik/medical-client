@@ -79,13 +79,13 @@ const Base: React.FunctionComponent<{ isSignedIn: boolean }> = ({ isSignedIn }) 
   )
 }
 
-const ContainerWithProps = connect(() => {
+const BaseWithProps = connect(() => {
   return { isSignedIn: isSignedIn() }
 })(Base)
 
 const App: React.FunctionComponent = () => (
   <Provider store={store}>
-    <ContainerWithProps/>
+    <BaseWithProps/>
   </Provider>
 )
 

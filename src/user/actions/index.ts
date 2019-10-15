@@ -1,5 +1,5 @@
 import uuid from 'uuid/v4'
-import { safely } from 'util/action'
+import { safely } from 'util/safely'
 import store, { dispatch } from 'store'
 import api from 'api'
 import * as T from 'user/types.d'
