@@ -74,6 +74,6 @@ const DoctorProfile: React.FunctionComponent<IProps> = ({ user, history }) => {
 export default connect((storeState: TStoreState, dispatchProps: RouteComponentProps): IProps => {
   return {
     ...dispatchProps,
-    user: storeState.user.users[storeState.auth.userUrn]
+    user: storeState.user[storeState.auth.userUrn]
   }
 })(DoctorProfile)

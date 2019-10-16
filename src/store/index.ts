@@ -47,3 +47,16 @@ export type TStore = typeof store
 export const isSignedIn = () => (
   !!store.getState().auth.sessionToken
 )
+
+export const currentUser = () => {
+  const { user, auth } = store.getState()
+  return user[auth.userUrn]
+}
+
+export const patients = () => {
+  return Object.values(store.getState().user).filter(u => u.type === 'PATIENT')
+}
+
+export const doctors = () => {
+  return Object.values(store.getState().user).filter(u => u.type === 'DOCTOR')
+}

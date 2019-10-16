@@ -1,8 +1,10 @@
 import React from 'react'
 import { Link, RouteComponentProps, withRouter } from 'react-router-dom'
 import NavDropdown from 'react-bootstrap/NavDropdown'
+import Button from 'react-bootstrap/Button'
 import { connect } from 'react-redux'
 import { logout } from 'auth/actions'
+import { makeMeAdmin, makeMeDoctor, makeMePatient } from 'user/actions'
 import { TUser } from 'user/types.d'
 
 import { TStoreState } from 'store'
@@ -24,6 +26,21 @@ const LoginDropdown: React.FunctionComponent<IProps> = ({ user, history }) => {
     return `${name} (${userName})`
   }
 
+  const onMakeAdminClick = () => {
+    makeMeAdmin()
+    history.push('/')
+  }
+
+  const onMakeDoctorClick = () => {
+    makeMeDoctor()
+    history.push('/')
+  }
+
+  const onMakePatientClick = () => {
+    makeMePatient()
+    history.push('/')
+  }
+
   return (
     <NavDropdown drop="left" id="auth-dropdown" title="Profile">
       <NavDropdown.Header>{headerText()}</NavDropdown.Header>
@@ -31,6 +48,10 @@ const LoginDropdown: React.FunctionComponent<IProps> = ({ user, history }) => {
       <NavDropdown.Item as={Link} to="/profile">Profile</NavDropdown.Item>
       <NavDropdown.Divider/>
       <NavDropdown.Item onClick={onLogoutPress}>Sign Out</NavDropdown.Item>
+      <NavDropdown.Divider/>
+      <NavDropdown.Header><Button variant="danger" onClick={onMakeAdminClick}>Make Me an Admin!</Button></NavDropdown.Header>
+      <NavDropdown.Header><Button variant="primary" onClick={onMakeDoctorClick}>Make Me a Doctor!</Button></NavDropdown.Header>
+      <NavDropdown.Header><Button variant="info" onClick={onMakePatientClick}>Make Me a Patient!</Button></NavDropdown.Header>
     </NavDropdown>
   )
 }
@@ -38,6 +59,6 @@ const LoginDropdown: React.FunctionComponent<IProps> = ({ user, history }) => {
 export default withRouter(connect((storeState: TStoreState, dispatchProps: RouteComponentProps) => {
   return {
     ...dispatchProps,
-    user: storeState.user.users[storeState.auth.userUrn]
+    user: storeState.user[storeState.auth.userUrn]
   }
 })(LoginDropdown))

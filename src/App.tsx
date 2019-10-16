@@ -16,7 +16,8 @@ import Alert from 'error/components/Alert'
 import PageNotFound from 'not-found/components'
 import NotSignedInContainer from 'common/components/NotSignedIn'
 import { loadHostMap } from 'auth/actions'
-import store, { isSignedIn } from 'store'
+import store, { currentUser } from 'store'
+import { TUserType as TStoreUserType } from 'user/types.d'
 import 'App.scss'
 
 // Things to do once when the page loads
@@ -48,7 +49,29 @@ const SignedOutBase: React.FunctionComponent = () => {
   )
 }
 
-const SignedInBase: React.FunctionComponent = () => {
+const AdminBase: React.FunctionComponent = () => {
+  return (
+    <div>
+      <AppNavbar>
+        <MilliBrandNav/>
+        <Nav>
+          <AuthDropdown/>
+        </Nav>
+      </AppNavbar>
+
+      <Alert />
+
+      <Switch>
+        <Route path="/" exact component={() => <h1>Admin</h1>} />
+        <Route path="/doctors" component={() => <h1>Admin/Doctors</h1>} />
+        <Route path="/profile" component={() => <h1>Admin Profile</h1>} />
+        <Route component={PageNotFound} />
+      </Switch>
+    </div>
+  )
+}
+
+const DoctorBase: React.FunctionComponent = () => {
   return (
     <div>
       <AppNavbar>
@@ -71,16 +94,57 @@ const SignedInBase: React.FunctionComponent = () => {
   )
 }
 
-const Base: React.FunctionComponent<{ isSignedIn: boolean }> = ({ isSignedIn }) => {
+const PatientBase: React.FunctionComponent = () => {
+  return (
+    <div>
+      <AppNavbar>
+        <MilliBrandNav/>
+        <Nav>
+          <AuthDropdown/>
+        </Nav>
+      </AppNavbar>
+
+      <Alert />
+
+      <Switch>
+        <Route path="/" exact component={() => <h1>Patient</h1>} />
+        <Route path="/profile" component={() => <h1>Patient Profile</h1>} />
+        <Route component={PageNotFound} />
+      </Switch>
+    </div>
+  )
+}
+
+type TUserType = TStoreUserType | 'SIGNED_OUT'
+
+const Base: React.FunctionComponent<{ userType: TUserType }> = ({ userType }) => {
+  let Component = <SignedOutBase />
+
+  switch (userType) {
+    case 'ADMIN':
+      Component = <AdminBase />
+      break
+    case 'DOCTOR':
+      Component = <DoctorBase />
+      break
+    case 'PATIENT':
+      Component = <PatientBase />
+      break
+  }
+
   return (
     <Router>
-      { isSignedIn ? <SignedInBase/> : <SignedOutBase/> }
+      { Component }
     </Router>
   )
 }
 
 const BaseWithProps = connect(() => {
-  return { isSignedIn: isSignedIn() }
+  const userType: TUserType = currentUser() ? currentUser().type : 'SIGNED_OUT'
+
+  return {
+    userType: userType
+  }
 })(Base)
 
 const App: React.FunctionComponent = () => (

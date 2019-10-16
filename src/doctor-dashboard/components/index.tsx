@@ -5,7 +5,7 @@ import Button from 'react-bootstrap/Button'
 import Row from 'react-bootstrap/Row'
 import Table from 'react-bootstrap/Table'
 import { connect } from 'react-redux'
-import { TStoreState } from 'store'
+import { TStoreState, patients } from 'store'
 import { TUser } from 'user/types.d'
 import AddPatientForm, { TSurveyResult } from 'doctor-dashboard/components/AddPatientForm'
 import { addPatient } from 'user/actions'
@@ -85,6 +85,6 @@ const DoctorDashboard: React.FunctionComponent<TProps> = ({ patients, history })
 export default connect((storeState: TStoreState, dispatchProps: RouteComponentProps<{ patientId: string }>): TProps => {
   return {
     ...dispatchProps,
-    patients: Object.values(storeState.user.patients)
+    patients: patients()
   }
 })(DoctorDashboard)

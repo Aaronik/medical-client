@@ -52,7 +52,7 @@ export default connect((storeState: TStoreState, dispatchProps: { match: { param
   const patientId = dispatchProps.match.params.patientId
 
   return {
-    patient: storeState.user.patients[patientId],
+    patient: storeState.user[patientId],
     patientTimelineData: storeState.timeline[patientId]
   }
 })(PatientContainer)
