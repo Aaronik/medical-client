@@ -6,10 +6,8 @@ import errorMap from 'common/error-map'
 // Pass in the type of the expected response
 export const safely = async <T>(axiosPromise: Promise<AxiosResponse<T>>) => {
   axiosPromise.catch(err => {
-    // config.url
-    // name: message
     const errString = errorMap[err.message] || `${err.name}: ${err.message}`
-    dispatch({ type: 'ERROR', payload: errString })
+    dispatch({ type: 'ALERT', payload: { message: errString, type: 'danger' }})
   })
 
   return axiosPromise

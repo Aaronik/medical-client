@@ -14,8 +14,10 @@ export const loadHostMap = async () => {
   const resp = await safely<T.TDiscoveryResponse>(axios(discoveryServiceUrl))
 
   // No hosts were returned. We can't continue, so all we can do is show an error.
-  if (resp.data.hosts.length === 0)
-    return dispatch({ type: 'ERROR', payload: 'Fatal error: Discovery returned an empty host map. Please try using the service again later.' })
+  if (resp.data.hosts.length === 0) return dispatch({ type: 'ALERT', payload: {
+    message: 'Fatal error: Discovery returned an empty host map. Please try using the service again later.',
+    type: 'danger'
+  }})
 
   dispatch({ type: 'LOADED_HOST_MAP', payload: resp.data })
 }

@@ -8,11 +8,12 @@ import Nav from 'react-bootstrap/Nav'
 import Image from 'react-bootstrap/Image'
 
 import DoctorDashboard from 'doctor-dashboard/components'
+import AdminDashboard from 'admin-dashboard/components'
 import PatientContainer from 'doctor-dashboard/components/PatientContainer'
 import AuthDropdown from 'auth/components/dropdown'
 import SigninContainer from 'signin/components'
 import DoctorProfileContainer from 'doctor-profile/components'
-import Alert from 'error/components/Alert'
+import Alert from 'alert/components/Alert'
 import PageNotFound from 'not-found/components'
 import NotSignedInContainer from 'common/components/NotSignedIn'
 import { loadHostMap } from 'auth/actions'
@@ -26,13 +27,15 @@ StylesManager.applyTheme('bootstrap')
 require('timeline-plus/dist/timeline.css')
 
 const AppNavbar: React.FC = ({ children }) => <Navbar bg="dark" variant="dark" className="justify-content-between">{children}</Navbar>
-const MilliBrandNav = () => <Nav><Navbar.Brand><Link to="/"><Image width={70} height={25} src="milli-logo.png"/></Link></Navbar.Brand></Nav>
+const MilliBrandLink = () => <Navbar.Brand><Link to="/"><Image width={70} height={25} src="milli-logo.png"/></Link></Navbar.Brand>
 
 const SignedOutBase: React.FunctionComponent = () => {
   return (
     <div>
       <AppNavbar>
-        <MilliBrandNav/>
+        <Nav>
+          <MilliBrandLink/>
+        </Nav>
         <Nav>
           <Nav.Link as={Link} to="/signin">Sign In</Nav.Link>
         </Nav>
@@ -53,7 +56,10 @@ const AdminBase: React.FunctionComponent = () => {
   return (
     <div>
       <AppNavbar>
-        <MilliBrandNav/>
+        <Nav>
+          <MilliBrandLink/>
+          <Nav.Link as={Link} to="/doctors">Doctors</Nav.Link>
+        </Nav>
         <Nav>
           <AuthDropdown/>
         </Nav>
@@ -62,7 +68,7 @@ const AdminBase: React.FunctionComponent = () => {
       <Alert />
 
       <Switch>
-        <Route path="/" exact component={() => <h1>Admin</h1>} />
+        <Route path="/" exact component={AdminDashboard} />
         <Route path="/doctors" component={() => <h1>Admin/Doctors</h1>} />
         <Route path="/profile" component={() => <h1>Admin Profile</h1>} />
         <Route component={PageNotFound} />
@@ -75,7 +81,9 @@ const DoctorBase: React.FunctionComponent = () => {
   return (
     <div>
       <AppNavbar>
-        <MilliBrandNav/>
+        <Nav>
+          <MilliBrandLink/>
+        </Nav>
         <Nav>
           <AuthDropdown/>
         </Nav>
@@ -98,7 +106,9 @@ const PatientBase: React.FunctionComponent = () => {
   return (
     <div>
       <AppNavbar>
-        <MilliBrandNav/>
+        <Nav>
+          <MilliBrandLink/>
+        </Nav>
         <Nav>
           <AuthDropdown/>
         </Nav>

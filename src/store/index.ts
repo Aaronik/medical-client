@@ -3,8 +3,8 @@ import { createStore, combineReducers } from 'redux'
 import authReducer from 'auth/reducers'
 import * as authTypes from 'auth/types.d'
 
-import errorReducer from 'error/reducers'
-import * as errorTypes from 'error/types.d'
+import alertReducer from 'alert/reducers'
+import * as alertTypes from 'alert/types.d'
 
 import timelineReducer from 'timeline/reducers'
 import * as timelineTypes from 'timeline/types.d'
@@ -13,7 +13,7 @@ import userReducer from 'user/reducers'
 import * as userTypes from 'user/types.d'
 
 export type TStoreState = {
-  errors: errorTypes.TBranchState
+  alerts: alertTypes.TBranchState
   timeline: timelineTypes.TBranchState
   auth: authTypes.TBranchState
   user: userTypes.TBranchState
@@ -21,13 +21,13 @@ export type TStoreState = {
 
 export type TAction =
   authTypes.TAction |
-  errorTypes.TAction |
+  alertTypes.TAction |
   timelineTypes.TAction |
   userTypes.TAction
 
 const reducer = combineReducers<TStoreState>({
   auth: authReducer,
-  errors: errorReducer,
+  alerts: alertReducer,
   timeline: timelineReducer,
   user: userReducer,
 })
@@ -50,13 +50,13 @@ export const isSignedIn = () => (
 
 export const currentUser = () => {
   const { user, auth } = store.getState()
-  return user[auth.userUrn]
+  return user.users[auth.userUrn]
 }
 
 export const patients = () => {
-  return Object.values(store.getState().user).filter(u => u.type === 'PATIENT')
+  return Object.values(store.getState().user.users).filter(u => u.type === 'PATIENT')
 }
 
 export const doctors = () => {
-  return Object.values(store.getState().user).filter(u => u.type === 'DOCTOR')
+  return Object.values(store.getState().user.users).filter(u => u.type === 'DOCTOR')
 }

@@ -59,6 +59,6 @@ const LoginDropdown: React.FunctionComponent<IProps> = ({ user, history }) => {
 export default withRouter(connect((storeState: TStoreState, dispatchProps: RouteComponentProps) => {
   return {
     ...dispatchProps,
-    user: storeState.user[storeState.auth.userUrn]
+    user: storeState.user.users[storeState.auth.userUrn]
   }
 })(LoginDropdown))

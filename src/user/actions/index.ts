@@ -27,7 +27,28 @@ export const addPatient = async (patientInfo: TPatientInfo) => {
     userName: '',
     type: 'PATIENT'
   }
+
   dispatch({ type: 'PATIENT_ADDED', payload })
+}
+
+type TUserInviteSig = { email: string, senderId: string, message: string }
+
+export const inviteUser = async ({ email, senderId, message  }: TUserInviteSig) => {
+  dispatch({ type: 'INVITATION_LOADING' })
+
+  const resp = safely<T.TInvitationResponse>(api({
+    url: '/flagship/api/invite/send',
+    method: 'POST',
+    data: {
+      emailAddress: email,
+      sender: senderId,
+      roleId: 2,
+      message: message
+    }
+  }))
+
+  resp.then(() => dispatch({ type: 'ALERT', payload: { message: `Invitation successfully sent to ${email}!`, type: 'success' }}))
+  resp.finally(() => dispatch({ type: 'INVITATION_FINISHED' }))
 }
 
 // TODO this is temporary for demo purposes
