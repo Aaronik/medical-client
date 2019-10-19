@@ -5,6 +5,7 @@ import store from 'store'
 const getApiUrl = () => store.getState().auth.apiUrl
 const getApiToken = () => store.getState().auth.sessionToken
 const getCsrfToken = () => store.getState().auth.csrfToken
+const getMilliAtToken = () => store.getState().auth.milliAtToken
 
 // This is a wrapper around axios to simplifier / DRY up api requests.
 // It:
@@ -16,7 +17,8 @@ const api = (config: AxiosRequestConfig) => (
     withCredentials: true,
     headers: Object.assign({}, {
       'Session-Token': getApiToken(),
-      'Csrf-Token': getCsrfToken()
+      'Csrf-Token': getCsrfToken(),
+      'Milli-At': getMilliAtToken()
     }, config.headers)
   }))
 )

@@ -5,7 +5,8 @@ const startingState = {
   sessionToken: "",
   userUrn: "",
   apiUrl: "",
-  csrfToken: ""
+  csrfToken: "",
+  milliAtToken: ""
 }
 
 const reducer = (state: T.TBranchState = startingState, action: T.TAction): T.TBranchState => {
@@ -25,6 +26,7 @@ const reducer = (state: T.TBranchState = startingState, action: T.TAction): T.TB
       newState.sessionToken = action.payload.sessionToken
       newState.userUrn = action.payload.userUrn
       newState.csrfToken = action.payload.csrfToken
+      newState.milliAtToken = action.payload.milliAtToken
       break
     case 'LOGOUT':
       newState.sessionToken = startingState.sessionToken
