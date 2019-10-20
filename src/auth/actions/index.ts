@@ -38,8 +38,6 @@ export const authenticate = async (username: string, password: string) => {
     milliAtToken: resp.headers['milli-at']
   }
 
-  console.log('headers', resp.headers)
-
   dispatch({ type: 'AUTHENTICATED', payload })
 }
 

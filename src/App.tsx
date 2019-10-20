@@ -13,6 +13,8 @@ import PatientContainer from 'doctor-dashboard/components/PatientContainer'
 import AuthDropdown from 'auth/components/dropdown'
 import SigninContainer from 'signin/components'
 import DoctorProfileContainer from 'doctor-profile/components'
+import PatientDashboard from 'patient-dashboard/components'
+import PatientIntakeContainer from 'patient-dashboard/components/IntakeContainer'
 import Alert from 'alert/components/Alert'
 import PageNotFound from 'not-found/components'
 import NotSignedInContainer from 'common/components/NotSignedIn'
@@ -108,6 +110,7 @@ const PatientBase: React.FunctionComponent = () => {
       <AppNavbar>
         <Nav>
           <MilliBrandLink/>
+          <Nav.Link as={Link} to="/intake">Intake Survey</Nav.Link>
         </Nav>
         <Nav>
           <AuthDropdown/>
@@ -117,7 +120,8 @@ const PatientBase: React.FunctionComponent = () => {
       <Alert />
 
       <Switch>
-        <Route path="/" exact component={() => <h1>Patient</h1>} />
+        <Route path="/" exact component={PatientDashboard} />
+        <Route path="/intake" exact component={PatientIntakeContainer} />
         <Route path="/profile" component={() => <h1>Patient Profile</h1>} />
         <Route component={PageNotFound} />
       </Switch>
