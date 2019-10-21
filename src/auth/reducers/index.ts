@@ -1,4 +1,5 @@
 import { cloneDeep, random } from 'lodash'
+import { ActionKeys } from 'common/action-keys'
 import * as T from 'auth/types.d'
 
 const startingState = {
@@ -14,19 +15,19 @@ const reducer = (state: T.TBranchState = startingState, action: T.TAction): T.TB
   let newState = cloneDeep(state)
 
   switch (action.type) {
-    case 'LOADED_HOST_MAP': {
+    case ActionKeys.LOADED_HOST_MAP: {
       const { hosts } = action.payload
       const randomHostIndex = random(0, hosts.length - 1)
       newState.apiUrl = hosts[randomHostIndex].fullUrl
       break
     }
-    case 'AUTHENTICATED':
-      newState.userUrn = action.payload.userUrn
+    case ActionKeys.AUTHENTICATED:
       newState.milliAtToken = action.payload.milliAtToken
+      newState.userUrn      = action.payload.userUrn
       break
-    case 'LOGOUT':
+    case ActionKeys.LOGOUT:
       newState.milliAtToken = startingState.milliAtToken
-      newState.userUrn = startingState.userUrn
+      newState.userUrn      = startingState.userUrn
       break
     default:
       // Exhastiveness check (make sure all actions are accounted for in switch statement)

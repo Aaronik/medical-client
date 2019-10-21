@@ -4,6 +4,7 @@ import store, { dispatch, currentUser } from 'store'
 import api from 'api'
 import * as T from 'user/types.d'
 import { TPatientInfo } from 'doctor-dashboard/types.d'
+import { ActionKeys } from 'common/action-keys'
 
 export const fetchUser = async () => {
   const resp = await safely<T.TUserResponse>(api({
@@ -17,7 +18,7 @@ export const fetchUser = async () => {
     type: 'DOCTOR' // TODO when the server starts returning these types, add them here
   }
 
-  dispatch({ type: 'USER_FETCHED', payload })
+  dispatch({ type: ActionKeys.USER_FETCHED, payload })
 }
 
 export const addPatient = async (patientInfo: TPatientInfo) => {
@@ -28,13 +29,13 @@ export const addPatient = async (patientInfo: TPatientInfo) => {
     type: 'PATIENT'
   }
 
-  dispatch({ type: 'PATIENT_ADDED', payload })
+  dispatch({ type: ActionKeys.PATIENT_ADDED, payload })
 }
 
 type TUserInviteSig = { email: string, senderId: string, message: string }
 
 export const inviteUser = async ({ email, senderId, message  }: TUserInviteSig) => {
-  dispatch({ type: 'INVITATION_LOADING' })
+  dispatch({ type: ActionKeys.INVITATION_LOADING })
 
   const resp = safely<T.TInvitationResponse>(api({
     url: '/flagship/api/invite/send',
@@ -47,21 +48,21 @@ export const inviteUser = async ({ email, senderId, message  }: TUserInviteSig) 
     }
   }))
 
-  resp.then(() => dispatch({ type: 'ALERT', payload: { message: `Invitation successfully sent to ${email}!`, type: 'success' }}))
-  resp.finally(() => dispatch({ type: 'INVITATION_FINISHED' }))
+  resp.then(() => dispatch({ type: ActionKeys.ALERT, payload: { message: `Invitation successfully sent to ${email}!`, type: 'success' }}))
+  resp.finally(() => dispatch({ type: ActionKeys.INVITATION_FINISHED }))
 }
 
 // TODO this is temporary for demo purposes
 export const makeMeAdmin = () => {
-  dispatch({ type: 'CHANGE_USER_TO_ADMIN', payload: currentUser().id })
+  dispatch({ type: ActionKeys.CHANGE_USER_TO_ADMIN, payload: currentUser().id })
 }
 
 // TODO this is temporary for demo purposes
 export const makeMeDoctor = () => {
-  dispatch({ type: 'CHANGE_USER_TO_DOCTOR', payload: currentUser().id })
+  dispatch({ type: ActionKeys.CHANGE_USER_TO_DOCTOR, payload: currentUser().id })
 }
 
 // TODO this is temporary for demo purposes
 export const makeMePatient = () => {
-  dispatch({ type: 'CHANGE_USER_TO_PATIENT', payload: currentUser().id })
+  dispatch({ type: ActionKeys.CHANGE_USER_TO_PATIENT, payload: currentUser().id })
 }

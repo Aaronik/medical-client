@@ -1,3 +1,5 @@
+import { ActionKeys } from 'common/action-keys'
+
 export type TAlertType = 'primary' | 'secondary' | 'success' | 'danger' | 'warning' | 'info' | 'light' | 'dark'
 
 export type TAlert = {
@@ -7,8 +9,8 @@ export type TAlert = {
 }
 
 export type TAction =
-  { type: 'ALERT', payload: { message: string, type: TAlertType } } |
-  { type: 'CLEAR_ALERTS' } |
-  { type: 'CLEAR_ALERT', payload: string }
+  { type: ActionKeys.ALERT, payload: { message: string, type: TAlertType } } |
+  { type: ActionKeys.CLEAR_ALERTS } |
+  { type: ActionKeys.CLEAR_ALERT, payload: string }
 
 export type TBranchState = TAlert[]

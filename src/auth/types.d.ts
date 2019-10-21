@@ -1,3 +1,5 @@
+import { ActionKeys } from 'common/action-keys'
+
 export type TDiscoveryHost = {
   hostUrl: string
   port: number
@@ -45,7 +47,7 @@ export type TBranchState = {
 }
 
 export type TAction =
-  { type: 'LOADED_HOST_MAP', payload: TDiscoveryResponse } |
-  { type: 'AUTHENTICATED', payload: TAuthenticationResponse & { csrfToken: string, milliAtToken: string } } |
-  { type: 'LOGOUT', payload: TLogoutResponse }
+  { type: ActionKeys.LOADED_HOST_MAP, payload: TDiscoveryResponse } |
+  { type: ActionKeys.AUTHENTICATED, payload: TAuthenticationResponse & { csrfToken: string, milliAtToken: string } } |
+  { type: ActionKeys.LOGOUT, payload: TLogoutResponse }
 

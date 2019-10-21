@@ -1,5 +1,6 @@
 import { cloneDeep } from 'lodash'
 import * as T from 'user/types.d'
+import { ActionKeys } from 'common/action-keys'
 
 const startingState: T.TBranchState = {
   invitationLoading: false,
@@ -26,27 +27,27 @@ const reducer = (state: T.TBranchState = startingState, action: T.TAction): T.TB
   let newState = cloneDeep(state)
 
   switch (action.type) {
-    case 'USER_FETCHED':
+    case ActionKeys.USER_FETCHED:
       newState.users[action.payload.id] = action.payload
       break
-    case 'PATIENT_ADDED':
+    case ActionKeys.PATIENT_ADDED:
       newState.users[action.payload.id] = action.payload
       break
-    case 'INVITATION_LOADING':
+    case ActionKeys.INVITATION_LOADING:
       newState.invitationLoading = true
       break
-    case 'INVITATION_FINISHED':
+    case ActionKeys.INVITATION_FINISHED:
       newState.invitationLoading = false
       break
-    case 'CHANGE_USER_TO_ADMIN': // (temporary for demo purposes)
+    case ActionKeys.CHANGE_USER_TO_ADMIN: // (temporary for demo purposes)
       newState.users[action.payload].type = 'ADMIN'
       console.log('signed in user is now:', newState.users[action.payload])
       break
-    case 'CHANGE_USER_TO_DOCTOR': // (temporary for demo purposes)
+    case ActionKeys.CHANGE_USER_TO_DOCTOR: // (temporary for demo purposes)
       newState.users[action.payload].type = 'DOCTOR'
       console.log('signed in user is now:', newState.users[action.payload])
       break
-    case 'CHANGE_USER_TO_PATIENT': // (temporary for demo purposes)
+    case ActionKeys.CHANGE_USER_TO_PATIENT: // (temporary for demo purposes)
       newState.users[action.payload].type = 'PATIENT'
       console.log('signed in user is now:', newState.users[action.payload])
       break

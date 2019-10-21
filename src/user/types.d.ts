@@ -1,3 +1,5 @@
+import { ActionKeys } from 'common/action-keys'
+
 export type TInvitationResponse = {
   codeName: 'SUCCESS'
   code: 0
@@ -28,10 +30,10 @@ export type TBranchState = {
 }
 
 export type TAction =
-  { type: 'USER_FETCHED', payload: TUser} |
-  { type: 'PATIENT_ADDED', payload: TUser } |
-  { type: 'INVITATION_LOADING' } |
-  { type: 'INVITATION_FINISHED' } |
-  { type: 'CHANGE_USER_TO_ADMIN', payload: string } |
-  { type: 'CHANGE_USER_TO_PATIENT', payload: string } |
-  { type: 'CHANGE_USER_TO_DOCTOR', payload: string }
+  { type: ActionKeys.USER_FETCHED, payload: TUser} |
+  { type: ActionKeys.PATIENT_ADDED, payload: TUser } |
+  { type: ActionKeys.INVITATION_LOADING } |
+  { type: ActionKeys.INVITATION_FINISHED } |
+  { type: ActionKeys.CHANGE_USER_TO_ADMIN, payload: string } |
+  { type: ActionKeys.CHANGE_USER_TO_PATIENT, payload: string } |
+  { type: ActionKeys.CHANGE_USER_TO_DOCTOR, payload: string }

@@ -1,3 +1,4 @@
+import { ActionKeys } from 'common/action-keys'
 import axios from 'axios'
 import { dispatch } from 'store'
 import * as T from 'auth/types.d'
@@ -14,12 +15,12 @@ export const loadHostMap = async () => {
   const resp = await safely<T.TDiscoveryResponse>(axios(discoveryServiceUrl))
 
   // No hosts were returned. We can't continue, so all we can do is show an error.
-  if (resp.data.hosts.length === 0) return dispatch({ type: 'ALERT', payload: {
+  if (resp.data.hosts.length === 0) return dispatch({ type: ActionKeys.ALERT, payload: {
     message: 'Fatal error: Discovery returned an empty host map. Please try using the service again later.',
     type: 'danger'
   }})
 
-  dispatch({ type: 'LOADED_HOST_MAP', payload: resp.data })
+  dispatch({ type: ActionKeys.LOADED_HOST_MAP, payload: resp.data })
 }
 
 export const authenticate = async (username: string, password: string) => {
@@ -38,7 +39,7 @@ export const authenticate = async (username: string, password: string) => {
     milliAtToken: resp.headers['milli-at']
   }
 
-  dispatch({ type: 'AUTHENTICATED', payload })
+  dispatch({ type: ActionKeys.AUTHENTICATED, payload })
 }
 
 export const logout = async () => {
@@ -48,5 +49,5 @@ export const logout = async () => {
     data: {}
   }))
 
-  dispatch({ type: 'LOGOUT', payload: resp.data })
+  dispatch({ type: ActionKeys.LOGOUT, payload: resp.data })
 }

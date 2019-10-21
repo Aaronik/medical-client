@@ -1,6 +1,7 @@
 import uuid from 'uuid/v4'
 import { cloneDeep } from 'lodash'
 import * as T from 'alert/types.d'
+import { ActionKeys } from 'common/action-keys'
 
 const startingState: T.TBranchState = []
 
@@ -11,7 +12,7 @@ const reducer = (state: T.TBranchState = startingState, action: T.TAction): T.TB
   let newState = cloneDeep(state)
 
   switch (action.type) {
-    case 'ALERT': {
+    case ActionKeys.ALERT: {
       const alert: T.TAlert = {
         id: uuid(),
         message: action.payload.message,
@@ -21,10 +22,10 @@ const reducer = (state: T.TBranchState = startingState, action: T.TAction): T.TB
       newState.push(alert)
       break
     }
-    case 'CLEAR_ALERTS':
+    case ActionKeys.CLEAR_ALERTS:
       newState = []
       break
-    case 'CLEAR_ALERT':
+    case ActionKeys.CLEAR_ALERT:
       newState = newState.filter(a => a.id !== action.payload)
       break;
     default:

@@ -1,3 +1,5 @@
+import { ActionKeys } from 'common/action-keys'
+
 export type TTimelineDatum = {
   id: string
   content: string      // contents of box
@@ -26,5 +28,5 @@ export type TBranchState = {
 }
 
 export type TAction =
-  { type: 'TIMELINE_DATA_GENERATED', payload: { patientId: string, data: TTimelineDatum[] }} |
-  { type: 'TIMELINE_DATUM_GENERATED', payload: { patientId: string, datum: TTimelineDatum }}
+  { type: ActionKeys.TIMELINE_DATA_GENERATED, payload: { patientId: string, data: TTimelineDatum[] }} |
+  { type: ActionKeys.TIMELINE_DATUM_GENERATED, payload: { patientId: string, datum: TTimelineDatum }}

@@ -1,6 +1,7 @@
 import uuid from 'uuid/v4'
 import { cloneDeep } from 'lodash'
 import * as T from 'timeline/types.d'
+import { ActionKeys } from 'common/action-keys'
 
 const startingState: T.TBranchState = {
   'f15c625d-9173-4ca7-a2f1-b1a1c34989d9': [{
@@ -36,13 +37,13 @@ const reducer = (state: T.TBranchState = startingState, action: T.TAction): T.TB
   const payload = action.payload
 
   switch (action.type) {
-    case 'TIMELINE_DATUM_GENERATED':
+    case ActionKeys.TIMELINE_DATUM_GENERATED:
       newState[payload.patientId] =
         newState[payload.patientId] ?
         newState[payload.patientId].concat([action.payload.datum]) :
         [action.payload.datum]
       break
-    case 'TIMELINE_DATA_GENERATED':
+    case ActionKeys.TIMELINE_DATA_GENERATED:
       newState[payload.patientId] =
         newState[payload.patientId] ?
         newState[payload.patientId].concat(action.payload.data) :
