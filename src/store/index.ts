@@ -45,7 +45,7 @@ export type TStore = typeof store
 
 // helpers
 export const isSignedIn = () => (
-  !!store.getState().auth.sessionToken
+  !!store.getState().auth.milliAtToken
 )
 
 export const currentUser = () => {

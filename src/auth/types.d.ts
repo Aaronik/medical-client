@@ -39,10 +39,8 @@ export type TLogoutResponse = {
 }
 
 export type TBranchState = {
-  sessionToken: string
   apiUrl: string
   userUrn: string
-  csrfToken: string
   milliAtToken: string
 }
 

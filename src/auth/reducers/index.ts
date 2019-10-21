@@ -2,10 +2,8 @@ import { cloneDeep, random } from 'lodash'
 import * as T from 'auth/types.d'
 
 const startingState = {
-  sessionToken: "",
   userUrn: "",
   apiUrl: "",
-  csrfToken: "",
   milliAtToken: ""
 }
 
@@ -23,13 +21,11 @@ const reducer = (state: T.TBranchState = startingState, action: T.TAction): T.TB
       break
     }
     case 'AUTHENTICATED':
-      newState.sessionToken = action.payload.sessionToken
       newState.userUrn = action.payload.userUrn
-      newState.csrfToken = action.payload.csrfToken
       newState.milliAtToken = action.payload.milliAtToken
       break
     case 'LOGOUT':
-      newState.sessionToken = startingState.sessionToken
+      newState.milliAtToken = startingState.milliAtToken
       newState.userUrn = startingState.userUrn
       break
     default:
