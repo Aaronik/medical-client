@@ -26,7 +26,6 @@ import 'App.scss'
 // Things to do once when the page loads
 loadHostMap()
 StylesManager.applyTheme('bootstrap')
-require('timeline-plus/dist/timeline.css')
 
 const AppNavbar: React.FC = ({ children }) => <Navbar bg="dark" variant="dark" className="justify-content-between">{children}</Navbar>
 const MilliBrandLink = () => <Navbar.Brand><Link to="/"><Image width={70} height={25} src="milli-logo.png"/></Link></Navbar.Brand>

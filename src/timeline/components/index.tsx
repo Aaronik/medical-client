@@ -1,5 +1,5 @@
 import React from 'react'
-import * as timeline from 'timeline-plus'
+import * as timeline from 'vis-timeline'
 import Container from 'react-bootstrap/Container'
 
 import * as T from 'timeline/types.d'
