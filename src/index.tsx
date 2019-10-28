@@ -1,11 +1,10 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 import 'index.scss'
+import 'bootstrap-with-overrides.scss'
 import App from 'App'
 import * as serviceWorker from 'serviceWorker'
 
-// https://create-react-app.dev/docs/adding-bootstrap
-import 'bootstrap/dist/css/bootstrap.css'
 
 ReactDOM.render(<App />, document.getElementById('root'))
 
