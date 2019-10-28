@@ -12,6 +12,7 @@ import AdminDashboard from 'admin-dashboard/components'
 import PatientContainer from 'doctor-dashboard/components/PatientContainer'
 import AuthDropdown from 'auth/components/dropdown'
 import SigninContainer from 'signin/components'
+import SignupContainer from 'signup/components'
 import DoctorProfileContainer from 'doctor-profile/components'
 import PatientDashboard from 'patient-dashboard/components'
 import PatientIntakeContainer from 'patient-dashboard/components/IntakeContainer'
@@ -39,6 +40,7 @@ const SignedOutBase: React.FunctionComponent = () => {
         </Nav>
         <Nav>
           <Nav.Link as={Link} to="/signin">Sign In</Nav.Link>
+          <Nav.Link as={Link} to="/signup">Sign Up</Nav.Link>
         </Nav>
       </AppNavbar>
 
@@ -47,6 +49,7 @@ const SignedOutBase: React.FunctionComponent = () => {
       <Switch>
         <Route path="/" exact component={NotSignedInContainer} />
         <Route path="/signin" component={SigninContainer} />
+        <Route path="/signup" component={SignupContainer} />
         <Route component={PageNotFound} />
       </Switch>
     </div>
@@ -131,6 +134,7 @@ const PatientBase: React.FunctionComponent = () => {
 type TUserType = TStoreUserType | 'SIGNED_OUT'
 
 const Base: React.FunctionComponent<{ userType: TUserType }> = ({ userType }) => {
+
   let Component = <SignedOutBase />
 
   switch (userType) {

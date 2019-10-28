@@ -1,7 +1,7 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 import 'index.scss'
-import 'bootstrap-with-overrides.scss'
+import 'styles.sass'
 import App from 'App'
 import * as serviceWorker from 'serviceWorker'
 

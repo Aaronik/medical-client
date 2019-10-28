@@ -1,0 +1,27 @@
+$water-blue: #0c96c4
+$turtle-green: #74c34c
+$mango: #f69d24
+$ruby: #cb023f
+$turquoise-blue: #01cacc
+$charcoal-grey-two: #3a4147
+$pale-grey: #f1f1f5
+$pale-grey-two: #fafafb
+$white: #ffffff
+
+$primary: $water-blue
+$success: $turtle-green
+$warning: $mango
+$danger: $ruby
+$info: $turquoise-blue
+$dark: $charcoal-grey-two
+$light: $pale-grey-two
+
+// Helper class to let backgrounds be assigned to an element and have it look like
+// the whole page
+.with-background
+  position: fixed
+  height: 100%
+
+// Require all css that uses global variables here
+@import '~bootstrap/scss/bootstrap.scss'
+@import 'signup/styles/index.sass'

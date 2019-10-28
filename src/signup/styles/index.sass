@@ -1,0 +1,23 @@
+@mixin input-border
+  border: none
+  border-bottom: 1px solid
+  border-radius: 0
+
+$pane-border-radius: 30px
+
+.signup
+
+  .pane-1
+    background-color: $pale-grey
+    border-radius: $pane-border-radius 0 0 $pane-border-radius
+
+  .pane-2
+    background-color: $white
+    border-radius: 0 $pane-border-radius $pane-border-radius 0
+
+    input
+      @include input-border
+
+    .input-group-text
+      background-color: $white
+      @include input-border
