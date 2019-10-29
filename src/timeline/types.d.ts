@@ -2,12 +2,12 @@ import { ActionKeys } from 'common/action-keys'
 
 export type TTimelineDatum = {
   id: string
-  content: string      // contents of box
-  start: string        // location on timeline
+  content: string         // contents of box
+  start: string           // location on timeline
   end?: string
-  title?: string       // shown on mouse over
+  title?: string          // shown on mouse over
   style?: string
-  group?: string       // id of group it's in
+  group?: string | number // id of group it's in
   editable?: boolean
   type?: 'box' // default
     | 'point'  //
@@ -16,15 +16,18 @@ export type TTimelineDatum = {
 }
 
 export type TTimelineGroup = {
-  id: string
+  id: string | number
+  content: string | HTMLElement
   className?: string
-  content?: string
   title?: string
   style?: string
 }
 
 export type TBranchState = {
-  [patientId: string]: TTimelineDatum[]
+  [patientId: string]: {
+    items: TTimelineDatum[]
+    groups: TTimelineGroup[]
+  }
 }
 
 export type TAction =

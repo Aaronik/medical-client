@@ -1,0 +1,30 @@
+$group-margin: 10px
+
+// Date readouts
+.vis-time-axis .vis-text
+  background-color: $water-blue
+  border-radius: 0.4em
+  text-align: center
+  color: $white
+
+// "range" item
+.vis-item.vis-range
+  background-color: $pale-grey
+  border: 0
+  border-left: 4px solid yellow
+
+  .vis-item-overflow
+    display: flex
+    align-items: center
+    justify-content: flex-end
+
+// "point" item
+.vis-item.vis-point
+  border-left: 3px dashed red
+
+  .vis-dot
+    border-color: $pale-grey
+
+// all
+.vis-item
+  border-radius: 3px 15px 15px 3px !important

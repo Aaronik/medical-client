@@ -4,28 +4,76 @@ import * as T from 'timeline/types.d'
 import { ActionKeys } from 'common/action-keys'
 
 const startingState: T.TBranchState = {
-  'f15c625d-9173-4ca7-a2f1-b1a1c34989d9': [{
-    id: uuid(),
-    title: 'This is a title',
-    type: 'point',
-    editable: true,
-    start: '2019-10-14',
-    content: 'Joined Milli Health'
-  }, {
-    id: uuid(),
-    title: 'This is a title',
-    type: 'background',
-    end: '2019-10-16',
-    editable: true,
-    start: '2019-10-15',
-    content: 'Recovered from gout'
-  }],
-  'c545dde9-56e0-4260-a13d-cc25de10311b': [{
-    id: uuid(),
-    type: 'point',
-    start: '2019-10-14',
-    content: 'Joined Milli Health'
-  }]
+  'f15c625d-9173-4ca7-a2f1-b1a1c34989d9': {
+    items: [{
+      id: uuid(),
+      group: 1,
+      title: 'This is a title',
+      type: 'point',
+      editable: true,
+      start: '2019-10-14',
+      content: 'Joined Milli Health'
+    }, {
+      id: uuid(),
+      group: 1,
+      title: 'This is a title',
+      type: 'range',
+      end: '2019-10-16',
+      editable: true,
+      start: '2019-10-15',
+      content: 'Recovered from gout'
+    }, {
+      id: uuid(),
+      group: 1,
+      title: 'This is a title',
+      type: 'range',
+      end: '2019-10-17',
+      editable: true,
+      start: '2019-10-15',
+      content: 'Recovered from amputation'
+    }, {
+      id: uuid(),
+      group: 2,
+      title: 'This is a title',
+      type: 'point',
+      editable: true,
+      start: '2019-10-16',
+      content: 'Stubbed Toe'
+    }, {
+      id: uuid(),
+      group: 2,
+      title: 'This is a title',
+      type: 'point',
+      editable: false,
+      start: '2019-10-13',
+      content: 'Lost favorite hat'
+    }, {
+      id: uuid(),
+      group: 2,
+      title: 'This is a title',
+      type: 'range',
+      end: '2019-10-18',
+      editable: true,
+      start: '2019-10-17',
+      content: 'Bonked head'
+    }],
+    groups: [{
+      id: 1,
+      content: 'Category 1'
+    }, {
+      id: 2,
+      content: 'Category 2'
+    }]
+  },
+  'c545dde9-56e0-4260-a13d-cc25de10311b': {
+    items: [{
+      id: uuid(),
+      type: 'point',
+      start: '2019-10-14',
+      content: 'Joined Milli Health'
+    }],
+    groups: []
+  }
 }
 
 const reducer = (state: T.TBranchState = startingState, action: T.TAction): T.TBranchState => {
@@ -34,21 +82,21 @@ const reducer = (state: T.TBranchState = startingState, action: T.TAction): T.TB
   // https://react-redux.js.org/using-react-redux/connect-mapstate#return-values-determine-if-your-component-re-renders
   let newState = cloneDeep(state)
 
-  const payload = action.payload
-
   switch (action.type) {
-    case ActionKeys.TIMELINE_DATUM_GENERATED:
-      newState[payload.patientId] =
-        newState[payload.patientId] ?
-        newState[payload.patientId].concat([action.payload.datum]) :
-        [action.payload.datum]
+    case ActionKeys.TIMELINE_DATUM_GENERATED: {
+      const { patientId, datum } = action.payload
+
+      if (newState[patientId]) newState[patientId].items.concat([datum])
+      else newState[patientId] = { items: [datum], groups: [] }
       break
-    case ActionKeys.TIMELINE_DATA_GENERATED:
-      newState[payload.patientId] =
-        newState[payload.patientId] ?
-        newState[payload.patientId].concat(action.payload.data) :
-        action.payload.data
+    }
+    case ActionKeys.TIMELINE_DATA_GENERATED: {
+      const { patientId, data } = action.payload
+
+      if (newState[patientId]) newState[patientId].items.concat(data)
+      else newState[patientId] = { items: data, groups: [] }
       break
+    }
     default:
       // Exhastiveness check (make sure all actions are accounted for in switch statement)
       (function(action: never){})(action)

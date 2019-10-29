@@ -8,12 +8,13 @@ import { TStoreState } from 'store'
 import { TUser } from 'user/types.d'
 import AddPatientEventForm, { TSurveyResult } from 'doctor-dashboard/components/AddPatientEventForm'
 import Timeline from 'timeline/components'
-import { TTimelineDatum } from 'timeline/types.d'
+import { TTimelineDatum, TTimelineGroup } from 'timeline/types.d'
 import { addTimelineData } from 'timeline/actions'
 
 type TProps = {
   patient: TUser
   patientTimelineData: TTimelineDatum[]
+  patientTimelineGroups: TTimelineGroup[]
 }
 
 type TState = {}
@@ -34,14 +35,14 @@ class PatientContainer extends React.Component<TProps, TState> {
   }
 
   render() {
-    const patient = this.props.patient
+    const { patient, patientTimelineData, patientTimelineGroups } = this.props
 
     return (
       <Container>
         <Row className="justify-content-around p-5">
           <h1>Your Patient: {patient.name}</h1>
         </Row>
-        { this.props.patientTimelineData && <Timeline data={this.props.patientTimelineData} /> }
+        <Timeline data={patientTimelineData} groups={patientTimelineGroups} />
         <AddPatientEventForm onComplete={this.onAddPatientEventComplete} />
       </Container>
     )
@@ -53,6 +54,7 @@ export default connect((storeState: TStoreState, dispatchProps: { match: { param
 
   return {
     patient: storeState.user.users[patientId],
-    patientTimelineData: storeState.timeline[patientId]
+    patientTimelineData: storeState.timeline[patientId].items || [],
+    patientTimelineGroups: storeState.timeline[patientId].groups || []
   }
 })(PatientContainer)
