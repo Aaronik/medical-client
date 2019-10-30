@@ -53,10 +53,14 @@ export const currentUser = () => {
   return user.users[auth.userUrn]
 }
 
+const filterUsersByType = (userType: userTypes.TUserType) => {
+  return Object.values(store.getState().user.users).filter(u => u.type === userType)
+}
+
 export const patients = () => {
-  return Object.values(store.getState().user.users).filter(u => u.type === 'PATIENT')
+  filterUsersByType('PATIENT')
 }
 
 export const doctors = () => {
-  return Object.values(store.getState().user.users).filter(u => u.type === 'DOCTOR')
+  filterUsersByType('DOCTOR')
 }
