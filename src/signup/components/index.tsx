@@ -12,6 +12,7 @@ import * as icons from '@fortawesome/free-solid-svg-icons'
 // import Spinner from 'react-bootstrap/Spinner'
 import { connect } from 'react-redux'
 import { TStoreState } from 'store'
+import 'signup/styles/index.sass'
 
 interface TProps extends RouteComponentProps {
 }

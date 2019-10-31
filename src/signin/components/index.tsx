@@ -4,11 +4,16 @@ import Container from 'react-bootstrap/Container'
 import Row from 'react-bootstrap/Row'
 import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
+import Col from 'react-bootstrap/Col'
+import InputGroup from 'react-bootstrap/InputGroup'
 import Spinner from 'react-bootstrap/Spinner'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import * as icons from '@fortawesome/free-solid-svg-icons'
 import { connect } from 'react-redux'
 import { TStoreState } from 'store'
 import { authenticate } from 'auth/actions'
 import { fetchUser } from 'user/actions'
+import 'signin/styles/index.sass'
 
 interface TProps extends RouteComponentProps {
 }
@@ -41,41 +46,43 @@ const Signin: React.FunctionComponent<TProps> = ({ history }) => {
 
 
   return (
-    <Container>
+    <Container fluid className='pt-5 signin bg-primary with-background'>
+      <Row className='justify-content-center mt-5'>
 
-      <Row className="p-5 justify-content-around">
-        <h1>Sign In</h1>
-      </Row>
+        <Col lg={4} md={8} sm={8} xs={8} className='text-center pane'>
+          <Container className=''>
+            <Row className='p-4'>
+              <h3>Sign In</h3>
+            </Row>
+            <Row className='p-4 text-left'>
+              <Form className="w-100">
 
-      <Row className="justify-content-around">
-        <Form>
-          <Form.Group>
-            <Form.Label>Username</Form.Label>
-            <Form.Control
-              type="text"
-              size="lg"
-              placeholder="Enter Username"
-              value={username}
-              onChange={onUsernameChange}
-            />
-          </Form.Group>
-          <Form.Group>
-            <Form.Label>Password</Form.Label>
-            <Form.Control
-              type="password"
-              size="lg"
-              placeholder="Enter Password"
-              value={password}
-              onChange={onPasswordChange}
-            />
-          </Form.Group>
-        </Form>
-      </Row>
+                <Form.Group>
+                  <Form.Label className="text-muted">Email</Form.Label>
+                  <InputGroup>
+                    <Form.Control type="email" onChange={onUsernameChange} value={username}></Form.Control>
+                    <InputGroup.Append><InputGroup.Text><FontAwesomeIcon icon={icons.faAt} /></InputGroup.Text></InputGroup.Append>
+                  </InputGroup>
+                </Form.Group>
 
-      <Row className="p-b5 justify-content-around">
-        <Button size="lg" onClick={onAuthenticateClick}>
-          { isLoading ? <Spinner animation="grow"/> : "Sign In" }
-        </Button>
+                <Form.Group>
+                  <Form.Label className="text-muted">Password</Form.Label>
+                  <InputGroup>
+                    <Form.Control type="password" onChange={onPasswordChange} value={password}></Form.Control>
+                    <InputGroup.Append><InputGroup.Text><FontAwesomeIcon icon={icons.faLock} /></InputGroup.Text></InputGroup.Append>
+                  </InputGroup>
+                </Form.Group>
+
+              </Form>
+            </Row>
+            <Row className='p-4'>
+              <Button block size='lg' onClick={onAuthenticateClick}>
+                { isLoading ? <Spinner animation="grow"/> : "Sign In" }
+              </Button>
+            </Row>
+          </Container>
+        </Col>
+
       </Row>
     </Container>
   )
