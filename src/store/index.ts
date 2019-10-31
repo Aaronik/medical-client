@@ -58,9 +58,9 @@ const filterUsersByType = (userType: userTypes.TUserType) => {
 }
 
 export const patients = () => {
-  filterUsersByType('PATIENT')
+  return filterUsersByType('PATIENT')
 }
 
 export const doctors = () => {
-  filterUsersByType('DOCTOR')
+  return filterUsersByType('DOCTOR')
 }
