@@ -172,7 +172,7 @@ const BaseWithProps = connect(() => {
   const userType: TUserType = currentUser() ? currentUser().type : 'SIGNED_OUT'
 
   return {
-    userType: 'DOCTOR' as 'DOCTOR' || userType
+    userType: userType
   }
 })(Base)
 
