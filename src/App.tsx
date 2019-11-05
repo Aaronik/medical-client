@@ -2,6 +2,7 @@ import React from 'react'
 import { BrowserRouter as Router, Route, Link, Switch } from "react-router-dom"
 import { Provider, connect } from 'react-redux'
 import { StylesManager } from 'survey-react'
+import * as icons from '@fortawesome/free-solid-svg-icons'
 
 import Navbar from 'react-bootstrap/Navbar'
 import Nav from 'react-bootstrap/Nav'
@@ -17,24 +18,25 @@ import DoctorProfileContainer from 'doctor-profile/components'
 import PatientDashboard from 'patient-dashboard/components'
 import PatientIntakeContainer from 'patient-dashboard/components/IntakeContainer'
 import Alert from 'alert/components/Alert'
+import AppGutterNav, { LinkEntryProps } from 'app-gutter-nav/components'
 import PageNotFound from 'not-found/components'
 import NotSignedInContainer from 'common/components/NotSignedIn'
 import { loadHostMap } from 'auth/actions'
 import store, { currentUser } from 'store'
 import { TUserType as TStoreUserType } from 'user/types.d'
-import 'App.scss'
+import 'App.sass'
 
 // Things to do once when the page loads
 loadHostMap()
 StylesManager.applyTheme('bootstrap')
 
-const AppNavbar: React.FC = ({ children }) => <Navbar bg="dark" variant="dark" className="justify-content-between">{children}</Navbar>
+const AppNavBar: React.FC = ({ children }) => <Navbar className="justify-content-between app-navbar">{children}</Navbar>
 const MilliBrandLink = () => <Navbar.Brand><Link to="/"><Image width={70} height={25} src="milli-logo.png"/></Link></Navbar.Brand>
 
 const SignedOutBase: React.FunctionComponent = () => {
   return (
-    <div>
-      <AppNavbar>
+    <React.Fragment>
+      <AppNavBar>
         <Nav>
           <MilliBrandLink/>
         </Nav>
@@ -42,7 +44,7 @@ const SignedOutBase: React.FunctionComponent = () => {
           <Nav.Link as={Link} to="/signin">Sign In</Nav.Link>
           <Nav.Link as={Link} to="/signup">Sign Up</Nav.Link>
         </Nav>
-      </AppNavbar>
+      </AppNavBar>
 
       <Alert />
 
@@ -52,14 +54,14 @@ const SignedOutBase: React.FunctionComponent = () => {
         <Route path="/signup" component={SignupContainer} />
         <Route component={PageNotFound} />
       </Switch>
-    </div>
+    </React.Fragment>
   )
 }
 
 const AdminBase: React.FunctionComponent = () => {
   return (
-    <div>
-      <AppNavbar>
+    <React.Fragment>
+      <AppNavBar>
         <Nav>
           <MilliBrandLink/>
           <Nav.Link as={Link} to="/doctors">Doctors</Nav.Link>
@@ -67,7 +69,7 @@ const AdminBase: React.FunctionComponent = () => {
         <Nav>
           <AuthDropdown/>
         </Nav>
-      </AppNavbar>
+      </AppNavBar>
 
       <Alert />
 
@@ -77,39 +79,49 @@ const AdminBase: React.FunctionComponent = () => {
         <Route path="/profile" component={() => <h1>Admin Profile</h1>} />
         <Route component={PageNotFound} />
       </Switch>
-    </div>
+    </React.Fragment>
   )
 }
 
 const DoctorBase: React.FunctionComponent = () => {
+  const gutterRoutes: LinkEntryProps[] = [
+    { to: "/", text: "Dashboard", icon: icons.faSquare, exact: true },
+    { to: "/messages", text: "Messages", icon: icons.faCommentDots },
+    { to: "/timeline", text: "Health Timeline", icon: icons.faCheckCircle },
+    { to: "/schedule", text: "Schedule", icon: icons.faCalendar },
+    { to: "/activity", text: "Activity", icon: icons.faClock },
+    { to: "/settings", text: "Settings", icon: icons.faCog },
+  ]
+
   return (
-    <div>
-      <AppNavbar>
+    <React.Fragment>
+      <AppNavBar>
         <Nav>
           <MilliBrandLink/>
         </Nav>
         <Nav>
           <AuthDropdown/>
         </Nav>
-      </AppNavbar>
+      </AppNavBar>
 
       <Alert />
+
+      <AppGutterNav entries={gutterRoutes}/>
 
       <Switch>
         <Route path="/" exact component={DoctorDashboard} />
         <Route path="/patients/:patientId" component={PatientContainer} />
-        <Route path="/signin" component={SigninContainer} />
         <Route path="/profile" component={DoctorProfileContainer} />
         <Route component={PageNotFound} />
       </Switch>
-    </div>
+    </React.Fragment>
   )
 }
 
 const PatientBase: React.FunctionComponent = () => {
   return (
-    <div>
-      <AppNavbar>
+    <React.Fragment>
+      <AppNavBar>
         <Nav>
           <MilliBrandLink/>
           <Nav.Link as={Link} to="/intake">Intake Survey</Nav.Link>
@@ -117,7 +129,7 @@ const PatientBase: React.FunctionComponent = () => {
         <Nav>
           <AuthDropdown/>
         </Nav>
-      </AppNavbar>
+      </AppNavBar>
 
       <Alert />
 
@@ -127,7 +139,7 @@ const PatientBase: React.FunctionComponent = () => {
         <Route path="/profile" component={() => <h1>Patient Profile</h1>} />
         <Route component={PageNotFound} />
       </Switch>
-    </div>
+    </React.Fragment>
   )
 }
 
@@ -160,7 +172,7 @@ const BaseWithProps = connect(() => {
   const userType: TUserType = currentUser() ? currentUser().type : 'SIGNED_OUT'
 
   return {
-    userType: userType
+    userType: 'DOCTOR' as 'DOCTOR' || userType
   }
 })(Base)
 

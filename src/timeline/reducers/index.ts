@@ -55,7 +55,7 @@ const startingState: T.TBranchState = {
       end: '2019-10-18',
       editable: true,
       start: '2019-10-17',
-      content: 'Bonked head'
+      content: 'Was in Coma'
     }],
     groups: [{
       id: 1,

@@ -9,7 +9,6 @@ import Button from 'react-bootstrap/Button'
 
 import { TStoreState } from 'store'
 import { TUser } from 'user/types.d'
-import 'App.scss'
 
 interface IProps extends RouteComponentProps {
   user: TUser

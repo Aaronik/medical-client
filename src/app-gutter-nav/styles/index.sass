@@ -1,0 +1,41 @@
+@import 'common/styles/variables.sass'
+@import 'common/styles/util.sass'
+
+.app-gutter-nav
+  position: fixed
+  top: $navbar-height
+  left: 0
+  height: 100vh
+  background-color: white
+  z-index: 1000
+
+  .icon
+    color: $bluey-grey
+
+  .nav-link
+    word-wrap: no-wrap
+    color: black
+    padding-left: 10px
+
+  .nav-entry
+    margin-top: 10px
+    display: flex
+    align-items: center
+    padding-left: 15px
+
+  .nav-entry.active
+    color: $bright-blue
+    padding-left: 0 !important
+
+    .nav-link
+      color: $bright-blue
+
+    &::before
+      display: inline-block
+      width: 3px
+      background-color: $bright-blue
+      border-top-right-radius: 5px
+      border-bottom-right-radius: 5px
+      margin-right: 12px
+      content: "|"
+      height: 40px
