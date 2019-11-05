@@ -8,7 +8,6 @@ const startingState: T.TBranchState = {
     items: [{
       id: uuid(),
       group: 1,
-      title: 'This is a title',
       type: 'point',
       editable: true,
       start: '2019-10-14',
@@ -16,7 +15,6 @@ const startingState: T.TBranchState = {
     }, {
       id: uuid(),
       group: 1,
-      title: 'This is a title',
       type: 'range',
       end: '2019-10-16',
       editable: true,
@@ -25,7 +23,6 @@ const startingState: T.TBranchState = {
     }, {
       id: uuid(),
       group: 1,
-      title: 'This is a title',
       type: 'range',
       end: '2019-10-17',
       editable: true,
@@ -34,7 +31,6 @@ const startingState: T.TBranchState = {
     }, {
       id: uuid(),
       group: 2,
-      title: 'This is a title',
       type: 'point',
       editable: true,
       start: '2019-10-16',
@@ -42,7 +38,6 @@ const startingState: T.TBranchState = {
     }, {
       id: uuid(),
       group: 2,
-      title: 'This is a title',
       type: 'point',
       editable: false,
       start: '2019-10-13',
@@ -50,7 +45,6 @@ const startingState: T.TBranchState = {
     }, {
       id: uuid(),
       group: 2,
-      title: 'This is a title',
       type: 'range',
       end: '2019-10-18',
       editable: true,
@@ -86,14 +80,14 @@ const reducer = (state: T.TBranchState = startingState, action: T.TAction): T.TB
     case ActionKeys.TIMELINE_DATUM_GENERATED: {
       const { patientId, datum } = action.payload
 
-      if (newState[patientId]) newState[patientId].items.concat([datum])
+      if (newState[patientId]) newState[patientId].items.push(datum)
       else newState[patientId] = { items: [datum], groups: [] }
       break
     }
     case ActionKeys.TIMELINE_DATA_GENERATED: {
       const { patientId, data } = action.payload
 
-      if (newState[patientId]) newState[patientId].items.concat(data)
+      if (newState[patientId]) newState[patientId].items = newState[patientId].items.concat(data)
       else newState[patientId] = { items: data, groups: [] }
       break
     }

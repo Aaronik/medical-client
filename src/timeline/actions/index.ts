@@ -13,7 +13,8 @@ export const createNewRandomTimelineDatum = () => {
     datum: {
       id: uuid(),
       content: 'Here\'s a random new thing that happened on ' + date,
-      start: date
+      start: date,
+      group: 1,
     }
   }
 

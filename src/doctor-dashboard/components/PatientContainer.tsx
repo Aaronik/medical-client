@@ -27,7 +27,10 @@ class PatientContainer extends React.Component<TProps, TState> {
       return {
         start: event.date,
         id: uuid(),
-        content: event.description
+        content: event.description,
+        group: 1,
+        type: 'point',
+        editable: true
       }
     })
 

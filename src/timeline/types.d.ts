@@ -1,27 +1,9 @@
 import { ActionKeys } from 'common/action-keys'
+import timeline from 'vis-timeline'
 
-export type TTimelineDatum = {
-  id: string
-  content: string         // contents of box
-  start: string           // location on timeline
-  end?: string
-  title?: string          // shown on mouse over
-  style?: string
-  group?: string | number // id of group it's in
-  editable?: boolean
-  type?: 'box' // default
-    | 'point'  //
-    | 'range'  // requires start and end
-    | 'background' // requires start and end
-}
+export type TTimelineDatum = timeline.TimelineData
 
-export type TTimelineGroup = {
-  id: string | number
-  content: string | HTMLElement
-  className?: string
-  title?: string
-  style?: string
-}
+export type TTimelineGroup = timeline.TimelineGroup
 
 export type TBranchState = {
   [patientId: string]: {
