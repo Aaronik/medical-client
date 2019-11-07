@@ -32,6 +32,7 @@ StylesManager.applyTheme('bootstrap')
 
 const AppNavBar: React.FC = ({ children }) => <Navbar className="justify-content-between app-navbar">{children}</Navbar>
 const MilliBrandLink = () => <Navbar.Brand><Link to="/"><Image width={70} height={25} src="milli-logo.png"/></Link></Navbar.Brand>
+const NavLink = ({ to, text }: { to: string, text: string }) => <Nav.Link as={Link} to={to}>{text}</Nav.Link>
 
 const SignedOutBase: React.FunctionComponent = () => {
   return (
@@ -41,8 +42,8 @@ const SignedOutBase: React.FunctionComponent = () => {
           <MilliBrandLink/>
         </Nav>
         <Nav>
-          <Nav.Link as={Link} to="/signin">Sign In</Nav.Link>
-          <Nav.Link as={Link} to="/signup">Sign Up</Nav.Link>
+          <NavLink to="/signin" text="Sign In" />
+          <NavLink to="/signup" text="Sign Up" />
         </Nav>
       </AppNavBar>
 
@@ -64,7 +65,7 @@ const AdminBase: React.FunctionComponent = () => {
       <AppNavBar>
         <Nav>
           <MilliBrandLink/>
-          <Nav.Link as={Link} to="/doctors">Doctors</Nav.Link>
+          <NavLink to="/doctors" text="Doctors" />
         </Nav>
         <Nav>
           <AuthDropdown/>
@@ -124,7 +125,7 @@ const PatientBase: React.FunctionComponent = () => {
       <AppNavBar>
         <Nav>
           <MilliBrandLink/>
-          <Nav.Link as={Link} to="/intake">Intake Survey</Nav.Link>
+          <NavLink to="/intake" text="Intake Survey" />
         </Nav>
         <Nav>
           <AuthDropdown/>
