@@ -1,15 +1,25 @@
 @import "common/styles/variables"
 @import "common/styles/util"
+@import "styles"
+
+$rad: $auth-pane-border-radius-radius
 
 .signup
 
   .pane-1
     background-color: $pale-grey
-    border-radius: $auth-pane-border-radius-radius 0 0 $auth-pane-border-radius-radius
+    border-radius: $rad 0 0 $rad
+
+    @include media-breakpoint-down(md)
+      border-radius: $rad $rad 0 0 !important
 
   .pane-2
     background-color: $white
-    border-radius: 0 $auth-pane-border-radius-radius $auth-pane-border-radius-radius 0
+    border-radius: 0 $rad $rad 0
+
+    @include media-breakpoint-down(md)
+      border-radius: 0 0 $rad $rad !important
+      margin-bottom: 20px
 
     input
       @include auth-input-border
