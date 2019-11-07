@@ -14,6 +14,13 @@ interface IProps extends RouteComponentProps {
   user: TUser
 }
 
+const FormInput: React.FC<{ label: string, type: string, placeholder: string }> = ({ label, type, placeholder }) => (
+  <Form.Group as={Col}>
+    <Form.Label>{label}</Form.Label>
+    <Form.Control type={type} placeholder={placeholder}/>
+  </Form.Group>
+)
+
 const DoctorProfile: React.FunctionComponent<IProps> = ({ user, history }) => {
 
   return (
@@ -24,42 +31,23 @@ const DoctorProfile: React.FunctionComponent<IProps> = ({ user, history }) => {
 
       <Form className="pt-5">
         <Form.Row>
-          <Form.Group as={Col} controlId="formGridEmail">
-            <Form.Label>Email</Form.Label>
-            <Form.Control type="email" placeholder="Enter email" />
-          </Form.Group>
-
-          <Form.Group as={Col} controlId="formGridPassword">
-            <Form.Label>Password</Form.Label>
-            <Form.Control type="password" placeholder="Password" />
-          </Form.Group>
+          <FormInput label="Email" type="email" placeholder="Enter email" />
+          <FormInput label="Password" type="password" placeholder="Password" />
         </Form.Row>
 
-        <Form.Group controlId="formGridAddress1">
-          <Form.Label>Address</Form.Label>
-          <Form.Control placeholder="1234 Main St" />
-        </Form.Group>
-
-        <Form.Group controlId="formGridAddress2">
-          <Form.Label>Address 2</Form.Label>
-          <Form.Control placeholder="Apartment, studio, or floor" />
-        </Form.Group>
+        <Form.Row>
+          <FormInput label="Address" type="text" placeholder="1234 Main St" />
+        </Form.Row>
 
         <Form.Row>
-          <Form.Group as={Col} controlId="formGridCity">
-            <Form.Label>City</Form.Label>
-            <Form.Control />
-          </Form.Group>
+          <FormInput label="Address 2" type="text" placeholder="Apartment, studio, or floor" />
+        </Form.Row>
 
-          <Form.Group as={Col} controlId="formGridState">
-            <Form.Label>State</Form.Label>
-            <Form.Control />
-          </Form.Group>
-
-          <Form.Group as={Col} controlId="formGridZip">
-            <Form.Label>Zip</Form.Label>
-            <Form.Control />
-          </Form.Group>
+        <Form.Row>
+          <FormInput label="City" type="text" placeholder="New City'sbergville" />
+          <FormInput label="State" type="text" placeholder="CA" />
+          <FormInput label="Zip" type="text" placeholder="12345" />
+          <FormInput label="Password" type="password" placeholder="Password" />
         </Form.Row>
 
         <Button variant="primary">
