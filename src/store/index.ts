@@ -12,24 +12,30 @@ import * as timelineTypes from 'timeline/types.d'
 import userReducer from 'user/reducers'
 import * as userTypes from 'user/types.d'
 
+import appGutterNavReducer from 'app-gutter-nav/reducers'
+import * as gutterNavTypes from 'app-gutter-nav/types.d'
+
 export type TStoreState = {
   alerts: alertTypes.TBranchState
   timeline: timelineTypes.TBranchState
   auth: authTypes.TBranchState
   user: userTypes.TBranchState
+  appGutterNav: gutterNavTypes.TBranchState
 }
 
 export type TAction =
   authTypes.TAction |
   alertTypes.TAction |
   timelineTypes.TAction |
-  userTypes.TAction
+  userTypes.TAction |
+  gutterNavTypes.TAction
 
 const reducer = combineReducers<TStoreState>({
   auth: authReducer,
   alerts: alertReducer,
   timeline: timelineReducer,
   user: userReducer,
+  appGutterNav: appGutterNavReducer,
 })
 
 const store = createStore<TStoreState, TAction, unknown, unknown>(reducer)
