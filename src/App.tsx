@@ -18,7 +18,7 @@ import DoctorProfileContainer from 'doctor-profile/components'
 import PatientDashboard from 'patient-dashboard/components'
 import PatientIntakeContainer from 'patient-dashboard/components/IntakeContainer'
 import Alert from 'alert/components/Alert'
-import AppGutterNav, { LinkEntryProps } from 'app-gutter-nav/components'
+import AppGutterNav, { LinkEntryProps, GutterAwareFluidContainer } from 'app-gutter-nav/components'
 import PageNotFound from 'not-found/components'
 import NotSignedInContainer from 'common/components/NotSignedIn'
 import { loadHostMap } from 'auth/actions'
@@ -109,12 +109,14 @@ const DoctorBase: React.FunctionComponent = () => {
 
       <AppGutterNav entries={gutterRoutes}/>
 
-      <Switch>
-        <Route path="/" exact component={DoctorDashboard} />
-        <Route path="/patients/:patientId" component={PatientContainer} />
-        <Route path="/profile" component={DoctorProfileContainer} />
-        <Route component={PageNotFound} />
-      </Switch>
+      <GutterAwareFluidContainer>
+        <Switch>
+          <Route path="/" exact component={DoctorDashboard} />
+          <Route path="/patients/:patientId" component={PatientContainer} />
+          <Route path="/profile" component={DoctorProfileContainer} />
+          <Route component={PageNotFound} />
+        </Switch>
+      </GutterAwareFluidContainer>
     </React.Fragment>
   )
 }
