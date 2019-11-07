@@ -8,9 +8,8 @@ import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
 import * as icons from '@fortawesome/free-solid-svg-icons'
 // import Spinner from 'react-bootstrap/Spinner'
-import { connect } from 'react-redux'
-import { TStoreState } from 'store'
 import FormInput from 'common/components/form-input'
+import connectWithDispatch from 'util/connect-with-dispatch'
 import 'signup/styles/index.sass'
 
 interface TProps extends RouteComponentProps {
@@ -95,6 +94,4 @@ const Signup: React.FunctionComponent<TProps> = ({ history }) => {
   )
 }
 
-export default connect((storeState: TStoreState, dispatchProps: RouteComponentProps<{ patientId: string }>): TProps => {
-  return dispatchProps
-})(Signup)
+export default connectWithDispatch(Signup)
