@@ -1,23 +1,30 @@
-import React from 'react'
+import React, { useState} from 'react'
 import { RouteComponentProps } from 'react-router-dom'
 import Container from 'react-bootstrap/Container'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 import Image from 'react-bootstrap/Image'
 import Form from 'react-bootstrap/Form'
-import InputGroup from 'react-bootstrap/InputGroup'
 import Button from 'react-bootstrap/Button'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import * as icons from '@fortawesome/free-solid-svg-icons'
 // import Spinner from 'react-bootstrap/Spinner'
 import { connect } from 'react-redux'
 import { TStoreState } from 'store'
+import FormInput from 'common/components/form-input'
 import 'signup/styles/index.sass'
 
 interface TProps extends RouteComponentProps {
 }
 
 const Signup: React.FunctionComponent<TProps> = ({ history }) => {
+
+  const [ name, setName ] = useState('')
+  const [ email, setEmail ] = useState('')
+  const [ businessUrl, setBusinessUrl ] = useState('')
+  const [ password, setPassword ] = useState('')
+  // const [ isLoading, setIsLoading ] = useState(false)
+
+
 
   return (
     <Container fluid className='pt-5 signup bg-primary with-background'>
@@ -47,37 +54,33 @@ const Signup: React.FunctionComponent<TProps> = ({ history }) => {
             <Row className='p-4 text-left'>
               <Form className="w-100">
 
-                <Form.Group>
-                  <Form.Label className="text-muted">Full Name</Form.Label>
-                  <InputGroup>
-                    <Form.Control type="text"></Form.Control>
-                    <InputGroup.Append><InputGroup.Text><FontAwesomeIcon icon={icons.faUser} /></InputGroup.Text></InputGroup.Append>
-                  </InputGroup>
-                </Form.Group>
+                <FormInput
+                  label="Full Name"
+                  type="text"
+                  icon={icons.faUser}
+                  onChange={setName}
+                  value={name}/>
 
-                <Form.Group>
-                  <Form.Label className="text-muted">Email</Form.Label>
-                  <InputGroup>
-                    <Form.Control type="email"></Form.Control>
-                    <InputGroup.Append><InputGroup.Text><FontAwesomeIcon icon={icons.faAt} /></InputGroup.Text></InputGroup.Append>
-                  </InputGroup>
-                </Form.Group>
+                <FormInput
+                  label="Email"
+                  type="email"
+                  icon={icons.faAt}
+                  onChange={setEmail}
+                  value={email}/>
 
-                <Form.Group>
-                  <Form.Label className="text-muted">Business URL</Form.Label>
-                  <InputGroup>
-                    <Form.Control type="text"></Form.Control>
-                    <InputGroup.Append><InputGroup.Text><FontAwesomeIcon icon={icons.faGlobe} /></InputGroup.Text></InputGroup.Append>
-                  </InputGroup>
-                </Form.Group>
+                <FormInput
+                  label="Business Url"
+                  type="text"
+                  icon={icons.faGlobe}
+                  onChange={setBusinessUrl}
+                  value={businessUrl}/>
 
-                <Form.Group>
-                  <Form.Label className="text-muted">Password</Form.Label>
-                  <InputGroup>
-                    <Form.Control type="password"></Form.Control>
-                    <InputGroup.Append><InputGroup.Text><FontAwesomeIcon icon={icons.faLock} /></InputGroup.Text></InputGroup.Append>
-                  </InputGroup>
-                </Form.Group>
+                <FormInput
+                  label="password"
+                  type="password"
+                  icon={icons.faLock}
+                  onChange={setPassword}
+                  value={password}/>
 
               </Form>
             </Row>
