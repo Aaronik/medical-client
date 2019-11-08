@@ -72,7 +72,7 @@ const AppGutterNav: React.FC<AppGutterNavProps> = ({ entries, gutterNavActive })
 
   return (
     <Nav className={containerClassName}>
-      { entries.map(e => <NavEntry{...e}/>) }
+      { entries.map((e, idx) => <NavEntry key={idx} {...e}/>) }
     </Nav>
   )
 }
