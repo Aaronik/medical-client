@@ -1,17 +1,16 @@
 import { ActionKeys } from 'common/action-keys'
-import timeline from 'vis-timeline'
+import * as timeline from 'vis-timeline'
 
-export type TTimelineDatum = timeline.TimelineData
+export type TTimelineItem = timeline.TimelineItem
 
 export type TTimelineGroup = timeline.TimelineGroup
 
 export type TBranchState = {
   [patientId: string]: {
-    items: TTimelineDatum[]
+    items: TTimelineItem[]
     groups: TTimelineGroup[]
   }
 }
 
 export type TAction =
-  { type: ActionKeys.TIMELINE_DATA_GENERATED, payload: { patientId: string, data: TTimelineDatum[] }} |
-  { type: ActionKeys.TIMELINE_DATUM_GENERATED, payload: { patientId: string, datum: TTimelineDatum }}
+  { type: ActionKeys.TIMELINE_ITEM_ADDED, payload: { patientId: string, item: TTimelineItem }}

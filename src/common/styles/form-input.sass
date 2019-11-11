@@ -1,0 +1,14 @@
+@import 'common/styles/variables.sass'
+
+@mixin auth-input-border
+  border: none
+  border-bottom: 1px solid
+  border-radius: 0
+
+.custom-form-group
+  input
+    @include auth-input-border
+
+  .input-group-text
+    background-color: $white
+    @include auth-input-border

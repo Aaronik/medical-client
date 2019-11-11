@@ -9,7 +9,6 @@ const startingState: T.TBranchState = {
       id: uuid(),
       group: 1,
       type: 'point',
-      editable: true,
       start: '2019-10-14',
       content: 'Joined Milli Health'
     }, {
@@ -17,7 +16,6 @@ const startingState: T.TBranchState = {
       group: 1,
       type: 'range',
       end: '2019-10-16',
-      editable: true,
       start: '2019-10-15',
       content: 'Recovered from gout'
     }, {
@@ -25,21 +23,18 @@ const startingState: T.TBranchState = {
       group: 1,
       type: 'range',
       end: '2019-10-17',
-      editable: true,
       start: '2019-10-15',
       content: 'Recovered from amputation'
     }, {
       id: uuid(),
       group: 2,
       type: 'point',
-      editable: true,
       start: '2019-10-16',
       content: 'Stubbed Toe'
     }, {
       id: uuid(),
       group: 2,
       type: 'point',
-      editable: false,
       start: '2019-10-13',
       content: 'Lost favorite hat'
     }, {
@@ -47,7 +42,6 @@ const startingState: T.TBranchState = {
       group: 2,
       type: 'range',
       end: '2019-10-18',
-      editable: true,
       start: '2019-10-17',
       content: 'Was in Coma'
     }],
@@ -77,23 +71,16 @@ const reducer = (state: T.TBranchState = startingState, action: T.TAction): T.TB
   let newState = cloneDeep(state)
 
   switch (action.type) {
-    case ActionKeys.TIMELINE_DATUM_GENERATED: {
-      const { patientId, datum } = action.payload
+    case ActionKeys.TIMELINE_ITEM_ADDED: {
+      const { patientId, item } = action.payload
 
-      if (newState[patientId]) newState[patientId].items.push(datum)
-      else newState[patientId] = { items: [datum], groups: [] }
-      break
-    }
-    case ActionKeys.TIMELINE_DATA_GENERATED: {
-      const { patientId, data } = action.payload
-
-      if (newState[patientId]) newState[patientId].items = newState[patientId].items.concat(data)
-      else newState[patientId] = { items: data, groups: [] }
+      if (newState[patientId]) newState[patientId].items.push(item)
+      else newState[patientId] = { items: [item], groups: [] }
       break
     }
     default:
       // Exhastiveness check (make sure all actions are accounted for in switch statement)
-      (function(action: never){})(action)
+      // (function(action: never){})(action)
       break
   }
 

@@ -4,21 +4,10 @@ import Container from 'react-bootstrap/Container'
 
 import * as T from 'timeline/types.d'
 import strings from 'common/strings'
+import formatDate from 'util/date-to-timeline-date'
 import 'timeline/styles/index.sass'
 
-type TProps = {
-  data: T.TTimelineDatum[]
-  groups: T.TTimelineGroup[]
-}
-
 const tooltipTemplater = (item: timeline.TimelineItem, editedData?: timeline.TimelineItem) => {
-
-  // How we view the dates within the tooltip
-  const formatDate = (datetype: timeline.DateType) => {
-    const date = new Date(datetype)
-    return `${date.getFullYear()}-${date.getDate()}-${date.getMonth()}`
-  }
-
   // Separate all args into a "row"
   const intoRows = (...rows: string[]) => {
 
@@ -37,7 +26,7 @@ const tooltipTemplater = (item: timeline.TimelineItem, editedData?: timeline.Tim
   }
 
   const rows = [
-    strings('startEnd') + formatDate(item.start),
+    strings('startDate') + formatDate(item.start),
     (item.end && strings('end') + formatDate(item.end)),
     item.content
   ].filter(Boolean) as string[]
@@ -46,11 +35,14 @@ const tooltipTemplater = (item: timeline.TimelineItem, editedData?: timeline.Tim
   return intoRows(...rows)
 }
 
+type TOnAdd = (timelineItem: timeline.TimelineItem) => void
+
 // Trample over any react created elements, adding the timeline.
 // This is the transformation from react's beautiful declarative
 // paradigm to timeline's imperative paradigm.
-const renderTimeline = (container: HTMLDivElement, data: T.TTimelineDatum[], groups: T.TTimelineGroup[]) => {
-  const options = {
+const renderTimeline = (container: HTMLDivElement, data: T.TTimelineItem[], groups: T.TTimelineGroup[], onAdd: TOnAdd) => {
+  const options: timeline.TimelineOptions = {
+    selectable: true,
     minHeight: '300px',
     orientation: 'top',
     groupEditable: true,
@@ -62,27 +54,51 @@ const renderTimeline = (container: HTMLDivElement, data: T.TTimelineDatum[], gro
     },
     tooltip: {
       template: tooltipTemplater
+    },
+    editable: {
+      add: true,
+      updateTime: true,
+      updateGroup: true,
+      remove: true
+    },
+    onAdd: (item, cb) => {
+      onAdd(item)
     }
   }
 
   container.innerHTML = ''
 
-  const dataWithTooltip = data.map(datum => {
+  const modifiedData = data.map(datum => {
     return {
+      editable: true,
       ...datum,
     }
   })
 
-  if (groups.length) return new timeline.Timeline(container, dataWithTooltip, groups, options)
-  else new timeline.Timeline(container, dataWithTooltip, options)
+  if (groups.length) return new timeline.Timeline(container, modifiedData, groups, options)
+  else new timeline.Timeline(container, modifiedData, options)
 }
 
-const Timeline: React.FC<TProps> = ({ data, groups }) => {
+type TProps = {
+  data: T.TTimelineItem[]
+  groups: T.TTimelineGroup[]
+  onAdd: TOnAdd
+}
+
+const Timeline: React.FC<TProps> = ({ data, groups, onAdd }) => {
   const timelineTargetRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    renderTimeline(timelineTargetRef.current as HTMLDivElement, data, groups)
-  })
+    const ref = timelineTargetRef.current as HTMLDivElement
+    renderTimeline(ref, data, groups, onAdd)
+    // ESLint needs onAdd to be in the array below. However, doing so introduces a bug,
+    // that the timeline then gets rendered every time the Timeline FC gets rendered.
+    // That's a bunch of extra reners that don't need to happen. It basically is breaking
+    // the useEffect dependency list. I'm confident this is a unique situation, using this
+    // imperative vis-timeline, so I'm leaving the rule in place and leaving this comment
+    // as well.
+    // eslint-disable-next-line
+  }, [data, groups])
 
   return (
     <Container>

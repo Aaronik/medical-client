@@ -17,6 +17,8 @@ const map = {
   intakeSurvey: 'Intake Survey',
   profile: 'Profile',
   update: 'Update',
+  close: 'Close',
+  save: 'Save',
 
   emailPlaceholder: "name@example.com",
   streetPlaceholder: "1234 Main St",
@@ -37,9 +39,13 @@ const map = {
 
   enterEmail: "Enter email",
   createAccount: "Create Account",
+  addPatientEvent: 'Add Patient Event',
+  eventDesc: 'Event Description',
+  formStartDate: '(Start) Date (yyyy-mm-dd)',
+  formEndDate: 'End date (yyyy-mm-dd):',
 
-  startEnd: 'start/end:',
-  end: 'end:',
+  startDate: 'start/date: ',
+  end: 'end: ',
 
   invitationDefaultMessage: "I'd like to invite you to join Milli!",
   welcomeBack: (name: string) => `Welcome back, ${name}`,
