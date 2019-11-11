@@ -6,8 +6,8 @@ import { connect } from 'react-redux'
 import { logout } from 'auth/actions'
 import { makeMeAdmin, makeMeDoctor, makeMePatient } from 'user/actions'
 import { TUser } from 'user/types.d'
-
 import { TStoreState } from 'store'
+import strings from 'common/strings'
 
 interface IProps extends RouteComponentProps {
   user: TUser
@@ -45,9 +45,9 @@ const LoginDropdown: React.FunctionComponent<IProps> = ({ user, history }) => {
     <NavDropdown drop="left" id="auth-dropdown" title="Profile">
       <NavDropdown.Header>{headerText()}</NavDropdown.Header>
       <NavDropdown.Divider/>
-      <NavDropdown.Item as={Link} to="/profile">Profile</NavDropdown.Item>
+      <NavDropdown.Item as={Link} to="/profile">{strings('profile')}</NavDropdown.Item>
       <NavDropdown.Divider/>
-      <NavDropdown.Item onClick={onLogoutPress}>Sign Out</NavDropdown.Item>
+      <NavDropdown.Item onClick={onLogoutPress}>{strings('signOut')}</NavDropdown.Item>
       <NavDropdown.Divider/>
       <NavDropdown.Header><Button variant="danger" onClick={onMakeAdminClick}>Make Me an Admin!</Button></NavDropdown.Header>
       <NavDropdown.Header><Button variant="primary" onClick={onMakeDoctorClick}>Make Me a Doctor!</Button></NavDropdown.Header>

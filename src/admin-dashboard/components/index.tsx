@@ -2,7 +2,6 @@ import React, { useState } from 'react'
 import { RouteComponentProps } from 'react-router-dom'
 import { connect } from 'react-redux'
 import Container from 'react-bootstrap/Container'
-import ListGroup from 'react-bootstrap/ListGroup'
 import Row from 'react-bootstrap/Row'
 import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
@@ -11,6 +10,7 @@ import Spinner from 'react-bootstrap/Spinner'
 import { doctors, currentUser, TStoreState } from 'store'
 import { TUser } from 'user/types.d'
 import { inviteUser } from 'user/actions'
+import strings from 'common/strings'
 
 interface IProps extends RouteComponentProps {
   doctors: TUser[]
@@ -18,7 +18,7 @@ interface IProps extends RouteComponentProps {
   invitationLoading: boolean
 }
 
-const DEFAULT_MESSAGE = "I'd like to invite you to join Milli!"
+const DEFAULT_MESSAGE = strings('invitationDefaultMessage')
 
 const AdminDashboard: React.FunctionComponent<IProps> = ({ user, history, doctors, invitationLoading }) => {
 
@@ -45,22 +45,22 @@ const AdminDashboard: React.FunctionComponent<IProps> = ({ user, history, doctor
   return (
     <Container>
       <Row className='justify-content-around pt-5'>
-        <h1>Welcome back, { user.name }</h1>
+        <h1>{strings('welcomeBack', user.name)}</h1>
       </Row>
 
       <hr/>
 
       <Row className='pt-5'>
-        <h3>Invite A Doctor to Milli:</h3>
+        <h3>{strings('inviteDoc')}</h3>
       </Row>
 
       <Form className='pt-3'>
         <Form.Group>
-          <Form.Label>Email address</Form.Label>
-          <Form.Control onChange={onEmailChange} size="lg" type="email" required placeholder="name@example.com" />
+          <Form.Label>{strings('emailAddress')}</Form.Label>
+          <Form.Control onChange={onEmailChange} size="lg" type="email" required placeholder={strings('emailPlaceholder')} />
         </Form.Group>
         <Form.Group>
-          <Form.Label>Message</Form.Label>
+          <Form.Label>{strings('message')}</Form.Label>
           <Form.Control onChange={onMessageChange} size="lg" as="textarea" rows="3" placeholder={DEFAULT_MESSAGE}/>
         </Form.Group>
 
@@ -70,22 +70,10 @@ const AdminDashboard: React.FunctionComponent<IProps> = ({ user, history, doctor
           onClick={onInvite}
           disabled={!email || invitationLoading}
           variant="success">
-          { invitationLoading ? <Spinner animation="grow" /> : "Send the invite!" }
+          { invitationLoading ? <Spinner animation="grow" /> : strings('sendInvite') }
         </Button>
 
       </Form>
-
-      <hr className='mt-5'/>
-
-      <Row className='pt-5'>
-        <h3>Doctors in the system:</h3>
-      </Row>
-
-      <ListGroup className='pt-3'>
-        <ListGroup.Item action>Doc 1</ListGroup.Item>
-        <ListGroup.Item action>Doc 2</ListGroup.Item>
-        <ListGroup.Item action>Doc 3</ListGroup.Item>
-      </ListGroup>
     </Container>
   )
 }

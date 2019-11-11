@@ -3,6 +3,7 @@ import * as timeline from 'vis-timeline'
 import Container from 'react-bootstrap/Container'
 
 import * as T from 'timeline/types.d'
+import strings from 'common/strings'
 import 'timeline/styles/index.sass'
 
 type TProps = {
@@ -36,8 +37,8 @@ const tooltipTemplater = (item: timeline.TimelineItem, editedData?: timeline.Tim
   }
 
   const rows = [
-    "start/date: " + formatDate(item.start),
-    (item.end && "end: " + formatDate(item.end)),
+    strings('startEnd') + formatDate(item.start),
+    (item.end && strings('end') + formatDate(item.end)),
     item.content
   ].filter(Boolean) as string[]
   // TS is not smart enough to know that filtering on boolean will remove falseys

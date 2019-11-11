@@ -9,6 +9,7 @@ import { TStoreState, patients } from 'store'
 import { TUser } from 'user/types.d'
 import AddPatientForm, { TSurveyResult } from 'doctor-dashboard/components/AddPatientForm'
 import { addPatient } from 'user/actions'
+import strings from 'common/strings'
 
 interface TProps extends RouteComponentProps {
   patients: TUser[]
@@ -55,11 +56,11 @@ const DoctorDashboard: React.FunctionComponent<TProps> = ({ patients, history })
   return (
     <Container>
       <Row className='justify-content-around p-5'>
-        <h1>Welcome back, Doctor.</h1>
+        <h1>{strings('welcomeBackDoctor')}</h1>
       </Row>
       <Row className="p-b5">
         <Button variant="primary" size="lg" block onClick={onAddPatientButtonClick}>
-          Add New Patient
+          {strings('addNewPatient')}
         </Button>
       </Row>
       <Row className={addPatientFormClassName}>
@@ -67,7 +68,7 @@ const DoctorDashboard: React.FunctionComponent<TProps> = ({ patients, history })
       </Row>
       <br/>
       <Row className={patientTableClassName}>
-        <h3>Your patients:</h3>
+        <h3>{strings('yourPatients')}</h3>
         <Table responsive striped bordered hover>
           <thead>
             <tr>

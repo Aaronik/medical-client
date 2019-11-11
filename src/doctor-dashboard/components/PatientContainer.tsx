@@ -10,6 +10,7 @@ import AddPatientEventForm, { TSurveyResult } from 'doctor-dashboard/components/
 import Timeline from 'timeline/components'
 import { TTimelineDatum, TTimelineGroup } from 'timeline/types.d'
 import { addTimelineData } from 'timeline/actions'
+import strings from 'common/strings'
 
 type TProps = {
   patient: TUser
@@ -43,7 +44,7 @@ class PatientContainer extends React.Component<TProps, TState> {
     return (
       <Container>
         <Row className="justify-content-around p-5">
-          <h1>Your Patient: {patient.name}</h1>
+          <h1>{strings('yourPatient', patient.name)}</h1>
         </Row>
         <Timeline data={patientTimelineData} groups={patientTimelineGroups} />
         <AddPatientEventForm onComplete={this.onAddPatientEventComplete} />

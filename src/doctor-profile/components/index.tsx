@@ -9,6 +9,7 @@ import Button from 'react-bootstrap/Button'
 
 import { TStoreState } from 'store'
 import { TUser } from 'user/types.d'
+import strings from 'common/strings'
 
 interface IProps extends RouteComponentProps {
   user: TUser
@@ -26,32 +27,32 @@ const DoctorProfile: React.FunctionComponent<IProps> = ({ user, history }) => {
   return (
     <Container>
       <Row className="pt-5">
-        <h1>Doctor Profile: { user.name }</h1>
+        <h1>{strings('doctorProfile', user.name)}</h1>
       </Row>
 
       <Form className="pt-5">
         <Form.Row>
-          <FormInput label="Email" type="email" placeholder="Enter email" />
-          <FormInput label="Password" type="password" placeholder="Password" />
+          <FormInput label={strings('email')} type="email" placeholder={strings('email')} />
+          <FormInput label={strings('password')} type="password" placeholder={strings('password')} />
         </Form.Row>
 
         <Form.Row>
-          <FormInput label="Address" type="text" placeholder="1234 Main St" />
+          <FormInput label={strings('address')} type="text" placeholder={strings('streetPlaceholder')} />
         </Form.Row>
 
         <Form.Row>
-          <FormInput label="Address 2" type="text" placeholder="Apartment, studio, or floor" />
+          <FormInput label={strings('address2')} type="text" placeholder={strings('apartmentPlaceholder')} />
         </Form.Row>
 
         <Form.Row>
-          <FormInput label="City" type="text" placeholder="New City'sbergville" />
-          <FormInput label="State" type="text" placeholder="CA" />
-          <FormInput label="Zip" type="text" placeholder="12345" />
-          <FormInput label="Password" type="password" placeholder="Password" />
+          <FormInput label={strings('city')} type="text" placeholder={strings('cityPlaceholder')} />
+          <FormInput label={strings('state')} type="text" placeholder={strings('statePlaceholder')} />
+          <FormInput label={strings('zip')} type="text" placeholder={strings('zipPlaceholder')} />
+          <FormInput label={strings('password')} type="password" placeholder={strings('password')} />
         </Form.Row>
 
         <Button variant="primary">
-          Update
+          {strings('update')}
         </Button>
       </Form>
     </Container>

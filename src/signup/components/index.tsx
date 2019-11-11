@@ -10,6 +10,7 @@ import * as icons from '@fortawesome/free-solid-svg-icons'
 // import Spinner from 'react-bootstrap/Spinner'
 import FormInput from 'common/components/form-input'
 import connectWithDispatch from 'util/connect-with-dispatch'
+import strings from 'common/strings'
 import 'signup/styles/index.sass'
 
 interface TProps extends RouteComponentProps {
@@ -38,9 +39,7 @@ const Signup: React.FunctionComponent<TProps> = ({ history }) => {
               <Image fluid src="signup-image.png" />
             </Row>
             <Row className='justify-content-center'>
-              <h4 className='p-2'>
-                self-teaching personalized medical intelligence platform built from real-time analysis of millions of patient/doctor interactions.
-              </h4>
+              <h4 className='p-2'>{strings('milliBlurb')}</h4>
             </Row>
           </Container>
         </Col>
@@ -48,34 +47,34 @@ const Signup: React.FunctionComponent<TProps> = ({ history }) => {
         <Col lg={4} md={8} sm={8} xs={8} className='text-center pane-2'>
           <Container className=''>
             <Row className='p-4'>
-              <h3>Create your Account</h3>
+              <h3>{strings('createAccount')}</h3>
             </Row>
             <Row className='p-4 text-left'>
               <Form className="w-100">
 
                 <FormInput
-                  label="Full Name"
+                  label={strings('fullName')}
                   type="text"
                   icon={icons.faUser}
                   onChange={setName}
                   value={name}/>
 
                 <FormInput
-                  label="Email"
+                  label={strings('email')}
                   type="email"
                   icon={icons.faAt}
                   onChange={setEmail}
                   value={email}/>
 
                 <FormInput
-                  label="Business Url"
+                  label={strings('businessUrl')}
                   type="text"
                   icon={icons.faGlobe}
                   onChange={setBusinessUrl}
                   value={businessUrl}/>
 
                 <FormInput
-                  label="password"
+                  label={strings('password')}
                   type="password"
                   icon={icons.faLock}
                   onChange={setPassword}
@@ -84,7 +83,7 @@ const Signup: React.FunctionComponent<TProps> = ({ history }) => {
               </Form>
             </Row>
             <Row className='p-4'>
-              <Button block size='lg'>Create Account</Button>
+              <Button block size='lg'>{strings('createAccount')}</Button>
             </Row>
           </Container>
         </Col>

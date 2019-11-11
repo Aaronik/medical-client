@@ -24,6 +24,7 @@ import NotSignedInContainer from 'common/components/NotSignedIn'
 import { loadHostMap } from 'auth/actions'
 import store, { currentUser } from 'store'
 import { TUserType as TStoreUserType } from 'user/types.d'
+import strings from 'common/strings'
 import 'App.sass'
 
 // Things to do once when the page loads
@@ -42,8 +43,8 @@ const SignedOutBase: React.FunctionComponent = () => {
           <MilliBrandLink/>
         </Nav>
         <Nav>
-          <NavLink to="/signin" text="Sign In" />
-          <NavLink to="/signup" text="Sign Up" />
+          <NavLink to="/signin" text={strings('signIn')} />
+          <NavLink to="/signup" text={strings('signUp')} />
         </Nav>
       </AppNavBar>
 
@@ -65,7 +66,7 @@ const AdminBase: React.FunctionComponent = () => {
       <AppNavBar>
         <Nav>
           <MilliBrandLink/>
-          <NavLink to="/doctors" text="Doctors" />
+          <NavLink to="/doctors" text={strings('doctors')} />
         </Nav>
         <Nav>
           <AuthDropdown/>
@@ -86,12 +87,12 @@ const AdminBase: React.FunctionComponent = () => {
 
 const DoctorBase: React.FunctionComponent = () => {
   const gutterRoutes: LinkEntryProps[] = [
-    { to: "/", text: "Dashboard", icon: icons.faSquare, exact: true },
-    { to: "/messages", text: "Messages", icon: icons.faCommentDots },
-    { to: "/timeline", text: "Health Timeline", icon: icons.faCheckCircle },
-    { to: "/schedule", text: "Schedule", icon: icons.faCalendar },
-    { to: "/activity", text: "Activity", icon: icons.faClock },
-    { to: "/settings", text: "Settings", icon: icons.faCog },
+    { to: "/", text: strings('dashboard'), icon: icons.faSquare, exact: true },
+    { to: "/messages", text: strings('messages'), icon: icons.faCommentDots },
+    { to: "/timeline", text: strings('healthTimeline'), icon: icons.faCheckCircle },
+    { to: "/schedule", text: strings('schedule'), icon: icons.faCalendar },
+    { to: "/activity", text: strings('activity'), icon: icons.faClock },
+    { to: "/settings", text: strings('settings'), icon: icons.faCog },
   ]
 
   return (
@@ -128,7 +129,7 @@ const PatientBase: React.FunctionComponent = () => {
       <AppNavBar>
         <Nav>
           <MilliBrandLink/>
-          <NavLink to="/intake" text="Intake Survey" />
+          <NavLink to="/intake" text={strings('intakeSurvey')} />
         </Nav>
         <Nav>
           <AuthDropdown/>
@@ -176,7 +177,7 @@ const BaseWithProps = connect(() => {
   const userType: TUserType = currentUser() ? currentUser().type : 'SIGNED_OUT'
 
   return {
-    userType: 'DOCTOR' as 'DOCTOR' || userType
+    userType: userType
   }
 })(Base)
 

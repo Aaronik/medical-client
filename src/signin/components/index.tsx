@@ -12,6 +12,7 @@ import { fetchUser } from 'user/actions'
 import FormInput from 'common/components/form-input'
 import connectWithDispatch from 'util/connect-with-dispatch'
 import 'signin/styles/index.sass'
+import strings from 'common/strings'
 
 interface TProps extends RouteComponentProps {
 }
@@ -36,7 +37,7 @@ const Signin: React.FunctionComponent<TProps> = ({ history }) => {
         <Col lg={4} md={8} sm={8} xs={8} className='text-center pane'>
           <Container className=''>
             <Row className='p-4'>
-              <h3>Sign In</h3>
+              <h3>{strings('signIn')}</h3>
             </Row>
             <Row className='p-4 text-left'>
               <Form className="w-100">
