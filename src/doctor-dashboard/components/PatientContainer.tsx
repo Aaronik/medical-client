@@ -15,6 +15,11 @@ import { TTimelineItem, TTimelineGroup } from 'timeline/types.d'
 import { addTimelineItem } from 'timeline/actions'
 import formatDate from 'util/date-to-timeline-date'
 import strings from 'common/strings'
+import 'doctor-dashboard/styles/patient-container.sass'
+
+const filterTimelineData = (filterString: string, data: TTimelineItem[]): TTimelineItem[] => (
+  data.filter(item => item.content.toLowerCase().includes(filterString))
+)
 
 type TProps = {
   patient: TUser
@@ -27,6 +32,7 @@ const PatientContainer: React.FC<TProps> = ({ patient, patientTimelineData, pati
   const [ description, setDescription ] = useState('')
   const [ startDate, setStartDate ] = useState('')
   const [ endDate, setEndDate ] = useState('')
+  const [ filterString, setFilterString ] = useState('')
 
   const onTimelineDoubleClick = (item: TTimelineItem) => {
     setIsModalActive(true)
@@ -52,14 +58,27 @@ const PatientContainer: React.FC<TProps> = ({ patient, patientTimelineData, pati
     setIsModalActive(false)
   }
 
+  const onFilterInputChange = (changeEvent: React.ChangeEvent<HTMLInputElement>) => {
+    setFilterString(changeEvent.currentTarget.value)
+  }
+
   return (
-    <Container>
+    <Container fluid className='doctor-dashboard-patient-container'>
 
       <Row className="justify-content-around p-5">
         <h1>{strings('yourPatient', patient.name)}</h1>
+        <input
+          className="font-weight-bold"
+          value={filterString}
+          onChange={onFilterInputChange}
+          placeholder={strings('searchFilterPlaceholder')} />
       </Row>
 
-      <Timeline data={patientTimelineData} groups={patientTimelineGroups} onAdd={onTimelineDoubleClick}/>
+
+      <Timeline
+        data={filterTimelineData(filterString, patientTimelineData)}
+        groups={patientTimelineGroups}
+        onAdd={onTimelineDoubleClick}/>
 
       <Modal show={isModalActive} centered>
         <Modal.Header>
