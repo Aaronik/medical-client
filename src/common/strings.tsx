@@ -26,7 +26,9 @@ const map = {
   cityPlaceholder: "New City'sbergsville",
   statePlaceholder: "CA",
   zipPlaceholder: "12345",
+
   searchFilterPlaceholder: "Filter Events...",
+  groupFilterLabel: "Visible Categories",
 
   fullName: 'Full Name',
   businessUrl: 'Business Url',

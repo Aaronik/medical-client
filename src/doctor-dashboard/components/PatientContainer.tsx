@@ -1,11 +1,15 @@
 import React, { useState } from 'react'
 import uuid from 'uuid/v4'
+import { without } from 'lodash'
 import { connect } from 'react-redux'
 import Container from 'react-bootstrap/Container'
 import Row from 'react-bootstrap/Row'
 import Modal from 'react-bootstrap/Modal'
 import Button from 'react-bootstrap/Button'
+import ButtonToolbar from 'react-bootstrap/ButtonToolbar'
 import Form from 'react-bootstrap/Form'
+import DropdownButton from 'react-bootstrap/DropdownButton'
+import Dropdown from 'react-bootstrap/Dropdown'
 
 import FormInput from 'common/components/form-input'
 import { TStoreState } from 'store'
@@ -17,8 +21,65 @@ import formatDate from 'util/date-to-timeline-date'
 import strings from 'common/strings'
 import 'doctor-dashboard/styles/patient-container.sass'
 
+type TGroupSelectProps = {
+  groups: TTimelineGroup[]
+  activeGroupIds: string[]
+  onChange: Function
+}
+
+const GroupSelect: React.FC<TGroupSelectProps> = ({ groups, activeGroupIds, onChange }) => {
+
+  const onDropdownChange = (e: React.SyntheticEvent) => {
+    const id = (e.target as HTMLInputElement).id.toString()
+
+    if (activeGroupIds.includes(id)) {
+      // user is toggling this id on
+      onChange(without(activeGroupIds, id))
+    } else {
+      // user is toggling this id off
+      onChange(activeGroupIds.concat([id]))
+    }
+  }
+
+  const dropdownItems = groups.map(group => {
+    const isChecked = activeGroupIds.includes(group.id.toString())
+
+    return (
+      <Dropdown.Item
+        key={group.id}
+        as={Form.Check} >
+
+        <Form.Check
+          type="checkbox"
+          custom
+          checked={isChecked}
+          id={group.id.toString()}
+          label={group.content}/>
+
+      </Dropdown.Item>
+    )
+  })
+
+  return (
+    <DropdownButton
+      className='ml-3'
+      id="patient-container-group-filter-dropdown"
+      drop="down"
+      variant="secondary"
+      onChange={onDropdownChange}
+      title={strings('groupFilterLabel')}>
+
+      {dropdownItems}
+    </DropdownButton>
+  )
+}
+
 const filterTimelineData = (filterString: string, data: TTimelineItem[]): TTimelineItem[] => (
   data.filter(item => item.content.toLowerCase().includes(filterString))
+)
+
+const filterTimelineGroups = (groupIds: string[], groups: TTimelineGroup[]): TTimelineGroup[] => (
+  groups.filter(group => groupIds.includes(group.id.toString()))
 )
 
 type TProps = {
@@ -33,6 +94,7 @@ const PatientContainer: React.FC<TProps> = ({ patient, patientTimelineData, pati
   const [ startDate, setStartDate ] = useState('')
   const [ endDate, setEndDate ] = useState('')
   const [ filterString, setFilterString ] = useState('')
+  const [ activeGroupIds, setActiveGroupIds ] = useState<string[]>(patientTimelineGroups.map(g => g.id.toString()))
 
   const onTimelineDoubleClick = (item: TTimelineItem) => {
     setIsModalActive(true)
@@ -67,17 +129,27 @@ const PatientContainer: React.FC<TProps> = ({ patient, patientTimelineData, pati
 
       <Row className="justify-content-around p-5">
         <h1>{strings('yourPatient', patient.name)}</h1>
-        <input
-          className="font-weight-bold"
-          value={filterString}
-          onChange={onFilterInputChange}
-          placeholder={strings('searchFilterPlaceholder')} />
+
+        <ButtonToolbar className='align-items-center'>
+          <input
+            className="font-weight-bold"
+            value={filterString}
+            onChange={onFilterInputChange}
+            placeholder={strings('searchFilterPlaceholder')} />
+
+          <GroupSelect
+            activeGroupIds={activeGroupIds}
+            onChange={setActiveGroupIds}
+            groups={patientTimelineGroups} />
+
+        </ButtonToolbar>
+
       </Row>
 
 
       <Timeline
         data={filterTimelineData(filterString, patientTimelineData)}
-        groups={patientTimelineGroups}
+        groups={filterTimelineGroups(activeGroupIds, patientTimelineGroups)}
         onAdd={onTimelineDoubleClick}/>
 
       <Modal show={isModalActive} centered>
