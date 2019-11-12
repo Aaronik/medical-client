@@ -37,7 +37,7 @@ const NavEntry: React.FC<LinkEntryProps> = ({ to, text, icon, exact }) => {
 // Change these and both the side nav _and_ nav aware container will adjust.
 // This is how you change side nav sizing.
 const cs = {
-  xl: 2,
+  xl: 1,
   lg: 2,
   md: 3,
   sm: 4,
