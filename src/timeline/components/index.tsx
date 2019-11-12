@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import * as timeline from 'vis-timeline'
 
 import * as T from 'timeline/types.d'
@@ -75,7 +75,12 @@ const renderTimeline = (container: HTMLDivElement, data: T.TTimelineItem[], grou
   })
 
   if (groups.length) return new timeline.Timeline(container, modifiedData, groups, options)
-  else new timeline.Timeline(container, modifiedData, options)
+  else return new timeline.Timeline(container, modifiedData, options)
+}
+
+const redrawTimeline = (ref: timeline.Timeline, data: T.TTimelineItem[], groups: T.TTimelineGroup[]) => {
+  ref.setItems(data)
+  ref.setGroups(groups)
 }
 
 type TProps = {
@@ -86,16 +91,22 @@ type TProps = {
 
 const Timeline: React.FC<TProps> = ({ data, groups, onAdd }) => {
   const timelineTargetRef = useRef<HTMLDivElement>(null)
+  const [ timelineRef, setTimelineRef ] = useState()
 
   useEffect(() => {
     const ref = timelineTargetRef.current as HTMLDivElement
-    renderTimeline(ref, data, groups, onAdd)
+    setTimelineRef(renderTimeline(ref, data, groups, onAdd))
     // ESLint needs onAdd to be in the array below. However, doing so introduces a bug,
     // that the timeline then gets rendered every time the Timeline FC gets rendered.
     // That's a bunch of extra reners that don't need to happen. It basically is breaking
     // the useEffect dependency list. I'm confident this is a unique situation, using this
     // imperative vis-timeline, so I'm leaving the rule in place and leaving this comment
     // as well.
+    // eslint-disable-next-line
+  }, [])
+
+  useEffect(() => {
+    if (timelineRef) redrawTimeline(timelineRef, data, groups)
     // eslint-disable-next-line
   }, [data, groups])
 
