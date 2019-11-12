@@ -1,6 +1,5 @@
 import React, { useEffect, useRef } from 'react'
 import * as timeline from 'vis-timeline'
-import Container from 'react-bootstrap/Container'
 
 import * as T from 'timeline/types.d'
 import strings from 'common/strings'
@@ -101,9 +100,7 @@ const Timeline: React.FC<TProps> = ({ data, groups, onAdd }) => {
   }, [data, groups])
 
   return (
-    <Container>
-      <div id='timeline-container' ref={timelineTargetRef}></div>
-    </Container>
+    <div id='timeline-container' ref={timelineTargetRef}></div>
   )
 }
 
