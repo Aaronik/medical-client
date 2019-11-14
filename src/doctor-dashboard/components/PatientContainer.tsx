@@ -41,10 +41,7 @@ const GroupSelect: React.FC<TGroupSelectProps> = ({ groups, activeGroupIds, onCh
     }
   }
 
-  const dropdownItems = groups.map(group => {
-    const isChecked = activeGroupIds.includes(group.id.toString())
-
-    return (
+  const dropdownItems = groups.map(group => (
       <Dropdown.Item
         key={group.id}
         as={Form.Check} >
@@ -52,13 +49,12 @@ const GroupSelect: React.FC<TGroupSelectProps> = ({ groups, activeGroupIds, onCh
         <Form.Check
           type="checkbox"
           custom
-          checked={isChecked}
+          defaultChecked={true}
           id={group.id.toString()}
           label={group.content}/>
 
       </Dropdown.Item>
-    )
-  })
+  ))
 
   return (
     <DropdownButton
