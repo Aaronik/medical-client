@@ -2,3 +2,11 @@
 @import 'common/styles/variables.sass'
 @import 'common/styles/util.sass'
 @import '~bootstrap/scss/bootstrap.scss'
+
+// App-wide Overrides
+
+// I really don't want to put the important here, but without it,
+// when a button is pressed, both the focus and active pseudo classes are
+// engaged and this won't use the rule
+button.btn:focus, button.btn:active
+  box-shadow: none !important

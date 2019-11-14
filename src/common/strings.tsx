@@ -27,8 +27,8 @@ const map = {
   statePlaceholder: "CA",
   zipPlaceholder: "12345",
 
-  searchFilterPlaceholder: "Filter Events...",
-  groupFilterLabel: "Visible Categories",
+  searchFilterPlaceholder: "Filter Events",
+  groupFilterLabel: "Categories",
 
   fullName: 'Full Name',
   businessUrl: 'Business Url',

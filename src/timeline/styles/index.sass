@@ -5,33 +5,37 @@ $group-margin: 10px
 
 // Date readouts
 .vis-time-axis .vis-text
-  background-color: $water-blue
-  border-radius: 0.4em
   text-align: center
-  color: $white
 
 // "range" item
 .vis-item.vis-range
   background-color: $pale-grey
-  border: 0
-  border-left: 4px solid yellow
+  border: 1px solid darken($pale-grey, 5%)
+  border-left-color: $turtle-green
 
   .vis-item-overflow
     display: flex
     align-items: center
     justify-content: flex-end
-    padding: 3px
 
 // "point" item
 .vis-item.vis-point
-  border-left: 3px dashed red
+  border-left-color: $ruby
 
   .vis-dot
     border-color: $pale-grey
+    height: 100%
+    top: 0 !important
+    left: 0 !important
+    transform: none !important
 
-// all
+// all events
 .vis-item
+  border: 0
+  border-left-width: 10px !important
+  border-left-style: solid
   border-radius: 3px 15px 15px 3px !important
+  padding: 15px
 
 // tooltips
 .timeline-tooltip

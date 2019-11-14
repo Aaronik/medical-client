@@ -88,13 +88,14 @@ export default connect((storeState: TStoreState) => {
 // respecting the size of the gutter nav.
 const GutterAwareFluidContainerSansConnect: React.FC<{ gutterNavActive: boolean}> = ({ children, gutterNavActive }) => {
   let className = ""
-  className += ` col-xl-${12 - cs.xl}`
-  className += ` col-lg-${12 - cs.lg}`
-  className += ` col-md-${12 - cs.md}`
-  className += ` col-sm-${12 - cs.sm}`
-  className += ` col-${12 - cs.xs}`
 
   if (gutterNavActive) {
+    className += ` col-xl-${12 - cs.xl}`
+    className += ` col-lg-${12 - cs.lg}`
+    className += ` col-md-${12 - cs.md}`
+    className += ` col-sm-${12 - cs.sm}`
+    className += ` col-${12 - cs.xs}`
+
     className += ` offset-xl-${cs.xl}`
     className += ` offset-lg-${cs.lg}`
     className += ` offset-md-${cs.md}`

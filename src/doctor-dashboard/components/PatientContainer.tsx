@@ -31,9 +31,10 @@ type TGroupSelectProps = {
   groups: TTimelineGroup[]
   activeGroupIds: string[]
   onChange: Function
+  className?: string
 }
 
-const GroupSelect: React.FC<TGroupSelectProps> = ({ groups, activeGroupIds, onChange }) => {
+const GroupSelect: React.FC<TGroupSelectProps> = ({ groups, activeGroupIds, onChange, className }) => {
 
   const onDropdownChange = (e: React.SyntheticEvent) => {
     const id = (e.target as HTMLInputElement).id.toString()
@@ -64,7 +65,7 @@ const GroupSelect: React.FC<TGroupSelectProps> = ({ groups, activeGroupIds, onCh
 
   return (
     <DropdownButton
-      className='ml-3'
+      className={className}
       id="patient-container-group-filter-dropdown"
       drop="down"
       variant="secondary"
@@ -141,12 +142,13 @@ const PatientContainer: React.FC<TProps> = ({ patient, patientTimelineData, pati
 
         <ButtonToolbar className='align-items-center'>
           <input
-            className="font-weight-bold"
+            className="mr-5"
             value={filterString}
             onChange={onFilterInputChange}
             placeholder={strings('searchFilterPlaceholder')} />
 
           <GroupSelect
+            className="ml-3"
             activeGroupIds={activeGroupIds}
             onChange={setActiveGroupIds}
             groups={patientTimelineGroups} />
@@ -157,7 +159,7 @@ const PatientContainer: React.FC<TProps> = ({ patient, patientTimelineData, pati
 
 
       <Timeline
-        data={filterTimelineData(filterString, patientTimelineData)}
+        items={filterTimelineData(filterString, patientTimelineData)}
         groups={filterTimelineGroups(activeGroupIds, patientTimelineGroups)}
         onAdd={onTimelineDoubleClick}
         onUpdate={onTimelineDoubleClick}
