@@ -71,13 +71,16 @@ const earliestStartDateOfItems = (items: T.TTimelineItem[]) => {
   return min(items.map(i => i.start))
 }
 
-type TOnAdd = (timelineItem: timeline.TimelineItem) => void
-type TOnUpdate = (timelineItem: timeline.TimelineItem) => void
+type TOnItemChange = (timelineItem: timeline.TimelineItem) => void
+
+type TOnAdd = TOnItemChange
+type TOnUpdate = TOnItemChange
+type TOnMove = TOnItemChange
 
 // Trample over any react created elements, adding the timeline.
 // This is the transformation from react's beautiful declarative
 // paradigm to timeline's imperative paradigm.
-const renderTimeline = (container: HTMLDivElement, items: T.TTimelineItem[], groups: T.TTimelineGroup[], onAdd: TOnAdd, onUpdate: TOnUpdate) => {
+const renderTimeline = (container: HTMLDivElement, items: T.TTimelineItem[], groups: T.TTimelineGroup[], onAdd: TOnAdd, onUpdate: TOnUpdate, onMove: TOnMove) => {
 
   // Calculating the earliest date the timeline shows here allows us to only
   // show what dates the user is concerned with, so they don't get super
@@ -85,7 +88,7 @@ const renderTimeline = (container: HTMLDivElement, items: T.TTimelineItem[], gro
   // years if you sroll enough, which isn't hard to do by just zooming out a bunch.
   const earliestDate = earliestStartDateOfItems(items)
 
-  const options = optionsWith({ onAdd, onUpdate, min: earliestDate })
+  const options = optionsWith({ onAdd, onUpdate, onMove, min: earliestDate })
 
   container.innerHTML = ''
 
@@ -107,15 +110,16 @@ type TProps = {
   groups: T.TTimelineGroup[]
   onAdd: TOnAdd
   onUpdate: TOnUpdate
+  onMove: TOnMove
 }
 
-const Timeline: React.FC<TProps> = ({ items, groups, onAdd, onUpdate }) => {
+const Timeline: React.FC<TProps> = ({ items, groups, onAdd, onUpdate, onMove }) => {
   const timelineTargetRef = useRef<HTMLDivElement>(null)
   const [ timelineRef, setTimelineRef ] = useState()
 
   useEffect(() => {
     const ref = timelineTargetRef.current as HTMLDivElement
-    setTimelineRef(renderTimeline(ref, items, groups, onAdd, onUpdate))
+    setTimelineRef(renderTimeline(ref, items, groups, onAdd, onUpdate, onMove))
     // ESLint needs onAdd to be in the array below. However, doing so introduces a bug,
     // that the timeline then gets rendered every time the Timeline FC gets rendered.
     // That's a bunch of extra reners that don't need to happen. It basically is breaking

@@ -115,6 +115,13 @@ const PatientContainer: React.FC<TProps> = ({ patient, patientTimelineData, pati
     setIsModalActive(true)
   }
 
+  const onMoveItemInTimeline = (item: TTimelineItem) => {
+    item.start = formatDate(item.start)
+    if (item.end) item.end = formatDate(item.end)
+
+    updateTimelineItem(patient.id, item)
+  }
+
   const onModalSaveClick = () => {
     const type = activeTimelineItem.end === activeTimelineItem.start ? 'point' as 'point' : 'range' as 'range'
     const item = { ...activeTimelineItem, type }
@@ -163,6 +170,7 @@ const PatientContainer: React.FC<TProps> = ({ patient, patientTimelineData, pati
         groups={filterTimelineGroups(activeGroupIds, patientTimelineGroups)}
         onAdd={onTimelineDoubleClick}
         onUpdate={onTimelineDoubleClick}
+        onMove={onMoveItemInTimeline}
       />
 
       <Modal show={isModalActive} centered>
