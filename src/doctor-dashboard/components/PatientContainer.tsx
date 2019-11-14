@@ -9,8 +9,11 @@ import ButtonToolbar from 'react-bootstrap/ButtonToolbar'
 import Form from 'react-bootstrap/Form'
 import DropdownButton from 'react-bootstrap/DropdownButton'
 import Dropdown from 'react-bootstrap/Dropdown'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import * as icons from '@fortawesome/free-solid-svg-icons'
 
 import FormInput from 'common/components/form-input'
+import DatePickerModal from 'common/components/DatePickerModal'
 import { TStoreState } from 'store'
 import { TUser } from 'user/types.d'
 import Timeline from 'timeline/components'
@@ -85,6 +88,73 @@ const filterTimelineGroups = (groupIds: string[], groups: TTimelineGroup[]): TTi
   groups.filter(group => groupIds.includes(group.id.toString()))
 )
 
+type TEventModalProps = {
+  show: boolean
+  item: TTimelineItem
+  onSave: () => void
+  onClose: () => void
+  updateItem: (update: Partial<TTimelineItem>) => void
+}
+
+const EventModal: React.FC<TEventModalProps> = ({ show, item, onSave, updateItem, onClose }) => {
+  const [ isStartDateModalActive, setIsStartDateModalActive ] = useState(false)
+  const [ isEndDateModalActive, setIsEndDateModalActive ] = useState(false)
+
+  const endDate = item.end ? item.end.toString() : item.start.toString()
+
+  const startDateButton = <FontAwesomeIcon icon={icons.faCalendarAlt} style={{ cursor: 'pointer' }} onClick={() => setIsStartDateModalActive(true)} />
+  const endDateButton = <FontAwesomeIcon icon={icons.faCalendarAlt} style={{ cursor: 'pointer' }} onClick={() => setIsEndDateModalActive(true)} />
+
+  return (
+    <React.Fragment>
+      <DatePickerModal
+        show={isStartDateModalActive}
+        initialDate={new Date(item.start)}
+        onClose={() => setIsStartDateModalActive(false)}
+        onSelect={date => updateItem({ start: formatDate(date) })} />
+
+      <DatePickerModal
+        show={isEndDateModalActive}
+        initialDate={new Date(item.end || "")}
+        onClose={() => setIsEndDateModalActive(false)}
+        onSelect={date => updateItem({ end: formatDate(date) })} />
+
+      <Modal show={show} centered onHide={onClose}>
+        <Modal.Header>
+          <Modal.Title>{strings('addPatientEvent')}</Modal.Title>
+        </Modal.Header>
+
+        <Modal.Body>
+          <Form>
+            <FormInput
+              label={strings('eventDesc')}
+              value={item.content}
+              type="text"
+              onChange={content => updateItem({ content })}/>
+            <FormInput
+              label={strings('formStartDate')}
+              value={item.start.toString()}
+              type="text"
+              faIcon={startDateButton}
+              onChange={start => updateItem({ start })}/>
+            <FormInput
+              label={strings('formEndDate')}
+              value={endDate}
+              faIcon={endDateButton}
+              type="text"
+              onChange={end => updateItem({ end })}/>
+          </Form>
+        </Modal.Body>
+
+        <Modal.Footer>
+          <Button variant="secondary" onClick={onClose}>{strings('close')}</Button>
+          <Button variant="primary" onClick={onSave}>{strings('save')}</Button>
+        </Modal.Footer>
+      </Modal>
+    </React.Fragment>
+  )
+}
+
 type TProps = {
   patient: TUser
   patientTimelineData: TTimelineItem[]
@@ -92,7 +162,7 @@ type TProps = {
 }
 
 const PatientContainer: React.FC<TProps> = ({ patient, patientTimelineData, patientTimelineGroups }) => {
-  const [ isModalActive, setIsModalActive ] = useState(false)
+  const [ isEventModalActive, setIsEventModalActive ] = useState(false)
   const [ filterString, setFilterString ] = useState('')
   const [ activeGroupIds, setActiveGroupIds ] = useState<string[]>(patientTimelineGroups.map(g => g.id.toString()))
 
@@ -112,7 +182,7 @@ const PatientContainer: React.FC<TProps> = ({ patient, patientTimelineData, pati
     item.start = formatDate(item.start)
 
     setActiveTimelineItem(item)
-    setIsModalActive(true)
+    setIsEventModalActive(true)
   }
 
   const onMoveItemInTimeline = (item: TTimelineItem) => {
@@ -130,16 +200,12 @@ const PatientContainer: React.FC<TProps> = ({ patient, patientTimelineData, pati
     if (isExistingItem) updateTimelineItem(patient.id, item)
     else addTimelineItem(patient.id, item)
 
-
-    setIsModalActive(false)
+    setIsEventModalActive(false)
   }
 
   const onFilterInputChange = (changeEvent: React.ChangeEvent<HTMLInputElement>) => {
     setFilterString(changeEvent.currentTarget.value)
   }
-
-  // Until the user tries to update or add a new event, there won't be an activeTimelineItem
-  const endDate = activeTimelineItem.end ? activeTimelineItem.end.toString() : activeTimelineItem.start.toString()
 
   return (
     <Container fluid className='doctor-dashboard-patient-container'>
@@ -173,24 +239,13 @@ const PatientContainer: React.FC<TProps> = ({ patient, patientTimelineData, pati
         onMove={onMoveItemInTimeline}
       />
 
-      <Modal show={isModalActive} centered>
-        <Modal.Header>
-          <Modal.Title>{strings('addPatientEvent')}</Modal.Title>
-        </Modal.Header>
+      <EventModal
+        show={isEventModalActive}
+        item={activeTimelineItem}
+        updateItem={updateActiveTimelineItem}
+        onSave={onModalSaveClick}
+        onClose={() => setIsEventModalActive(false)} />
 
-        <Modal.Body>
-          <Form>
-            <FormInput label={strings('eventDesc')} value={activeTimelineItem.content} type="text" onChange={content => updateActiveTimelineItem({ content })}/>
-            <FormInput label={strings('formStartDate')} value={activeTimelineItem.start.toString()} type="text" onChange={start => updateActiveTimelineItem({ start })}/>
-            <FormInput label={strings('formEndDate')} value={endDate} type="text" onChange={end => updateActiveTimelineItem({ end })}/>
-          </Form>
-        </Modal.Body>
-
-        <Modal.Footer>
-          <Button variant="secondary" onClick={() => setIsModalActive(false)}>{strings('close')}</Button>
-          <Button variant="primary" onClick={() => onModalSaveClick()}>{strings('save')}</Button>
-        </Modal.Footer>
-      </Modal>
     </Container>
   )
 }

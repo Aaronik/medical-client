@@ -12,6 +12,7 @@
     "react": "^16.9.0",
     "react-bootstrap": "^1.0.0-beta.14",
     "react-dom": "^16.9.0",
+    "react-infinite-calendar": "^2.3.1",
     "react-redux": "^7.1.1",
     "react-router-dom": "^5.1.2",
     "redux": "^4.0.4",
@@ -42,16 +43,17 @@
     ]
   },
   "devDependencies": {
-    "@types/lodash": "^4.14.138",
-    "@types/react-redux": "^7.1.2",
-    "@types/react-router-dom": "^5.1.2",
-    "@types/uuid": "^3.4.5",
     "@types/axios": "^0.14.0",
     "@types/jest": "24.0.18",
+    "@types/lodash": "^4.14.138",
     "@types/node": "12.7.4",
     "@types/react": "16.9.2",
     "@types/react-dom": "16.9.0",
-    "react-scripts": "3.1.1",
-    "node-sass": "^4.12.0"
+    "@types/react-infinite-calendar": "^2.3.3",
+    "@types/react-redux": "^7.1.2",
+    "@types/react-router-dom": "^5.1.2",
+    "@types/uuid": "^3.4.5",
+    "node-sass": "^4.12.0",
+    "react-scripts": "3.1.1"
   }
 }

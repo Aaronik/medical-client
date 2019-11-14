@@ -5,7 +5,16 @@ import * as timeline from 'vis-timeline'
 // that we use in this app.
 const formatDate = (datetype: timeline.DateType): string => {
   const date = new Date(datetype)
-  return `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`
+
+  let month: string | number, day: string | number
+
+  month = date.getMonth() + 1
+  if (month < 10) month = `0${month}`
+
+  day = date.getDate()
+  if (day < 10) day = `0${day}`
+
+  return `${date.getFullYear()}-${month}-${day}`
 }
 
 export default formatDate

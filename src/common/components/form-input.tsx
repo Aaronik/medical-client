@@ -10,7 +10,8 @@ type TProps = {
   type: 'text' | 'password' | 'email'
   onChange: (value: string) => void
   value: string
-  icon?: icons.IconDefinition
+  icon?: icons.IconDefinition // this'll be automatically put into a FA component
+  faIcon?: JSX.Element // this'll allow you to put click handlers, etc. on the icon
 }
 
 // hate to codify the event: any pattern but typing it is very difficult
@@ -20,12 +21,13 @@ const deconstructEvent = (onChange: Function) => (event: any) => onChange(event.
 // ATTOW this was used in signin and signout.
 // Ideally, if more pages are built, this same style will be used
 // on inputs and this can be used in more places.
-const FormInput: React.FunctionComponent<TProps> = ({ label, type, onChange, value, icon }) => (
+const FormInput: React.FunctionComponent<TProps> = ({ label, type, onChange, value, icon, faIcon }) => (
   <Form.Group className='custom-form-group'>
     <Form.Label className="text-muted">{label}</Form.Label>
     <InputGroup>
       <Form.Control type={type} onChange={deconstructEvent(onChange)} value={value}></Form.Control>
-      {icon && <InputGroup.Append><InputGroup.Text><FontAwesomeIcon icon={icon} /></InputGroup.Text></InputGroup.Append>}
+      { icon && <InputGroup.Append><InputGroup.Text><FontAwesomeIcon icon={icon} /></InputGroup.Text></InputGroup.Append> }
+      { faIcon && <InputGroup.Append><InputGroup.Text>{faIcon}</InputGroup.Text></InputGroup.Append> }
     </InputGroup>
   </Form.Group>
 )
