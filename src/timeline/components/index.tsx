@@ -35,11 +35,12 @@ const tooltipTemplater = (item: timeline.TimelineItem, editedData?: timeline.Tim
 }
 
 type TOnAdd = (timelineItem: timeline.TimelineItem) => void
+type TOnUpdate = (timelineItem: timeline.TimelineItem) => void
 
 // Trample over any react created elements, adding the timeline.
 // This is the transformation from react's beautiful declarative
 // paradigm to timeline's imperative paradigm.
-const renderTimeline = (container: HTMLDivElement, data: T.TTimelineItem[], groups: T.TTimelineGroup[], onAdd: TOnAdd) => {
+const renderTimeline = (container: HTMLDivElement, data: T.TTimelineItem[], groups: T.TTimelineGroup[], onAdd: TOnAdd, onUpdate: TOnUpdate) => {
   const options: timeline.TimelineOptions = {
     selectable: true,
     minHeight: '300px',
@@ -60,9 +61,8 @@ const renderTimeline = (container: HTMLDivElement, data: T.TTimelineItem[], grou
       updateGroup: true,
       remove: true
     },
-    onAdd: (item, cb) => {
-      onAdd(item)
-    }
+    onAdd: (item, cb) => onAdd(item),
+    onUpdate: (item, cb) => onUpdate(item),
   }
 
   container.innerHTML = ''
@@ -78,24 +78,24 @@ const renderTimeline = (container: HTMLDivElement, data: T.TTimelineItem[], grou
   else return new timeline.Timeline(container, modifiedData, options)
 }
 
-const redrawTimeline = (ref: timeline.Timeline, data: T.TTimelineItem[], groups: T.TTimelineGroup[]) => {
-  ref.setItems(data)
-  ref.setGroups(groups)
+const redrawTimeline = (ref: timeline.Timeline, items: T.TTimelineItem[], groups: T.TTimelineGroup[]) => {
+  ref.setData({ groups, items })
 }
 
 type TProps = {
   data: T.TTimelineItem[]
   groups: T.TTimelineGroup[]
   onAdd: TOnAdd
+  onUpdate: TOnUpdate
 }
 
-const Timeline: React.FC<TProps> = ({ data, groups, onAdd }) => {
+const Timeline: React.FC<TProps> = ({ data, groups, onAdd, onUpdate }) => {
   const timelineTargetRef = useRef<HTMLDivElement>(null)
   const [ timelineRef, setTimelineRef ] = useState()
 
   useEffect(() => {
     const ref = timelineTargetRef.current as HTMLDivElement
-    setTimelineRef(renderTimeline(ref, data, groups, onAdd))
+    setTimelineRef(renderTimeline(ref, data, groups, onAdd, onUpdate))
     // ESLint needs onAdd to be in the array below. However, doing so introduces a bug,
     // that the timeline then gets rendered every time the Timeline FC gets rendered.
     // That's a bunch of extra reners that don't need to happen. It basically is breaking
@@ -107,8 +107,7 @@ const Timeline: React.FC<TProps> = ({ data, groups, onAdd }) => {
 
   useEffect(() => {
     if (timelineRef) redrawTimeline(timelineRef, data, groups)
-    // eslint-disable-next-line
-  }, [data, groups])
+  }, [data, groups, timelineRef])
 
   return (
     <div id='timeline-container' ref={timelineTargetRef}></div>

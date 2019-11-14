@@ -13,4 +13,5 @@ export type TBranchState = {
 }
 
 export type TAction =
-  { type: ActionKeys.TIMELINE_ITEM_ADDED, payload: { patientId: string, item: TTimelineItem }}
+  { type: ActionKeys.TIMELINE_ITEM_ADDED, payload: { patientId: string, item: TTimelineItem }} |
+  { type: ActionKeys.TIMELINE_ITEM_UPDATED, payload: { patientId: string, item: TTimelineItem }}

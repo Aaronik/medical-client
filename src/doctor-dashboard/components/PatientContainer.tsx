@@ -1,5 +1,4 @@
 import React, { useState } from 'react'
-import uuid from 'uuid/v4'
 import { without } from 'lodash'
 import { connect } from 'react-redux'
 import Container from 'react-bootstrap/Container'
@@ -16,10 +15,17 @@ import { TStoreState } from 'store'
 import { TUser } from 'user/types.d'
 import Timeline from 'timeline/components'
 import { TTimelineItem, TTimelineGroup } from 'timeline/types.d'
-import { addTimelineItem } from 'timeline/actions'
+import { addTimelineItem, updateTimelineItem } from 'timeline/actions'
 import formatDate from 'util/date-to-timeline-date'
 import strings from 'common/strings'
 import 'doctor-dashboard/styles/patient-container.sass'
+
+// This is used as a temporary filler until the user edits/adds a new event.
+const stubTimelineItem: TTimelineItem = {
+  start: '10-10-10',
+  content: '',
+  id: '1'
+}
 
 type TGroupSelectProps = {
   groups: TTimelineGroup[]
@@ -86,39 +92,46 @@ type TProps = {
 
 const PatientContainer: React.FC<TProps> = ({ patient, patientTimelineData, patientTimelineGroups }) => {
   const [ isModalActive, setIsModalActive ] = useState(false)
-  const [ description, setDescription ] = useState('')
-  const [ startDate, setStartDate ] = useState('')
-  const [ endDate, setEndDate ] = useState('')
   const [ filterString, setFilterString ] = useState('')
   const [ activeGroupIds, setActiveGroupIds ] = useState<string[]>(patientTimelineGroups.map(g => g.id.toString()))
 
-  const onTimelineDoubleClick = (item: TTimelineItem) => {
-    setIsModalActive(true)
-    setStartDate(formatDate(item.start))
-    setEndDate(formatDate(item.start))
+  // store whatever event is being updated / created by the user
+  const [ activeTimelineItem, setActiveTimelineItem ] = useState(stubTimelineItem)
+
+  const updateActiveTimelineItem = (update: Partial<TTimelineItem>) => {
+    setActiveTimelineItem({ ...activeTimelineItem, ...update })
   }
 
-  const onAddTimelineItem = () => {
-    const type = endDate === startDate ? 'point' : 'range'
+  const onTimelineDoubleClick = (item: TTimelineItem) => {
+    // we'll default to a point event, and user can change to range if desired,
+    // or if the item is already a range.
+    if (item.end) item.end = formatDate(item.end)
+    else item.end = formatDate(item.start)
 
-    addTimelineItem(patient.id, {
-      id: uuid(),
-      content: description,
-      group: 1,
-      type: type,
-      start: startDate,
-      end: endDate
-    })
+    item.start = formatDate(item.start)
 
-    setDescription('')
-    setStartDate('')
-    setEndDate('')
+    setActiveTimelineItem(item)
+    setIsModalActive(true)
+  }
+
+  const onModalSaveClick = () => {
+    const type = activeTimelineItem.end === activeTimelineItem.start ? 'point' as 'point' : 'range' as 'range'
+    const item = { ...activeTimelineItem, type }
+    const isExistingItem = patientTimelineData.map(d => d.id).includes(activeTimelineItem.id)
+
+    if (isExistingItem) updateTimelineItem(patient.id, item)
+    else addTimelineItem(patient.id, item)
+
+
     setIsModalActive(false)
   }
 
   const onFilterInputChange = (changeEvent: React.ChangeEvent<HTMLInputElement>) => {
     setFilterString(changeEvent.currentTarget.value)
   }
+
+  // Until the user tries to update or add a new event, there won't be an activeTimelineItem
+  const endDate = activeTimelineItem.end ? activeTimelineItem.end.toString() : activeTimelineItem.start.toString()
 
   return (
     <Container fluid className='doctor-dashboard-patient-container'>
@@ -146,7 +159,9 @@ const PatientContainer: React.FC<TProps> = ({ patient, patientTimelineData, pati
       <Timeline
         data={filterTimelineData(filterString, patientTimelineData)}
         groups={filterTimelineGroups(activeGroupIds, patientTimelineGroups)}
-        onAdd={onTimelineDoubleClick}/>
+        onAdd={onTimelineDoubleClick}
+        onUpdate={onTimelineDoubleClick}
+      />
 
       <Modal show={isModalActive} centered>
         <Modal.Header>
@@ -155,15 +170,15 @@ const PatientContainer: React.FC<TProps> = ({ patient, patientTimelineData, pati
 
         <Modal.Body>
           <Form>
-            <FormInput label={strings('eventDesc')} value={description} type="text" onChange={setDescription}/>
-            <FormInput label={strings('formStartDate')} value={startDate} type="text" onChange={setStartDate}/>
-            <FormInput label={strings('formEndDate')} value={endDate} type="text" onChange={setEndDate}/>
+            <FormInput label={strings('eventDesc')} value={activeTimelineItem.content} type="text" onChange={content => updateActiveTimelineItem({ content })}/>
+            <FormInput label={strings('formStartDate')} value={activeTimelineItem.start.toString()} type="text" onChange={start => updateActiveTimelineItem({ start })}/>
+            <FormInput label={strings('formEndDate')} value={endDate} type="text" onChange={end => updateActiveTimelineItem({ end })}/>
           </Form>
         </Modal.Body>
 
         <Modal.Footer>
           <Button variant="secondary" onClick={() => setIsModalActive(false)}>{strings('close')}</Button>
-          <Button variant="primary" onClick={() => onAddTimelineItem()}>{strings('save')}</Button>
+          <Button variant="primary" onClick={() => onModalSaveClick()}>{strings('save')}</Button>
         </Modal.Footer>
       </Modal>
     </Container>

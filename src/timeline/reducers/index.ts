@@ -78,9 +78,16 @@ const reducer = (state: T.TBranchState = startingState, action: T.TAction): T.TB
       else newState[patientId] = { items: [item], groups: [] }
       break
     }
+    case ActionKeys.TIMELINE_ITEM_UPDATED: {
+      const { patientId, item } = action.payload
+
+      const idx = newState[patientId].items.findIndex(i => i.id === item.id)
+      newState[patientId].items[idx] = item
+      break
+    }
     default:
       // Exhastiveness check (make sure all actions are accounted for in switch statement)
-      // (function(action: never){})(action)
+      (function(action: never){})(action)
       break
   }
 
