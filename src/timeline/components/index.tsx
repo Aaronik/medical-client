@@ -128,7 +128,8 @@ const Timeline: React.FC<TProps> = ({ items, groups, onAdd, onUpdate }) => {
   useEffect(() => {
     const options = optionsWith({ onAdd, onUpdate, min: earliestStartDateOfItems(items)})
     if (timelineRef) redrawTimeline(timelineRef, items, groups, options)
-  }, [items, groups, timelineRef])
+    // eslint-disable-next-line
+  }, [items, groups])
 
   return (
     <div id='timeline-container' ref={timelineTargetRef}></div>
