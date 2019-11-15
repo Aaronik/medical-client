@@ -9,7 +9,6 @@ import ButtonToolbar from 'react-bootstrap/ButtonToolbar'
 import Form from 'react-bootstrap/Form'
 import DropdownButton from 'react-bootstrap/DropdownButton'
 import Dropdown from 'react-bootstrap/Dropdown'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import * as icons from '@fortawesome/free-solid-svg-icons'
 
 import FormInput from 'common/components/form-input'
@@ -102,9 +101,6 @@ const EventModal: React.FC<TEventModalProps> = ({ show, item, onSave, updateItem
 
   const endDate = item.end ? item.end.toString() : item.start.toString()
 
-  const startDateButton = <FontAwesomeIcon icon={icons.faCalendarAlt} style={{ cursor: 'pointer' }} onClick={() => setIsStartDateModalActive(true)} />
-  const endDateButton = <FontAwesomeIcon icon={icons.faCalendarAlt} style={{ cursor: 'pointer' }} onClick={() => setIsEndDateModalActive(true)} />
-
   return (
     <React.Fragment>
       <DatePickerModal
@@ -135,12 +131,14 @@ const EventModal: React.FC<TEventModalProps> = ({ show, item, onSave, updateItem
               label={strings('formStartDate')}
               value={item.start.toString()}
               type="text"
-              faIcon={startDateButton}
+              icon={icons.faCalendarAlt}
+              onIconClick={() => setIsStartDateModalActive(true)}
               onChange={start => updateItem({ start })}/>
             <FormInput
               label={strings('formEndDate')}
               value={endDate}
-              faIcon={endDateButton}
+              icon={icons.faCalendarAlt}
+              onIconClick={() => setIsEndDateModalActive(true)}
               type="text"
               onChange={end => updateItem({ end })}/>
           </Form>
