@@ -60,7 +60,7 @@ const map = {
   sendInvite: "Send the invite!",
   welcomeToMilli: "Welcome to Milli.",
   signInToGetStarted: "Sign in to get started.",
-  yourPatient: (name: string) => `Your Patient: ${name}`,
+  yourPatient: (name: string) => `Timeline: ${name}`,
   doctorProfile: (name: string) => `Doctor Profile: ${name}`,
   notFound: 'Page not found!',
   patientDashboard: 'Patient Dashboard',
