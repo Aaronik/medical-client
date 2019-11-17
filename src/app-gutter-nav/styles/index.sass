@@ -2,25 +2,18 @@
 @import 'common/styles/util.sass'
 
 .app-gutter-nav
+  padding-top: 20px
   position: fixed
   left: 0
   height: 100vh
   background-color: white
   z-index: 1000
 
-  .icon
-    color: $bluey-grey
-
-  .nav-link
-    word-wrap: no-wrap
-    color: black
-    padding-left: 10px
-
   .nav-entry
     margin-top: 10px
     display: flex
     align-items: center
-    padding-left: 15px
+    padding-left: 20px
 
   .nav-entry.active
     color: $bright-blue
@@ -35,6 +28,15 @@
       background-color: $bright-blue
       border-top-right-radius: 5px
       border-bottom-right-radius: 5px
-      margin-right: 12px
+      margin-right: 17px
       content: "|"
       height: 40px
+
+  .icon
+    color: darken($pale-grey, 20%)
+
+  .nav-link
+    word-wrap: no-wrap
+    color: black
+    padding-left: 20px
+

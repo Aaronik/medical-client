@@ -27,7 +27,7 @@ const NavEntry: React.FC<LinkEntryProps> = ({ to, text, icon, exact }) => {
 
   return (
     <span className={containerClassName}>
-      <FontAwesomeIcon icon={icon} className="icon"/>
+      <FontAwesomeIcon icon={icon} className="icon" size="lg"/>
       <Nav.Link as={Link} to={to}>{text}</Nav.Link>
     </span>
   )
