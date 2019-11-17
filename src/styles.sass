@@ -8,8 +8,8 @@
 // I really don't want to put the important here, but without it,
 // when a button is pressed, both the focus and active pseudo classes are
 // engaged and this won't use the rule
-button.btn:focus, button.btn:active
+button.btn:focus, button.btn:active,
+input:focus, input:active,
+label:focus, label:active
   box-shadow: none !important
-
-input:focus, input:active
-  box-shadow: none !important
+  outline: none !important

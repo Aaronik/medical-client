@@ -28,7 +28,7 @@ const map = {
   zipPlaceholder: "12345",
 
   searchFilterPlaceholder: "Filter Events",
-  groupFilterLabel: "Categories",
+  groupFilterLabel: "Show",
 
   fullName: 'Full Name',
   businessUrl: 'Business Url',

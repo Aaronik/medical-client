@@ -67,10 +67,10 @@ const GroupSelect: React.FC<TGroupSelectProps> = ({ groups, activeGroupIds, onCh
 
   return (
     <DropdownButton
-      className={className}
+      className={className + ' border rounded-lg'}
       id="patient-container-group-filter-dropdown"
       drop="down"
-      variant="secondary"
+      variant="white"
       onChange={onDropdownChange}
       title={strings('groupFilterLabel')}>
 
@@ -212,17 +212,18 @@ const PatientContainer: React.FC<TProps> = ({ patient, patientTimelineData, pati
         <h1>{strings('yourPatient', patient.name)}</h1>
 
         <ButtonToolbar className='align-items-center'>
-          <input
-            className="mr-5"
-            value={filterString}
-            onChange={onFilterInputChange}
-            placeholder={strings('searchFilterPlaceholder')} />
 
           <GroupSelect
-            className="ml-3"
+            className="mr-3"
             activeGroupIds={activeGroupIds}
             onChange={setActiveGroupIds}
             groups={patientTimelineGroups} />
+
+          <input
+            className="ml-5"
+            value={filterString}
+            onChange={onFilterInputChange}
+            placeholder={strings('searchFilterPlaceholder')} />
 
         </ButtonToolbar>
 
