@@ -5,34 +5,27 @@ import { min } from 'lodash'
 import * as T from 'timeline/types.d'
 import strings from 'common/strings'
 import formatDate from 'util/date-to-timeline-date'
+import jsxToString from 'jsx-to-string'
 import 'timeline/styles/index.sass'
 
 const tooltipTemplater = (item: timeline.TimelineItem, editedData?: timeline.TimelineItem) => {
-  // Separate all args into a "row"
-  const intoRows = (...rows: string[]) => {
-
-    let str = "<div class='timeline-tooltip'>"
-
-    rows.forEach((row, idx) => {
-      if (idx === rows.length - 1)
-        str += row
-      else
-        str += `${row}<br><hr>`
-    })
-
-    str += '</div>'
-
-    return str
-  }
-
-  const rows = [
-    strings('startDate') + formatDate(item.start),
-    (item.end && strings('end') + formatDate(item.end)),
-    item.content
-  ].filter(Boolean) as string[]
-  // TS is not smart enough to know that filtering on boolean will remove falseys
-
-  return intoRows(...rows)
+  return jsxToString(
+    // @ts-ignore // https://github.com/grommet/jsx-to-string/issues/7
+    <div class='timeline-tooltip'>
+      <span>{strings('startDate')}</span>
+      // @ts-ignore
+      <strong class='float-right'>{formatDate(item.start)}</strong>
+      <br/><hr/>
+      { item.end && <div>
+          <span>{strings('end')}</span>
+          // @ts-ignore
+          <strong class='float-right'>{item.end && formatDate(item.end)}</strong>
+          <br/><hr/>
+        </div>
+      }
+      <strong>{item.content}</strong>
+    </div>
+  )
 }
 
 const optionsWith = (partialOptions: Partial<timeline.TimelineOptions>) => {
