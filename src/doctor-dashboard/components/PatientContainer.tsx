@@ -84,7 +84,11 @@ const filterTimelineData = (filterString: string, data: TTimelineItem[]): TTimel
 )
 
 const filterTimelineGroups = (groupIds: string[], groups: TTimelineGroup[]): TTimelineGroup[] => (
-  groups.filter(group => groupIds.includes(group.id.toString()))
+  // We have to, in lieu of simply filtering out the undesired groups, assign them a property visible: false
+  // or else the timeline throws some async errors that can't even be caught with an error boundary.
+  // As such, the name of this function is a little deceiptful, but since it still performs basically
+  // the same end result, I'm leaving it as is.
+  groups.map(group => groupIds.includes(group.id.toString()) ? group : { ...group, visible: false })
 )
 
 type TEventModalProps = {

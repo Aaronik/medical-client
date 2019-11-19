@@ -1,11 +1,12 @@
 import React, { useEffect, useRef, useState } from 'react'
 import * as timeline from 'vis-timeline'
 import { min } from 'lodash'
+import jsxToString from 'jsx-to-string'
+import ErrorBoundary from 'common/components/ErrorBoundary'
 
 import * as T from 'timeline/types.d'
 import strings from 'common/strings'
 import formatDate from 'util/date-to-timeline-date'
-import jsxToString from 'jsx-to-string'
 import 'timeline/styles/index.sass'
 
 const tooltipTemplater = (item: timeline.TimelineItem, editedData?: timeline.TimelineItem) => {
@@ -39,6 +40,7 @@ const optionsWith = (partialOptions: Partial<timeline.TimelineOptions>) => {
     groupEditable: true,
     align: 'left' as 'left',
     stack: true,
+    groupOrder: 'content',
     margin: {
       axis: 10,
       item: {
@@ -85,16 +87,20 @@ const renderTimeline = (container: HTMLDivElement, items: T.TTimelineItem[], gro
 
   container.innerHTML = ''
 
-  const modifiedData = items.map(datum => {
-    return { editable: true, ...datum, }
+  const modifiedItems = items.map(item => {
+    return { editable: true, ...item, }
   })
 
-  if (groups.length) return new timeline.Timeline(container, modifiedData, groups, options)
-  else return new timeline.Timeline(container, modifiedData, options)
+  const dataSetGroups = new timeline.DataSet(groups)
+
+  if (groups.length) return new timeline.Timeline(container, modifiedItems, dataSetGroups, options)
+  else return new timeline.Timeline(container, modifiedItems, options)
 }
 
 const redrawTimeline = (ref: timeline.Timeline, items: T.TTimelineItem[], groups: T.TTimelineGroup[], options: timeline.TimelineOptions) => {
-  ref.setData({ groups, items })
+  const dataSetGroups = new timeline.DataSet(groups)
+
+  ref.setData({ groups: dataSetGroups, items })
   ref.setOptions(options)
 }
 
@@ -106,7 +112,7 @@ type TProps = {
   onMove: TOnMove
 }
 
-const Timeline: React.FC<TProps> = ({ items, groups, onAdd, onUpdate, onMove }) => {
+const TimelineSansErrorBoundary: React.FC<TProps> = ({ items, groups, onAdd, onUpdate, onMove }) => {
   const timelineTargetRef = useRef<HTMLDivElement>(null)
   const [ timelineRef, setTimelineRef ] = useState()
 
@@ -115,7 +121,7 @@ const Timeline: React.FC<TProps> = ({ items, groups, onAdd, onUpdate, onMove }) 
     setTimelineRef(renderTimeline(ref, items, groups, onAdd, onUpdate, onMove))
     // ESLint needs onAdd to be in the array below. However, doing so introduces a bug,
     // that the timeline then gets rendered every time the Timeline FC gets rendered.
-    // That's a bunch of extra reners that don't need to happen. It basically is breaking
+    // That's a bunch of extra renders that don't need to happen. It basically is breaking
     // the useEffect dependency list. I'm confident this is a unique situation, using this
     // imperative vis-timeline, so I'm leaving the rule in place and leaving this comment
     // as well.
@@ -123,7 +129,7 @@ const Timeline: React.FC<TProps> = ({ items, groups, onAdd, onUpdate, onMove }) 
   }, [])
 
   useEffect(() => {
-    const options = optionsWith({ onAdd, onUpdate, min: earliestStartDateOfItems(items)})
+    const options = optionsWith({ onAdd, onUpdate, onMove, min: earliestStartDateOfItems(items)})
     if (timelineRef) redrawTimeline(timelineRef, items, groups, options)
     // eslint-disable-next-line
   }, [items, groups])
@@ -133,4 +139,9 @@ const Timeline: React.FC<TProps> = ({ items, groups, onAdd, onUpdate, onMove }) 
   )
 }
 
+const Timeline: React.FC<TProps> = (props: TProps) => (
+  <ErrorBoundary>
+    <TimelineSansErrorBoundary {...props}/>
+  </ErrorBoundary>
+)
 export default Timeline

@@ -48,3 +48,16 @@ $group-margin: 10px
   border-radius: 30px !important
   border: 1px solid darken($pale-grey, 10%) !important
   padding: 0 !important
+
+// groups
+.vis-label.vis-nesting-group
+
+  // The little arrows showing whether the group is collapsed or not
+  &.collapsed:before
+    font-family: FontAwesome // Need these or else chrome renders weird orange squares
+
+  &.expanded:before
+    font-family: FontAwesome
+
+.vis-group-level-unknown-but-gte1
+  border: none // default is a red border...

@@ -47,7 +47,8 @@ const startingState: T.TBranchState = {
     }],
     groups: [{
       id: 1,
-      content: 'Category 1'
+      content: 'Category 1',
+      nestedGroups: [2]
     }, {
       id: 2,
       content: 'Category 2'
