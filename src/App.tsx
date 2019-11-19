@@ -32,7 +32,7 @@ loadHostMap()
 StylesManager.applyTheme('bootstrap')
 
 const AppNavBar: React.FC = ({ children }) => <Navbar className="justify-content-between app-navbar">{children}</Navbar>
-const MilliBrandLink = () => <Navbar.Brand><Link to="/"><Image width={70} height={25} src="milli-logo.png"/></Link></Navbar.Brand>
+const MilliBrandLink = () => <Navbar.Brand><Link to="/"><Image width={70} height={25} src="/milli-logo.png"/></Link></Navbar.Brand>
 const NavLink = ({ to, text }: { to: string, text: string }) => <Nav.Link as={Link} to={to}>{text}</Nav.Link>
 
 const SignedOutBase: React.FunctionComponent = () => {
