@@ -67,6 +67,7 @@ const map = {
   notFound: 'Page not found!',
   patientDashboard: 'Patient Dashboard',
   milliBlurb: "self-teaching personalized medical intelligence platform built from real-time analysis of millions of patient/doctor interactions.",
+  patientNotFound: 'Patient Not Found',
 }
 
 type TMap = typeof map

@@ -158,7 +158,7 @@ const EventModal: React.FC<TEventModalProps> = ({ show, item, onSave, updateItem
 }
 
 type TProps = {
-  patient: TUser
+  patient?: TUser // patient will not be present if user nav'ed to unpresent patient id
   patientTimelineData: TTimelineItem[]
   patientTimelineGroups: TTimelineGroup[]
 }
@@ -170,6 +170,8 @@ const PatientContainer: React.FC<TProps> = ({ patient, patientTimelineData, pati
 
   // store whatever event is being updated / created by the user
   const [ activeTimelineItem, setActiveTimelineItem ] = useState(stubTimelineItem)
+
+  if (!patient) return <h1>{strings('patientNotFound')}</h1>
 
   const updateActiveTimelineItem = (update: Partial<TTimelineItem>) => {
     setActiveTimelineItem({ ...activeTimelineItem, ...update })
@@ -255,10 +257,11 @@ const PatientContainer: React.FC<TProps> = ({ patient, patientTimelineData, pati
 
 export default connect((storeState: TStoreState, dispatchProps: { match: { params: { patientId: string }}}): TProps => {
   const patientId = dispatchProps.match.params.patientId
+  const patientTimeline = storeState.timeline[patientId]
 
   return {
     patient: storeState.user.users[patientId],
-    patientTimelineData: storeState.timeline[patientId].items || [],
-    patientTimelineGroups: storeState.timeline[patientId].groups || []
+    patientTimelineData: patientTimeline ? patientTimeline.items : [],
+    patientTimelineGroups: patientTimeline ? patientTimeline.groups : []
   }
 })(PatientContainer)

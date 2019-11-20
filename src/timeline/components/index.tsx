@@ -81,7 +81,7 @@ const renderTimeline = (container: HTMLDivElement, items: T.TTimelineItem[], gro
   // show what dates the user is concerned with, so they don't get super
   // lost in an infinity of time on the timeline. It'll literally go into negative
   // years if you sroll enough, which isn't hard to do by just zooming out a bunch.
-  const earliestDate = earliestStartDateOfItems(items)
+  const earliestDate = earliestStartDateOfItems(items) || new Date()
 
   const options = optionsWith({ onAdd, onUpdate, onMove, min: earliestDate })
 
@@ -129,7 +129,8 @@ const TimelineSansErrorBoundary: React.FC<TProps> = ({ items, groups, onAdd, onU
   }, [])
 
   useEffect(() => {
-    const options = optionsWith({ onAdd, onUpdate, onMove, min: earliestStartDateOfItems(items)})
+    const min = earliestStartDateOfItems(items) || new Date()
+    const options = optionsWith({ onAdd, onUpdate, onMove, min })
     if (timelineRef) redrawTimeline(timelineRef, items, groups, options)
     // eslint-disable-next-line
   }, [items, groups])
