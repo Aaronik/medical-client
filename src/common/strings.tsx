@@ -19,6 +19,8 @@ const map = {
   update: 'Update',
   close: 'Close',
   save: 'Save',
+  about: 'About',
+  version: 'Version',
 
   emailPlaceholder: "name@example.com",
   streetPlaceholder: "1234 Main St",

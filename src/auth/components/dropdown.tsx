@@ -52,6 +52,8 @@ const LoginDropdown: React.FunctionComponent<IProps> = ({ user, history }) => {
       <NavDropdown.Header><Button variant="danger" onClick={onMakeAdminClick}>Make Me an Admin!</Button></NavDropdown.Header>
       <NavDropdown.Header><Button variant="primary" onClick={onMakeDoctorClick}>Make Me a Doctor!</Button></NavDropdown.Header>
       <NavDropdown.Header><Button variant="info" onClick={onMakePatientClick}>Make Me a Patient!</Button></NavDropdown.Header>
+      <NavDropdown.Divider/>
+      <NavDropdown.Item target="_blank" href="https://millihealth.com">{strings('about')}</NavDropdown.Item>
     </NavDropdown>
   )
 }

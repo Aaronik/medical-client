@@ -15,6 +15,7 @@ import AuthDropdown from 'auth/components/dropdown'
 import SigninContainer from 'signin/components'
 import SignupContainer from 'signup/components'
 import DoctorProfileContainer from 'doctor-profile/components'
+import SettingsPage from 'settings/components'
 import PatientDashboard from 'patient-dashboard/components'
 import PatientIntakeContainer from 'patient-dashboard/components/IntakeContainer'
 import Alert from 'alert/components/Alert'
@@ -116,6 +117,7 @@ const DoctorBase: React.FunctionComponent = () => {
           <Route path="/" exact component={DoctorDashboard} />
           <Route path="/patients/:patientId" component={PatientContainer} />
           <Route path="/profile" component={DoctorProfileContainer} />
+          <Route path="/settings" component={SettingsPage} />
           <Route component={PageNotFound} />
         </Switch>
       </GutterAwareFluidContainer>

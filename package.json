@@ -23,8 +23,8 @@
     "vis-timeline": "^6.2.0"
   },
   "scripts": {
-    "start": "BROWSER=none react-scripts start",
-    "build": "react-scripts build",
+    "start": "REACT_APP_VERSION=dev BROWSER=none react-scripts start",
+    "build": "REACT_APP_VERSION=$(git rev-parse HEAD) react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
