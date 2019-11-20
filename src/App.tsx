@@ -8,24 +8,25 @@ import Navbar from 'react-bootstrap/Navbar'
 import Nav from 'react-bootstrap/Nav'
 import Image from 'react-bootstrap/Image'
 
-import DoctorDashboard from 'doctor-dashboard/components'
-import AdminDashboard from 'admin-dashboard/components'
-import PatientContainer from 'doctor-dashboard/components/PatientContainer'
-import AuthDropdown from 'auth/components/dropdown'
-import SigninContainer from 'signin/components'
-import SignupContainer from 'signup/components'
-import DoctorProfileContainer from 'doctor-profile/components'
-import SettingsPage from 'settings/components'
-import PatientDashboard from 'patient-dashboard/components'
-import PatientIntakeContainer from 'patient-dashboard/components/IntakeContainer'
-import Alert from 'alert/components/Alert'
-import AppGutterNav, { LinkEntryProps, GutterAwareFluidContainer, GutterNavToggleButton } from 'app-gutter-nav/components'
-import PageNotFound from 'not-found/components'
-import NotSignedInContainer from 'common/components/NotSignedIn'
-import { loadHostMap } from 'auth/actions'
-import store, { currentUser } from 'store'
-import { TUserType as TStoreUserType } from 'user/types.d'
-import strings from 'common/strings'
+import DoctorDashboard from 'pages/doctor-dashboard/DoctorDashboard'
+import PatientPage from 'pages/doctor-dashboard/PatientPage'
+import AdminDashboard from 'pages/admin-dashboard/AdminDashboard'
+import ProfileDropdown from 'applets/profile-dropdown/ProfileDropdown'
+import SigninPage from 'pages/signin/SignIn'
+import SignupPage from 'pages/signup/SignUp'
+import DoctorProfilePage from 'pages/doctor-profile/DoctorProfile'
+import SettingsPage from 'pages/doctor-settings/DoctorSettings'
+import PatientDashboard from 'pages/patient-dashboard/PatientDashboard'
+import PatientIntakePage from 'pages/patient-intake/PatientIntake'
+import Alert from 'applets/alert/Alert'
+import AppGutterNav, { LinkEntryProps, GutterAwareFluidContainer, GutterNavToggleButton } from 'applets/app-gutter-nav/AppGutterNav'
+import PageNotFound from 'pages/not-found/NotFound'
+import NotSignedInPage from 'pages/not-signed-in/NotSignedIn'
+import { loadHostMap } from 'concerns/auth/Auth.actions'
+import store from 'common/store'
+import currentUser from 'common/util/currentUser'
+import { TUserType as TStoreUserType } from 'concerns/user/User.d'
+import strings from './App.strings'
 import 'App.sass'
 
 // Things to do once when the page loads
@@ -52,9 +53,9 @@ const SignedOutBase: React.FunctionComponent = () => {
       <Alert />
 
       <Switch>
-        <Route path="/" exact component={NotSignedInContainer} />
-        <Route path="/signin" component={SigninContainer} />
-        <Route path="/signup" component={SignupContainer} />
+        <Route path="/" exact component={NotSignedInPage} />
+        <Route path="/signin" component={SigninPage} />
+        <Route path="/signup" component={SignupPage} />
         <Route component={PageNotFound} />
       </Switch>
     </React.Fragment>
@@ -70,7 +71,7 @@ const AdminBase: React.FunctionComponent = () => {
           <NavLink to="/doctors" text={strings('doctors')} />
         </Nav>
         <Nav>
-          <AuthDropdown/>
+          <ProfileDropdown/>
         </Nav>
       </AppNavBar>
 
@@ -104,7 +105,7 @@ const DoctorBase: React.FunctionComponent = () => {
           <MilliBrandLink/>
         </Nav>
         <Nav>
-          <AuthDropdown/>
+          <ProfileDropdown/>
         </Nav>
       </AppNavBar>
 
@@ -115,8 +116,8 @@ const DoctorBase: React.FunctionComponent = () => {
       <GutterAwareFluidContainer>
         <Switch>
           <Route path="/" exact component={DoctorDashboard} />
-          <Route path="/patients/:patientId" component={PatientContainer} />
-          <Route path="/profile" component={DoctorProfileContainer} />
+          <Route path="/patients/:patientId" component={PatientPage} />
+          <Route path="/profile" component={DoctorProfilePage} />
           <Route path="/settings" component={SettingsPage} />
           <Route component={PageNotFound} />
         </Switch>
@@ -134,7 +135,7 @@ const PatientBase: React.FunctionComponent = () => {
           <NavLink to="/intake" text={strings('intakeSurvey')} />
         </Nav>
         <Nav>
-          <AuthDropdown/>
+          <ProfileDropdown/>
         </Nav>
       </AppNavBar>
 
@@ -142,7 +143,7 @@ const PatientBase: React.FunctionComponent = () => {
 
       <Switch>
         <Route path="/" exact component={PatientDashboard} />
-        <Route path="/intake" exact component={PatientIntakeContainer} />
+        <Route path="/intake" exact component={PatientIntakePage} />
         <Route path="/profile" component={() => <h1>Patient Profile</h1>} />
         <Route component={PageNotFound} />
       </Switch>

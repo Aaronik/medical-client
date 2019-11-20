@@ -1,34 +1,43 @@
-Core UX for the Milli Doctor Dashboard.
+Client for the Milli Health Web App
 
 https://millihealth.atlassian.net/jira/software/projects/MDD/boards/8
 
 
-Folder organization follows the general react layout with a few customizations
-for the millimed application domain.
+### Install
+1. `git clone https://github.com/MilliHealth/millimed.git millimed`
+2. `cd millimed`
+3. `npm install`
 
-### Do we want to have a component folder in each area?
+### Run
+1. `npm start`
+2. nav to localhost:3000
 
-  - __src__
-    - __common__
-      - __assets__
-    - __dashboard__
-      - __assets__
-    - __survey__
-      - __PHI__
-      - __PII__
-      - __assets__
-    - __timeline__
-      - __assets__
+### Dev
+1. `npm start`
+2. nav to localhost:3000
+3. Any changes will be detected and reload the page automatically
 
+### File Structure
 
+We're breaking things down generally into 4 categories
 
-### Creating dev env
-1. git clone https://github.com/MilliHealth/millimed.git millimed
-2. cd millimed
-3. npm install
+1. Pages    -- These gernerally consist of components and styles. They represent
+               a full page you see on the screen, sans any things that live across
+               all pages like the navbar and gutter nav.
 
+2. Applets  -- These are in depth views that that have reducers and actions
+               as well as components and styles. They're "sub-views", not a whole
+               page in and of themselves, but a smaller, self contained view unit
+               that can be used in different pages.
 
-### Action type naming conventions:
+3. Concerns -- These have only actions and reducers. They represent a logical concern
+               of the application, but one that doesn't have any views itself.
+
+4. Common   -- Here are utilities, small, reusable components with no store state,
+               and global, reusable styles. Also other common things like the store
+               and action keys.
+
+#### Action type naming conventions:
 Consider the following flow:
 * Something happens in a view. This is phrased in past tense, like "A user clicked the button."
 * That view calls an appropriate action, which is not coupled to the view knowledge, e.g. "updateTheThing".
