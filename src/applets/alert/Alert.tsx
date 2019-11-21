@@ -12,7 +12,7 @@ type TProps = {
 
 const Alert = (props: TProps) => {
   return (
-    <div>
+    <div className='position-absolute w-100 p-1 z-9999'>
       {
         props.alerts.map(e => (
           <RBAlert dismissible onClose={() => actions.clearAlert(e.id)} variant={e.type} key={e.id}>{e.message}</RBAlert>
