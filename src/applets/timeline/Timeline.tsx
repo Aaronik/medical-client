@@ -98,6 +98,8 @@ const renderTimeline = (container: HTMLDivElement, items: T.TTimelineItem[], gro
 
   container.innerHTML = ''
 
+  // We have to use a DataSet rather than an array b/c a bug in vis-timeline around
+  // groups collapsing. https://github.com/visjs/vis-timeline/issues/203
   const dataSetGroups = new timeline.DataSet(groups)
 
   if (groups.length) return new timeline.Timeline(container, items, dataSetGroups, options)
