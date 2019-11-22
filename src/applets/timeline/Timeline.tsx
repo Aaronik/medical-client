@@ -54,7 +54,7 @@ const optionsWith = (partialOptions: Partial<timeline.TimelineOptions>) => {
     editable: {
       add: true,
       updateTime: true,
-      updateGroup: true,
+      updateGroup: false,
       remove: true
     },
   }
