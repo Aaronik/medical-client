@@ -37,7 +37,11 @@ const optionsWith = (partialOptions: Partial<timeline.TimelineOptions>) => {
     minHeight: '60vh',
     maxHeight: '60vh',
     orientation: 'top',
-    groupEditable: true,
+    groupEditable: {
+      add: true,
+      remove: true,
+      order: true
+    },
     align: 'left' as 'left',
     stack: true,
     groupOrder: 'content',
@@ -54,9 +58,9 @@ const optionsWith = (partialOptions: Partial<timeline.TimelineOptions>) => {
     editable: {
       add: true,
       updateTime: true,
-      updateGroup: false,
+      updateGroup: true,
       remove: true
-    },
+    }
   }
 
   return { ...options, ...partialOptions }
@@ -64,6 +68,13 @@ const optionsWith = (partialOptions: Partial<timeline.TimelineOptions>) => {
 
 const earliestStartDateOfItems = (items: T.TTimelineItem[]) => {
   return min(items.map(i => i.start))
+}
+
+const onMoveWithoutGroupEditability = (onMove: TOnMove, items: T.TTimelineItem[]) => (updatedItem: T.TTimelineItem) => {
+  const originalItem = items.find(item => item.id === updatedItem.id)
+  if (!originalItem) return onMove(updatedItem)
+  updatedItem.group = originalItem.group
+  onMove(updatedItem)
 }
 
 type TOnItemChange = (timelineItem: timeline.TimelineItem) => void
@@ -115,6 +126,12 @@ type TProps = {
 const TimelineSansErrorBoundary: React.FC<TProps> = ({ items, groups, onAdd, onUpdate, onMove }) => {
   const timelineTargetRef = useRef<HTMLDivElement>(null)
   const [ timelineRef, setTimelineRef ] = useState()
+
+  // Simply using the setting, groupUpdate: false, does not
+  // work with vis timeline. So we need to ensure the item's
+  // group does not change when it's moved.
+  // https://github.com/visjs/vis-timeline/issues/202
+  onMove = onMoveWithoutGroupEditability(onMove, items)
 
   useEffect(() => {
     const ref = timelineTargetRef.current as HTMLDivElement
