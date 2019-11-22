@@ -98,14 +98,10 @@ const renderTimeline = (container: HTMLDivElement, items: T.TTimelineItem[], gro
 
   container.innerHTML = ''
 
-  const modifiedItems = items.map(item => {
-    return { editable: true, ...item, }
-  })
-
   const dataSetGroups = new timeline.DataSet(groups)
 
-  if (groups.length) return new timeline.Timeline(container, modifiedItems, dataSetGroups, options)
-  else return new timeline.Timeline(container, modifiedItems, options)
+  if (groups.length) return new timeline.Timeline(container, items, dataSetGroups, options)
+  else return new timeline.Timeline(container, items, options)
 }
 
 const redrawTimeline = (ref: timeline.Timeline, items: T.TTimelineItem[], groups: T.TTimelineGroup[], options: timeline.TimelineOptions) => {
