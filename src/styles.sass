@@ -10,6 +10,7 @@
 // engaged and this won't use the rule
 button.btn:focus, button.btn:active,
 input:focus, input:active,
-label:focus, label:active
+label:focus, label:active,
+.custom-control-input:focus ~ .custom-control-label::before
   box-shadow: none !important
   outline: none !important

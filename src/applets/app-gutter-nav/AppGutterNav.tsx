@@ -1,6 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { useRouteMatch } from "react-router-dom"
+import { useRouteMatch, RouteComponentProps, withRouter } from "react-router-dom"
 import Nav from 'react-bootstrap/Nav'
 import Container from 'react-bootstrap/Container'
 import { Link } from 'react-router-dom'
@@ -17,7 +17,9 @@ export type LinkEntryProps = {
   exact?: boolean
 }
 
-const NavEntry: React.FC<LinkEntryProps> = ({ to, text, icon, exact }) => {
+type LinkEntryPropsWithRouter = LinkEntryProps & RouteComponentProps
+
+const _NavEntry: React.FC<LinkEntryPropsWithRouter> = ({ to, text, icon, exact, history }) => {
   let match = useRouteMatch(to)
 
   let containerClassName = "nav-entry"
@@ -26,19 +28,21 @@ const NavEntry: React.FC<LinkEntryProps> = ({ to, text, icon, exact }) => {
   if (match && (exact ? match.isExact : true)) containerClassName += " active"
 
   return (
-    <span className={containerClassName}>
+    <span className={containerClassName} onClick={() => history.push(to)}>
       <FontAwesomeIcon icon={icon} className="icon" size="lg"/>
       <Nav.Link as={Link} to={to}>{text}</Nav.Link>
     </span>
   )
 }
 
+const NavEntry = withRouter(_NavEntry)
+
 // Column Sizes
 // Change these and both the side nav _and_ nav aware container will adjust.
 // This is how you change side nav sizing.
 const cs = {
-  xl: 1,
-  lg: 2,
+  xl: 2,
+  lg: 3,
   md: 3,
   sm: 4,
   xs: 6 // note: not an actual bootstrap size in classes
@@ -55,8 +59,8 @@ export const GutterNavToggleButton: React.FC<{ className?: string }> = ({ classN
   }
 
   return (
-    <div className={className} onClick={onSandwichClick}>
-      <FontAwesomeIcon icon={icons.faBars} size="2x" color="grey"/>
+    <div className={className} onClick={onSandwichClick} style={{ cursor: 'pointer' }}>
+      <FontAwesomeIcon icon={icons.faBars} size="2x" color="black"/>
     </div>
   )
 }

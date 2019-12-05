@@ -1,23 +1,35 @@
 @import 'common/styles/variables.sass'
 @import 'common/styles/util.sass'
 
+$bg-color: white
+$horizontal-spacing: 30px
+$vertical-spacing: 55px
+
 .app-gutter-nav
   padding-top: 20px
+  padding-right: 0
   position: fixed
   left: 0
   height: 100vh
-  background-color: white
+  background-color: $bg-color
   z-index: 1000
 
   .nav-entry
     margin-top: 10px
+    height: $vertical-spacing
     display: flex
     align-items: center
-    padding-left: 20px
+    padding-left: $horizontal-spacing
+    cursor: pointer
+    transition: background-color .1s
+
+    &:hover
+      background-color: darken($bg-color, 10%) !important
 
   .nav-entry.active
     color: $bright-blue
     padding-left: 0 !important
+    background-color: darken($bg-color, 5%)
 
     .nav-link
       color: $bright-blue
@@ -28,15 +40,12 @@
       background-color: $bright-blue
       border-top-right-radius: 5px
       border-bottom-right-radius: 5px
-      margin-right: 17px
+      margin-right: $horizontal-spacing - 3px
       content: "|"
       height: 40px
-
-  .icon
-    color: darken($pale-grey, 20%)
 
   .nav-link
     word-wrap: no-wrap
     color: black
-    padding-left: 20px
+    padding-left: $horizontal-spacing
 
