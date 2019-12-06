@@ -10,6 +10,7 @@ import Form from 'react-bootstrap/Form'
 import DropdownButton from 'react-bootstrap/DropdownButton'
 import Dropdown from 'react-bootstrap/Dropdown'
 import * as icons from '@fortawesome/free-solid-svg-icons'
+import Select, { ValueType } from 'react-select'
 
 import FormInput from 'common/components/FormInput'
 import DatePickerModal from 'common/components/DatePickerModal'
@@ -17,6 +18,7 @@ import { TStoreState } from 'common/store'
 import { TUser } from 'concerns/user/User.d'
 import Timeline from 'applets/timeline/Timeline'
 import { TTimelineItem, TTimelineGroup } from 'applets/timeline/Timeline.d'
+import { TimelineItem as VisTimelineItem } from 'vis-timeline'
 import { addTimelineItem, updateTimelineItem } from 'applets/timeline/Timeline.actions'
 import formatDate from 'common/util/dateToTimelineDate'
 import strings from './PatientPage.strings'
@@ -26,7 +28,7 @@ import './PatientPage.sass'
 const stubTimelineItem: TTimelineItem = {
   start: '10-10-10',
   content: '',
-  id: '1'
+  id: '1',
 }
 
 type TGroupSelectProps = {
@@ -94,16 +96,37 @@ const filterTimelineGroups = (groupIds: string[], groups: TTimelineGroup[]): TTi
 type TEventModalProps = {
   show: boolean
   item: TTimelineItem
+  groups: TTimelineGroup[]
   onSave: () => void
   onClose: () => void
   updateItem: (update: Partial<TTimelineItem>) => void
 }
 
-const EventModal: React.FC<TEventModalProps> = ({ show, item, onSave, updateItem, onClose }) => {
+type TOption = { value: string | number, label: string | HTMLElement}
+
+const EventModal: React.FC<TEventModalProps> = ({ show, item, onSave, updateItem, onClose, groups }) => {
   const [ isStartDateModalActive, setIsStartDateModalActive ] = useState(false)
   const [ isEndDateModalActive, setIsEndDateModalActive ] = useState(false)
 
   const endDate = item.end ? item.end.toString() : item.start.toString()
+
+  const groupOptions: TOption[] = groups.map(g => (
+    { value: g.id, label: g.content }
+  ))
+
+  const activeGroup = groups.find(g => {
+    return item.group === g.id
+  })
+
+  const groupContent = activeGroup ? activeGroup.content : ''
+  const groupName = typeof groupContent === 'string' ? groupContent : groupContent.innerHTML
+
+  const onSelectChange = (option: ValueType<TOption>) => {
+    if (!option) return // this happens sometimes with this select I guess
+    if (!option.hasOwnProperty('value')) return // I really don't understand when this would be the case either, the typing here is confusing me
+    // @ts-ignore and here, it seems like TS does not understand the hasOwnProperty guard above
+    updateItem({ group: option.value })
+  }
 
   return (
     <React.Fragment>
@@ -126,6 +149,13 @@ const EventModal: React.FC<TEventModalProps> = ({ show, item, onSave, updateItem
 
         <Modal.Body>
           <Form>
+            <Form.Label className='text-muted'>{strings('category')}</Form.Label>
+            <Select
+              className='pb-3'
+              onChange={onSelectChange}
+              defaultInputValue={groupName}
+              options={groupOptions}/>
+
             <FormInput
               label={strings('eventDesc')}
               value={item.content}
@@ -177,7 +207,7 @@ const PatientContainer: React.FC<TProps> = ({ patient, patientTimelineData, pati
     setActiveTimelineItem({ ...activeTimelineItem, ...update })
   }
 
-  const onTimelineDoubleClick = (item: TTimelineItem) => {
+  const onTimelineDoubleClick = (item: VisTimelineItem) => {
     // we'll default to a point event, and user can change to range if desired,
     // or if the item is already a range.
     if (item.end) item.end = formatDate(item.end)
@@ -189,7 +219,7 @@ const PatientContainer: React.FC<TProps> = ({ patient, patientTimelineData, pati
     setIsEventModalActive(true)
   }
 
-  const onMoveItemInTimeline = (item: TTimelineItem) => {
+  const onMoveItemInTimeline = (item: VisTimelineItem) => {
     item.start = formatDate(item.start)
     if (item.end) item.end = formatDate(item.end)
 
@@ -241,14 +271,14 @@ const PatientContainer: React.FC<TProps> = ({ patient, patientTimelineData, pati
         groups={filterTimelineGroups(activeGroupIds, patientTimelineGroups)}
         onAdd={onTimelineDoubleClick}
         onUpdate={onTimelineDoubleClick}
-        onMove={onMoveItemInTimeline}
-      />
+        onMove={onMoveItemInTimeline} />
 
       <EventModal
         show={isEventModalActive}
         item={activeTimelineItem}
         updateItem={updateActiveTimelineItem}
         onSave={onModalSaveClick}
+        groups={patientTimelineGroups}
         onClose={() => setIsEventModalActive(false)} />
 
     </Container>

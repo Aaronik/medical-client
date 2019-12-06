@@ -11,6 +11,7 @@ const map = {
   save: 'Save',
   patientNotFound: 'Patient Not Found',
   yourPatient: (name: string) => `Timeline: ${name}`,
+  category: 'Category',
 }
 
 export default strings(map)
