@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { without } from 'lodash'
 import { connect } from 'react-redux'
 import Container from 'react-bootstrap/Container'
@@ -21,8 +21,8 @@ import { TTimelineItem, TTimelineGroup } from 'applets/timeline/Timeline.d'
 import { TimelineItem as VisTimelineItem } from 'vis-timeline'
 import { addTimelineItem, updateTimelineItem } from 'applets/timeline/Timeline.actions'
 import formatDate from 'common/util/dateToTimelineDate'
-import strings from './PatientPage.strings'
-import './PatientPage.sass'
+import strings from './DoctorTimeline.strings'
+import './DoctorTimelinne.sass'
 
 // This is used as a temporary filler until the user edits/adds a new event.
 const stubTimelineItem: TTimelineItem = {
@@ -187,19 +187,26 @@ const EventModal: React.FC<TEventModalProps> = ({ show, item, onSave, updateItem
   )
 }
 
+const mapGroupsToIds = (groups: TTimelineGroup[]) => groups.map(g => g.id.toString())
+
 type TProps = {
   patient?: TUser // patient will not be present if user nav'ed to unpresent patient id
   patientTimelineData: TTimelineItem[]
   patientTimelineGroups: TTimelineGroup[]
 }
 
-const PatientContainer: React.FC<TProps> = ({ patient, patientTimelineData, patientTimelineGroups }) => {
+const DoctorTimelinePage: React.FC<TProps> = ({ patient, patientTimelineData, patientTimelineGroups }) => {
   const [ isEventModalActive, setIsEventModalActive ] = useState(false)
   const [ filterString, setFilterString ] = useState('')
-  const [ activeGroupIds, setActiveGroupIds ] = useState<string[]>(patientTimelineGroups.map(g => g.id.toString()))
+  const [ activeGroupIds, setActiveGroupIds ] = useState<string[]>(mapGroupsToIds(patientTimelineGroups))
 
   // store whatever event is being updated / created by the user
   const [ activeTimelineItem, setActiveTimelineItem ] = useState(stubTimelineItem)
+
+  // When doctor switches b/t patients, we need to reinitialize the selected groups state
+  useEffect(() => {
+    setActiveGroupIds(mapGroupsToIds(patientTimelineGroups))
+  }, [patient && patient.id])
 
   if (!patient) return <h1>{strings('patientNotFound')}</h1>
 
@@ -285,8 +292,11 @@ const PatientContainer: React.FC<TProps> = ({ patient, patientTimelineData, pati
   )
 }
 
-export default connect((storeState: TStoreState, dispatchProps: { match: { params: { patientId: string }}}): TProps => {
-  const patientId = dispatchProps.match.params.patientId
+export default connect((storeState: TStoreState): TProps => {
+  const patientId = storeState.user.activeUserId
+
+  if (!patientId) return { patient: undefined, patientTimelineData: [], patientTimelineGroups: []}
+
   const patientTimeline = storeState.timeline[patientId]
 
   return {
@@ -294,4 +304,4 @@ export default connect((storeState: TStoreState, dispatchProps: { match: { param
     patientTimelineData: patientTimeline ? patientTimeline.items : [],
     patientTimelineGroups: patientTimeline ? patientTimeline.groups : []
   }
-})(PatientContainer)
+})(DoctorTimelinePage)

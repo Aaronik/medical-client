@@ -1,5 +1,4 @@
 import React, { useState } from 'react'
-import { RouteComponentProps } from 'react-router-dom'
 import Container from 'react-bootstrap/Container'
 import Button from 'react-bootstrap/Button'
 import Row from 'react-bootstrap/Row'
@@ -9,14 +8,14 @@ import { TStoreState } from 'common/store'
 import { patients } from 'common/util/users'
 import { TUser } from 'concerns/user/User.d'
 import AddPatientForm, { TSurveyResult } from './AddPatientForm'
-import { addPatient } from 'concerns/user/User.actions'
+import { addPatient, setActiveUser } from 'concerns/user/User.actions'
 import strings from './DoctorDashboard.strings'
 
-interface TProps extends RouteComponentProps {
+interface TProps {
   patients: TUser[]
 }
 
-const DoctorDashboard: React.FunctionComponent<TProps> = ({ patients, history }) => {
+const DoctorDashboard: React.FunctionComponent<TProps> = ({ patients }) => {
 
   const [ isAddPatientActive, setIsAddPatientActive ] = useState(false)
 
@@ -32,12 +31,8 @@ const DoctorDashboard: React.FunctionComponent<TProps> = ({ patients, history })
   const patientTableBody = () => {
     const bodyContents = patients.map(patient => {
 
-      const onClick = () => {
-        history.push('/patients/' + patient.id)
-      }
-
       return (
-        <tr key={patient.id} onClick={onClick}>
+        <tr key={patient.id} onClick={() => setActiveUser(patient.id)}>
           <td>{patient.id}</td>
           <td>{patient.name}</td>
         </tr>
@@ -84,9 +79,8 @@ const DoctorDashboard: React.FunctionComponent<TProps> = ({ patients, history })
   )
 }
 
-export default connect((storeState: TStoreState, dispatchProps: RouteComponentProps<{ patientId: string }>): TProps => {
+export default connect((storeState: TStoreState): TProps => {
   return {
-    ...dispatchProps,
     patients: patients()
   }
 })(DoctorDashboard)

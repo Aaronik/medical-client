@@ -9,13 +9,13 @@ import Nav from 'react-bootstrap/Nav'
 import Image from 'react-bootstrap/Image'
 
 import DoctorDashboard from 'pages/doctor-dashboard/DoctorDashboard'
-import PatientPage from 'pages/doctor-dashboard/PatientPage'
+import DoctorTimelinePage from 'pages/doctor-timeline/DoctorTimeline'
 import AdminDashboard from 'pages/admin-dashboard/AdminDashboard'
 import ProfileDropdown from 'applets/profile-dropdown/ProfileDropdown'
 import SigninPage from 'pages/signin/SignIn'
 import SignupPage from 'pages/signup/SignUp'
 import DoctorProfilePage from 'pages/doctor-profile/DoctorProfile'
-import SettingsPage from 'pages/doctor-settings/DoctorSettings'
+import DoctorSettingsPage from 'pages/doctor-settings/DoctorSettings'
 import PatientDashboard from 'pages/patient-dashboard/PatientDashboard'
 import PatientIntakePage from 'pages/patient-intake/PatientIntake'
 import Alert from 'applets/alert/Alert'
@@ -90,11 +90,12 @@ const AdminBase: React.FunctionComponent = () => {
 const DoctorBase: React.FunctionComponent = () => {
   const gutterRoutes: LinkEntryProps[] = [
     { to: "/", text: strings('dashboard'), icon: icons.faSquare, exact: true },
+    { to: "/settings", text: strings('settings'), icon: icons.faCog },
+    { separator: true },
     { to: "/messages", text: strings('messages'), icon: icons.faCommentDots },
     { to: "/timeline", text: strings('healthTimeline'), icon: icons.faCheckCircle },
     { to: "/schedule", text: strings('schedule'), icon: icons.faCalendar },
     { to: "/activity", text: strings('activity'), icon: icons.faClock },
-    { to: "/settings", text: strings('settings'), icon: icons.faCog },
   ]
 
   return (
@@ -116,9 +117,9 @@ const DoctorBase: React.FunctionComponent = () => {
       <GutterAwareFluidContainer>
         <Switch>
           <Route path="/" exact component={DoctorDashboard} />
-          <Route path="/patients/:patientId" component={PatientPage} />
+          <Route path="/timeline" component={DoctorTimelinePage} />
           <Route path="/profile" component={DoctorProfilePage} />
-          <Route path="/settings" component={SettingsPage} />
+          <Route path="/settings" component={DoctorSettingsPage} />
           <Route component={PageNotFound} />
         </Switch>
       </GutterAwareFluidContainer>

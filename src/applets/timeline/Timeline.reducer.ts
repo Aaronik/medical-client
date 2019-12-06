@@ -59,9 +59,13 @@ const startingState: T.TBranchState = {
       id: uuid(),
       type: 'point',
       start: '2019-10-14',
-      content: 'Joined Milli Health'
+      content: 'Joined Milli Health',
+      group: 9
     }],
-    groups: []
+    groups: [{
+      id: 9,
+      content: 'Category 9'
+    }]
   }
 }
 

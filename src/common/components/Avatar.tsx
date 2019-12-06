@@ -1,0 +1,36 @@
+import React from 'react'
+import { TUser } from 'concerns/user/User.d'
+import './Avatar.sass'
+
+type TProps = {
+  user: TUser
+  className?: string
+  onClick?: Function
+  size?: number
+}
+
+const Avatar: React.FC<TProps> = ({ user, className, onClick, size }) => {
+  const initials = user.name.split(' ').map(name => name[0]).join('')
+
+  const eventlessOnClick = (e: React.MouseEvent<HTMLElement>) => {
+    onClick && onClick()
+  }
+
+  const style = {
+    cursor: onClick ? 'pointer' : 'default',
+    width: size ? `${size}px` : undefined,
+    height: size ? `${size}px` : undefined,
+  }
+
+  let cName = 'user-avatar bg-primary d-flex align-items-center justify-content-center '
+  if (className) cName += className
+
+  let src = user.imageUrl ? user.imageUrl : 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7'
+
+  if (user.imageUrl)
+    return <img src={src} className={cName} style={style} onClick={eventlessOnClick} />
+  else
+    return <div className={cName} style={style} onClick={eventlessOnClick}>{initials}</div>
+}
+
+export default Avatar

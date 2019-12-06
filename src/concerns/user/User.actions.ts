@@ -35,7 +35,7 @@ export const addPatient = async (patientInfo: TPatientInfo) => {
 
 type TUserInviteSig = { email: string, senderId: string, message: string }
 
-export const inviteUser = async ({ email, senderId, message  }: TUserInviteSig) => {
+export const inviteUser = async ({ email, senderId, message }: TUserInviteSig) => {
   dispatch({ type: ActionKeys.INVITATION_LOADING })
 
   const resp = safely<T.TInvitationResponse>(api({
@@ -51,6 +51,11 @@ export const inviteUser = async ({ email, senderId, message  }: TUserInviteSig) 
 
   resp.then(() => dispatch({ type: ActionKeys.ALERT, payload: { message: `Invitation successfully sent to ${email}!`, type: 'success' }}))
   resp.finally(() => dispatch({ type: ActionKeys.INVITATION_FINISHED }))
+}
+
+// When a doctor selects a user from the dropdown in the top left
+export const setActiveUser = (userId: string | false) => {
+  dispatch({ type: ActionKeys.SET_ACTIVE_USER, payload: userId })
 }
 
 // TODO this is temporary for demo purposes

@@ -4,12 +4,14 @@ import { ActionKeys } from 'common/actionKeys'
 
 const startingState: T.TBranchState = {
   invitationLoading: false,
+  activeUserId: false,
   users: {
     'f15c625d-9173-4ca7-a2f1-b1a1c34989d9': {
       id: 'f15c625d-9173-4ca7-a2f1-b1a1c34989d9',
       name: 'Bob Marley',
       userName: '',
-      type: 'PATIENT'
+      type: 'PATIENT',
+      imageUrl: 'https://i.ytimg.com/vi/vdB-8eLEW8g/hqdefault.jpg'
     },
     'c545dde9-56e0-4260-a13d-cc25de10311b': {
       id: 'c545dde9-56e0-4260-a13d-cc25de10311b',
@@ -38,6 +40,9 @@ const reducer = (state: T.TBranchState = startingState, action: T.TAction): T.TB
       break
     case ActionKeys.INVITATION_FINISHED:
       newState.invitationLoading = false
+      break
+    case ActionKeys.SET_ACTIVE_USER:
+      newState.activeUserId = action.payload
       break
     case ActionKeys.CHANGE_USER_TO_ADMIN: // (temporary for demo purposes)
       newState.users[action.payload].type = 'ADMIN'

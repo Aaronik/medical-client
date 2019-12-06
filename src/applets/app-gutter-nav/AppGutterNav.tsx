@@ -8,19 +8,32 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import * as icons from '@fortawesome/free-solid-svg-icons'
 import { toggleGutterNav } from './AppGutterNav.actions'
 import { TStoreState } from 'common/store'
+import PatientPicker from 'applets/patient-picker/PatientPicker'
 import './AppGutterNav.sass'
+
+const Separator: React.FC<{}> = () => (
+  <hr className='mt-3 mb-2 mx-auto' style={{ width: '80%' }}/>
+)
+
+type SeparatorType = { separator: true }
 
 export type LinkEntryProps = {
   to: string
   text: string
   icon: icons.IconDefinition
   exact?: boolean
-}
+} | SeparatorType
 
 type LinkEntryPropsWithRouter = LinkEntryProps & RouteComponentProps
 
-const _NavEntry: React.FC<LinkEntryPropsWithRouter> = ({ to, text, icon, exact, history }) => {
+const _NavEntry: React.FC<LinkEntryPropsWithRouter> = (props) => {
+  // have to use props as any trick b/c typescript just cannot discriminate b/t two object types
+  // _along with a react hook.
+  const { to, text, icon, exact, history, separator } = props as any
+
   let match = useRouteMatch(to)
+
+  if (separator) return <Separator/>
 
   let containerClassName = "nav-entry"
 
@@ -76,6 +89,8 @@ const AppGutterNav: React.FC<AppGutterNavProps> = ({ entries, gutterNavActive })
 
   return (
     <Nav className={containerClassName}>
+      <PatientPicker/>
+      <Separator/>
       { entries.map((e, idx) => <NavEntry key={idx} {...e}/>) }
     </Nav>
   )

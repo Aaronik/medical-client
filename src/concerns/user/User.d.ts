@@ -1,5 +1,13 @@
 import { ActionKeys } from 'common/actionKeys'
 
+export type TUser = {
+  id: string
+  name: string
+  userName: string
+  type: TUserType
+  imageUrl?: string
+}
+
 export type TInvitationResponse = {
   codeName: 'SUCCESS'
   code: 0
@@ -7,6 +15,7 @@ export type TInvitationResponse = {
   message: string
 }
 
+// API user
 export type TUserResponse = {
   urn: string
   name: string
@@ -15,18 +24,12 @@ export type TUserResponse = {
 
 export type TUserType = 'ADMIN' | 'DOCTOR' | 'PATIENT'
 
-export type TUser = {
-  id: string
-  name: string
-  userName: string
-  type: TUserType
-}
-
 export type TBranchState = {
   invitationLoading: boolean
   users: {
     [userId: string]: TUser
   }
+  activeUserId: string | false
 }
 
 export type TAction =
@@ -34,6 +37,7 @@ export type TAction =
   { type: ActionKeys.PATIENT_ADDED, payload: TUser } |
   { type: ActionKeys.INVITATION_LOADING } |
   { type: ActionKeys.INVITATION_FINISHED } |
+  { type: ActionKeys.SET_ACTIVE_USER, payload: string | false } |
   { type: ActionKeys.CHANGE_USER_TO_ADMIN, payload: string } |
   { type: ActionKeys.CHANGE_USER_TO_PATIENT, payload: string } |
   { type: ActionKeys.CHANGE_USER_TO_DOCTOR, payload: string }
