@@ -190,7 +190,7 @@ const EventModal: React.FC<TEventModalProps> = ({ show, item, onSave, updateItem
 const mapGroupsToIds = (groups: TTimelineGroup[]) => groups.map(g => g.id.toString())
 
 type TProps = {
-  patient?: TUser // patient will not be present if user nav'ed to unpresent patient id
+  patient: TUser
   patientTimelineData: TTimelineItem[]
   patientTimelineGroups: TTimelineGroup[]
 }
@@ -206,9 +206,7 @@ const DoctorTimelinePage: React.FC<TProps> = ({ patient, patientTimelineData, pa
   // When doctor switches b/t patients, we need to reinitialize the selected groups state
   useEffect(() => {
     setActiveGroupIds(mapGroupsToIds(patientTimelineGroups))
-  }, [patient && patient.id])
-
-  if (!patient) return <h1>{strings('patientNotFound')}</h1>
+  }, [patientTimelineGroups])
 
   const updateActiveTimelineItem = (update: Partial<TTimelineItem>) => {
     setActiveTimelineItem({ ...activeTimelineItem, ...update })
@@ -293,9 +291,10 @@ const DoctorTimelinePage: React.FC<TProps> = ({ patient, patientTimelineData, pa
 }
 
 export default connect((storeState: TStoreState): TProps => {
-  const patientId = storeState.user.activeUserId
+  const patientId = storeState.user.activePatientId as string // case where false will be filtered out before this component
 
-  if (!patientId) return { patient: undefined, patientTimelineData: [], patientTimelineGroups: []}
+  // but just in case
+  if (!patientId) throw new Error('Timeline component encountered situation where there\'s no active patient')
 
   const patientTimeline = storeState.timeline[patientId]
 

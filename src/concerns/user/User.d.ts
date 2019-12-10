@@ -29,7 +29,7 @@ export type TBranchState = {
   users: {
     [userId: string]: TUser
   }
-  activeUserId: string | false
+  activePatientId: string | false
 }
 
 export type TAction =

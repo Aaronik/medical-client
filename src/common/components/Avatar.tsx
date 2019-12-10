@@ -1,5 +1,6 @@
 import React from 'react'
 import { TUser } from 'concerns/user/User.d'
+import strings from './Avatar.strings'
 import './Avatar.sass'
 
 type TProps = {
@@ -28,7 +29,7 @@ const Avatar: React.FC<TProps> = ({ user, className, onClick, size }) => {
   let src = user.imageUrl ? user.imageUrl : 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7'
 
   if (user.imageUrl)
-    return <img src={src} className={cName} style={style} onClick={eventlessOnClick} />
+    return <img alt={strings('userAvatar')} src={src} className={cName} style={style} onClick={eventlessOnClick} />
   else
     return <div className={cName} style={style} onClick={eventlessOnClick}>{initials}</div>
 }

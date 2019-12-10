@@ -9,7 +9,6 @@ const map = {
   formEndDate: 'End date (yyyy-mm-dd):',
   close: 'Close',
   save: 'Save',
-  patientNotFound: 'No Patient Selected',
   yourPatient: (name: string) => `${name}`,
   category: 'Category',
 }

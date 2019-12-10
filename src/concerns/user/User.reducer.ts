@@ -4,7 +4,7 @@ import { ActionKeys } from 'common/actionKeys'
 
 const startingState: T.TBranchState = {
   invitationLoading: false,
-  activeUserId: false,
+  activePatientId: false,
   users: {
     'f15c625d-9173-4ca7-a2f1-b1a1c34989d9': {
       id: 'f15c625d-9173-4ca7-a2f1-b1a1c34989d9',
@@ -42,7 +42,7 @@ const reducer = (state: T.TBranchState = startingState, action: T.TAction): T.TB
       newState.invitationLoading = false
       break
     case ActionKeys.SET_ACTIVE_USER:
-      newState.activeUserId = action.payload
+      newState.activePatientId = action.payload
       break
     case ActionKeys.CHANGE_USER_TO_ADMIN: // (temporary for demo purposes)
       newState.users[action.payload].type = 'ADMIN'

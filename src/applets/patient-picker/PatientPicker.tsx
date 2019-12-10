@@ -16,7 +16,7 @@ import Avatar from 'common/components/Avatar'
 type TProps = {
   patients: TUser[]
   className?: string
-  activeUserId: string | false
+  activePatientId: string | false
 }
 
 type TOption = { value: string, label: string }
@@ -39,8 +39,8 @@ const formatOptionLabel = (patients: TUser[]) => ({ value, label }: TOption) => 
   )
 }
 
-const PatientPicker: React.FC<TProps> = ({ patients, className, activeUserId }) => {
-  const activePatient = patients.find(p => p.id === activeUserId)
+const PatientPicker: React.FC<TProps> = ({ patients, className, activePatientId }) => {
+  const activePatient = patients.find(p => p.id === activePatientId)
 
   // For the dropdown, let's sort the patients alphabetically for ease of finding.
   // The Avatar list will be sorted by the server, hopefully by frequency of use.
@@ -67,4 +67,4 @@ const PatientPicker: React.FC<TProps> = ({ patients, className, activeUserId }) 
   )
 }
 
-export default connect((storeState: TStoreState) => ({ patients: patients(), activeUserId: storeState.user.activeUserId }))(PatientPicker)
+export default connect((storeState: TStoreState) => ({ patients: patients(), activePatientId: storeState.user.activePatientId }))(PatientPicker)

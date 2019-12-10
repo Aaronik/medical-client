@@ -8,6 +8,8 @@ import Navbar from 'react-bootstrap/Navbar'
 import Nav from 'react-bootstrap/Nav'
 import Image from 'react-bootstrap/Image'
 
+import PageNotFound from 'pages/not-found/NotFound'
+import NotSignedInPage from 'pages/not-signed-in/NotSignedIn'
 import DoctorDashboard from 'pages/doctor-dashboard/DoctorDashboard'
 import DoctorTimelinePage from 'pages/doctor-timeline/DoctorTimeline'
 import AdminDashboard from 'pages/admin-dashboard/AdminDashboard'
@@ -18,12 +20,16 @@ import DoctorProfilePage from 'pages/doctor-profile/DoctorProfile'
 import DoctorSettingsPage from 'pages/doctor-settings/DoctorSettings'
 import PatientDashboard from 'pages/patient-dashboard/PatientDashboard'
 import PatientIntakePage from 'pages/patient-intake/PatientIntake'
+import DoctorActivityPage from 'pages/doctor-activity/DoctorActivity'
+import DoctorMessagesPage from 'pages/doctor-messages/DoctorMessages'
+import DoctorSchedulePage from 'pages/doctor-schedule/DoctorSchedule'
+import DoctorOverviewPage from 'pages/doctor-overview/DoctorOverview'
+import NoActivePatient from 'pages/no-active-patient/NoActivePatient'
+
 import Alert from 'applets/alert/Alert'
 import AppGutterNav, { LinkEntryProps, GutterAwareFluidContainer, GutterNavToggleButton } from 'applets/app-gutter-nav/AppGutterNav'
-import PageNotFound from 'pages/not-found/NotFound'
-import NotSignedInPage from 'pages/not-signed-in/NotSignedIn'
 import { loadHostMap } from 'concerns/auth/Auth.actions'
-import store from 'common/store'
+import store, { TStoreState } from 'common/store'
 import currentUser from 'common/util/currentUser'
 import { TUserType as TStoreUserType } from 'concerns/user/User.d'
 import strings from './App.strings'
@@ -87,16 +93,22 @@ const AdminBase: React.FunctionComponent = () => {
   )
 }
 
-const DoctorBase: React.FunctionComponent = () => {
+const DoctorBase: React.FunctionComponent<{activePatientId: string | false}> = ({ activePatientId }) => {
   const gutterRoutes: LinkEntryProps[] = [
     { to: "/", text: strings('dashboard'), icon: icons.faSquare, exact: true },
     { to: "/settings", text: strings('settings'), icon: icons.faCog },
     { separator: true },
+    { to: "/overview", text: strings('overview'), icon: icons.faTachometerAlt },
     { to: "/messages", text: strings('messages'), icon: icons.faCommentDots },
     { to: "/timeline", text: strings('healthTimeline'), icon: icons.faCheckCircle },
     { to: "/schedule", text: strings('schedule'), icon: icons.faCalendar },
     { to: "/activity", text: strings('activity'), icon: icons.faClock },
   ]
+
+  const activePatientOr = (Component: React.ComponentType) => {
+    if (activePatientId) return Component
+    else              return NoActivePatient
+  }
 
   return (
     <React.Fragment>
@@ -117,9 +129,14 @@ const DoctorBase: React.FunctionComponent = () => {
       <GutterAwareFluidContainer>
         <Switch>
           <Route path="/" exact component={DoctorDashboard} />
-          <Route path="/timeline" component={DoctorTimelinePage} />
-          <Route path="/profile" component={DoctorProfilePage} />
           <Route path="/settings" component={DoctorSettingsPage} />
+          <Route path="/profile" component={DoctorProfilePage} />
+
+          <Route path="/timeline" component={activePatientOr(DoctorTimelinePage)} />
+          <Route path="/activity" component={activePatientOr(DoctorActivityPage)} />
+          <Route path="/messages" component={activePatientOr(DoctorMessagesPage)} />
+          <Route path="/overview" component={activePatientOr(DoctorOverviewPage)} />
+          <Route path="/schedule" component={activePatientOr(DoctorSchedulePage)} />
           <Route component={PageNotFound} />
         </Switch>
       </GutterAwareFluidContainer>
@@ -154,7 +171,7 @@ const PatientBase: React.FunctionComponent = () => {
 
 type TUserType = TStoreUserType | 'SIGNED_OUT'
 
-const Base: React.FunctionComponent<{ userType: TUserType }> = ({ userType }) => {
+const Base: React.FunctionComponent<{ userType: TUserType, activePatientId: string | false }> = ({ userType, activePatientId }) => {
 
   let Component = <SignedOutBase />
 
@@ -163,7 +180,7 @@ const Base: React.FunctionComponent<{ userType: TUserType }> = ({ userType }) =>
       Component = <AdminBase />
       break
     case 'DOCTOR':
-      Component = <DoctorBase />
+      Component = <DoctorBase activePatientId={activePatientId} />
       break
     case 'PATIENT':
       Component = <PatientBase />
@@ -177,11 +194,12 @@ const Base: React.FunctionComponent<{ userType: TUserType }> = ({ userType }) =>
   )
 }
 
-const BaseWithProps = connect(() => {
+const BaseWithProps = connect((storeState: TStoreState) => {
   const userType: TUserType = currentUser() ? currentUser().type : 'SIGNED_OUT'
 
   return {
-    userType: userType
+    userType: 'DOCTOR' as const || userType,
+    activePatientId: storeState.user.activePatientId
   }
 })(Base)
 
