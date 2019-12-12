@@ -3,6 +3,7 @@ import { without } from 'lodash'
 import { connect } from 'react-redux'
 import Container from 'react-bootstrap/Container'
 import Row from 'react-bootstrap/Row'
+import Col from 'react-bootstrap/Col'
 import Modal from 'react-bootstrap/Modal'
 import Button from 'react-bootstrap/Button'
 import ButtonToolbar from 'react-bootstrap/ButtonToolbar'
@@ -249,25 +250,28 @@ const DoctorTimelinePage: React.FC<TProps> = ({ patient, patientTimelineData, pa
   return (
     <Container fluid className='doctor-dashboard-patient-container'>
 
-      <Row className="justify-content-around p-5">
-        <h1>{strings('yourPatient', patient.name)}</h1>
+      <Row className='justify-content-around py-5'>
+        <Col xs={12} lg={4}>
+          <h1>{strings('yourPatient', patient.name)}</h1>
+        </Col>
 
-        <ButtonToolbar className='align-items-center'>
+        <Col xs={12} lg={8}>
+          <ButtonToolbar className='align-items-center'>
 
-          <GroupSelect
-            className="mr-3"
-            activeGroupIds={activeGroupIds}
-            onChange={setActiveGroupIds}
-            groups={patientTimelineGroups} />
+            <GroupSelect
+              className="mr-3"
+              activeGroupIds={activeGroupIds}
+              onChange={setActiveGroupIds}
+              groups={patientTimelineGroups} />
 
-          <input
-            className="ml-5"
-            value={filterString}
-            onChange={onFilterInputChange}
-            placeholder={strings('searchFilterPlaceholder')} />
+            <input
+              className="ml-5"
+              value={filterString}
+              onChange={onFilterInputChange}
+              placeholder={strings('searchFilterPlaceholder')} />
 
-        </ButtonToolbar>
-
+          </ButtonToolbar>
+        </Col>
       </Row>
 
 
