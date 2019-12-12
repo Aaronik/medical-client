@@ -50,6 +50,7 @@ $group-margin: 10px
   padding: 0 !important
 
 // groups
+// top level group
 .vis-label.vis-nesting-group
 
   // The little arrows showing whether the group is collapsed or not
@@ -59,5 +60,13 @@ $group-margin: 10px
   &.expanded:before
     font-family: FontAwesome
 
+// nested group
 .vis-group-level-unknown-but-gte1
   border: none // default is a red border...
+
+// targeting the padding for a nested group label. For some reason
+// they give a static 150px default, and on mobile that makes the group labels
+// untenably huge. IMO they look fine with none, and objectively respect smaller
+// screen sizes.
+.vis-ltr .vis-label.vis-nested-group .vis-inner
+  padding-left: 0

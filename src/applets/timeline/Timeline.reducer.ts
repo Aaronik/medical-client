@@ -3,6 +3,8 @@ import { cloneDeep } from 'lodash'
 import * as T from './Timeline.d'
 import { ActionKeys } from 'common/actionKeys'
 
+const GROUP_STYLE = 'max-width: 15vw; padding-left: 0px'
+
 const startingState: T.TBranchState = {
   'f15c625d-9173-4ca7-a2f1-b1a1c34989d9': {
     items: [{
@@ -48,10 +50,12 @@ const startingState: T.TBranchState = {
     groups: [{
       id: 1,
       content: 'Category 1',
+      style: GROUP_STYLE,
       nestedGroups: [2]
     }, {
       id: 2,
-      content: 'Category 2'
+      content: 'Category 2',
+      style: GROUP_STYLE
     }]
   },
   'c545dde9-56e0-4260-a13d-cc25de10311b': {
