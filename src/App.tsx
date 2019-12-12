@@ -24,7 +24,6 @@ import DoctorActivityPage from 'pages/doctor-activity/DoctorActivity'
 import DoctorMessagesPage from 'pages/doctor-messages/DoctorMessages'
 import DoctorSchedulePage from 'pages/doctor-schedule/DoctorSchedule'
 import DoctorOverviewPage from 'pages/doctor-overview/DoctorOverview'
-import NoActivePatient from 'pages/no-active-patient/NoActivePatient'
 
 import Alert from 'applets/alert/Alert'
 import AppGutterNav, { LinkEntryProps, GutterAwareFluidContainer, GutterNavToggleButton } from 'applets/app-gutter-nav/AppGutterNav'
@@ -93,7 +92,7 @@ const AdminBase: React.FunctionComponent = () => {
   )
 }
 
-const DoctorBase: React.FunctionComponent<{activePatientId: string | false}> = ({ activePatientId }) => {
+const DoctorWithPatientBase: React.FunctionComponent<{}> = () => {
   const gutterRoutes: LinkEntryProps[] = [
     { to: "/", text: strings('dashboard'), icon: icons.faSquare, exact: true },
     { to: "/settings", text: strings('settings'), icon: icons.faCog },
@@ -104,11 +103,6 @@ const DoctorBase: React.FunctionComponent<{activePatientId: string | false}> = (
     { to: "/schedule", text: strings('schedule'), icon: icons.faCalendar },
     { to: "/activity", text: strings('activity'), icon: icons.faClock },
   ]
-
-  const activePatientOr = (Component: React.ComponentType) => {
-    if (activePatientId) return Component
-    else              return NoActivePatient
-  }
 
   return (
     <React.Fragment>
@@ -132,11 +126,45 @@ const DoctorBase: React.FunctionComponent<{activePatientId: string | false}> = (
           <Route path="/settings" component={DoctorSettingsPage} />
           <Route path="/profile" component={DoctorProfilePage} />
 
-          <Route path="/timeline" component={activePatientOr(DoctorTimelinePage)} />
-          <Route path="/activity" component={activePatientOr(DoctorActivityPage)} />
-          <Route path="/messages" component={activePatientOr(DoctorMessagesPage)} />
-          <Route path="/overview" component={activePatientOr(DoctorOverviewPage)} />
-          <Route path="/schedule" component={activePatientOr(DoctorSchedulePage)} />
+          <Route path="/timeline" component={DoctorTimelinePage} />
+          <Route path="/activity" component={DoctorActivityPage} />
+          <Route path="/messages" component={DoctorMessagesPage} />
+          <Route path="/overview" component={DoctorOverviewPage} />
+          <Route path="/schedule" component={DoctorSchedulePage} />
+          <Route component={PageNotFound} />
+        </Switch>
+      </GutterAwareFluidContainer>
+    </React.Fragment>
+  )
+}
+
+const DoctorNoPatientBase: React.FunctionComponent<{}> = () => {
+  const gutterRoutes: LinkEntryProps[] = [
+    { to: "/", text: strings('dashboard'), icon: icons.faSquare, exact: true },
+    { to: "/settings", text: strings('settings'), icon: icons.faCog },
+  ]
+
+  return (
+    <React.Fragment>
+      <AppNavBar>
+        <Nav>
+          <GutterNavToggleButton className='align-self-center pr-3 d-lg-none d-md-block'/>
+          <MilliBrandLink/>
+        </Nav>
+        <Nav>
+          <ProfileDropdown/>
+        </Nav>
+      </AppNavBar>
+
+      <Alert />
+
+      <AppGutterNav entries={gutterRoutes}/>
+
+      <GutterAwareFluidContainer>
+        <Switch>
+          <Route path="/" exact component={DoctorDashboard} />
+          <Route path="/settings" component={DoctorSettingsPage} />
+          <Route path="/profile" component={DoctorProfilePage} />
           <Route component={PageNotFound} />
         </Switch>
       </GutterAwareFluidContainer>
@@ -180,7 +208,7 @@ const Base: React.FunctionComponent<{ userType: TUserType, activePatientId: stri
       Component = <AdminBase />
       break
     case 'DOCTOR':
-      Component = <DoctorBase activePatientId={activePatientId} />
+      Component = !!activePatientId ? <DoctorWithPatientBase /> : <DoctorNoPatientBase />
       break
     case 'PATIENT':
       Component = <PatientBase />
