@@ -198,7 +198,7 @@ const BaseWithProps = connect((storeState: TStoreState) => {
   const userType: TUserType = currentUser() ? currentUser().type : 'SIGNED_OUT'
 
   return {
-    userType: 'DOCTOR' as const || userType,
+    userType: userType,
     activePatientId: storeState.user.activePatientId
   }
 })(Base)
