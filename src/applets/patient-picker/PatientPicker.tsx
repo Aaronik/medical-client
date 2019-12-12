@@ -1,15 +1,20 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { RouteComponentProps, withRouter } from "react-router-dom"
 import { connect } from 'react-redux'
 import Container from 'react-bootstrap/Container'
 import Row from 'react-bootstrap/Row'
+import Modal from 'react-bootstrap/Modal'
+import Form from 'react-bootstrap/Form'
+import Button from 'react-bootstrap/Button'
 import Select, { ValueType } from 'react-select'
 import { TUser } from 'concerns/user/User.d'
 import { TStoreState } from 'common/store'
 import strings from './PatientPicker.strings'
 import { patients } from 'common/util/users'
-import { setActiveUser } from 'concerns/user/User.actions'
 import Avatar from 'common/components/Avatar'
+import FormInput from 'common/components/FormInput'
+import { addPatient, setActiveUser } from 'concerns/user/User.actions'
+import { faUser } from '@fortawesome/free-solid-svg-icons'
 
 // This component lives in the top left on the top of the left gutter nav.
 // It is what allows doctors to chose the active patient
@@ -21,6 +26,33 @@ type TProps = {
 } & RouteComponentProps
 
 type TOption = { value: string, label: string }
+
+const AddPatientModal: React.FC<{ show: boolean, onHide: () => void, onComplete: (name: string) => void }> = ({ show, onHide, onComplete }) => {
+  const [ name, setName ] = useState('')
+
+  const onC = () => {
+    setName('')
+    onComplete(name)
+  }
+
+  return (
+    <Modal show={show} onHide={onHide} >
+      <Modal.Header><h2>{strings('addPatientModalHeader')}</h2></Modal.Header>
+      <Modal.Body>
+        <Form onSubmit={(e: React.FormEvent<HTMLFormElement>) => e.preventDefault()}>
+          <FormInput
+            autoFocus={true} // TODO
+            label={strings('name')}
+            type="text"
+            icon={faUser}
+            value={name}
+            onChange={setName}/>
+          <Button onClick={onC}>{strings('addPatient')}</Button>
+        </Form>
+      </Modal.Body>
+    </Modal>
+  )
+}
 
 const mapPatientsToOptions = (patients: TUser[]): TOption[] => patients.map(mapPatientToOption)
 
@@ -41,6 +73,9 @@ const formatOptionLabel = (patients: TUser[]) => ({ value, label }: TOption) => 
 }
 
 const _PatientPicker: React.FC<TProps> = ({ patients, className, activePatientId, history }) => {
+
+  const [ isAddPatientModalActive, setIsAddPatientModalActive ] = useState(false)
+
   const activePatient = patients.find(p => p.id === activePatientId)
 
   // For the dropdown, let's sort the patients alphabetically for ease of finding.
@@ -61,6 +96,11 @@ const _PatientPicker: React.FC<TProps> = ({ patients, className, activePatientId
     setActiveUser(option.value)
   }
 
+  const onAddPatient = (name: string) => {
+    addPatient({ name: { first: name, last: '' }})
+    setIsAddPatientModalActive(false)
+  }
+
   return (
     <Container>
       <Select
@@ -72,8 +112,15 @@ const _PatientPicker: React.FC<TProps> = ({ patients, className, activePatientId
         formatOptionLabel={formatOptionLabel(patients)}
         options={alphabeticallySortedPatientOptions} />
       <Row className='ml-0 mt-3'>
-        { patients.map(p => <Avatar user={p} className='ml-2' onClick={onAvatarClick(p)}/>)}
+        { patients.map(p => <Avatar key={p.id} user={p} className='ml-2' onClick={onAvatarClick(p)}/>)}
       </Row>
+      <Row className='mt-3 ml-1'>
+        <Button variant='link' onClick={() => setIsAddPatientModalActive(true)}>{strings('addNewPatient')}</Button>
+      </Row>
+      <AddPatientModal
+        show={isAddPatientModalActive}
+        onComplete={onAddPatient}
+        onHide={() => setIsAddPatientModalActive(false)} />
     </Container>
   )
 }

@@ -1,14 +1,12 @@
-import React, { useState } from 'react'
+import React from 'react'
 import Container from 'react-bootstrap/Container'
-import Button from 'react-bootstrap/Button'
 import Row from 'react-bootstrap/Row'
 import Table from 'react-bootstrap/Table'
 import { connect } from 'react-redux'
 import { TStoreState } from 'common/store'
 import { patients } from 'common/util/users'
 import { TUser } from 'concerns/user/User.d'
-import AddPatientForm, { TSurveyResult } from './AddPatientForm'
-import { addPatient, setActiveUser } from 'concerns/user/User.actions'
+import { setActiveUser } from 'concerns/user/User.actions'
 import strings from './DoctorDashboard.strings'
 
 interface TProps {
@@ -16,17 +14,6 @@ interface TProps {
 }
 
 const DoctorDashboard: React.FunctionComponent<TProps> = ({ patients }) => {
-
-  const [ isAddPatientActive, setIsAddPatientActive ] = useState(false)
-
-  const onAddPatientButtonClick = () => {
-    setIsAddPatientActive(!isAddPatientActive)
-  }
-
-  const onAddPatientFormComplete = (resp: TSurveyResult) => {
-    addPatient(resp)
-    setIsAddPatientActive(false)
-  }
 
   const patientTableBody = () => {
     const bodyContents = patients.map(patient => {
@@ -46,24 +33,15 @@ const DoctorDashboard: React.FunctionComponent<TProps> = ({ patients }) => {
     )
   }
 
-  const addPatientFormClassName = isAddPatientActive ? "" : "d-none"
-  const patientTableClassName   = isAddPatientActive ? "d-none" : ""
-
   return (
     <Container>
       <Row className='justify-content-around p-5'>
         <h1>{strings('welcomeBackDoctor')}</h1>
       </Row>
       <Row className="p-b5">
-        <Button variant="primary" size="lg" block onClick={onAddPatientButtonClick}>
-          {strings('addNewPatient')}
-        </Button>
-      </Row>
-      <Row className={addPatientFormClassName}>
-        <AddPatientForm onComplete={onAddPatientFormComplete}/>
       </Row>
       <br/>
-      <Row className={patientTableClassName}>
+      <Row>
         <h3>{strings('yourPatients')}</h3>
         <Table responsive striped bordered hover>
           <thead>
