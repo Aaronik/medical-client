@@ -34,7 +34,7 @@ const Signin: React.FunctionComponent<TProps> = ({ history }) => {
     <Container fluid className='pt-5 signin bg-primary with-background'>
       <Row className='justify-content-center mt-5'>
 
-        <Col lg={4} md={8} sm={8} xs={8} className='text-center pane'>
+        <Col lg={4} md={8} sm={8} xs={11} className='text-center pane'>
           <Container className=''>
             <Row className='p-4'>
               <h3>{strings('signIn')}</h3>

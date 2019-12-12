@@ -28,7 +28,7 @@ const Signup: React.FunctionComponent<TProps> = ({ history }) => {
     <Container fluid className='pt-5 signup bg-primary with-background'>
       <Row className='justify-content-center'>
 
-        <Col lg={4} md={8} sm={8} xs={8 }className='text-center pane-1'>
+        <Col lg={4} md={8} sm={8} xs={11} className='text-center pane-1'>
           <Container className='h-100 d-flex flex-column justify-content-around'>
             <Row className='justify-content-lg-between justify-content-md-center justify-content-sm-center justify-content-xs-center p-4'>
               <Image src="milli-logo.png" width={100} height={35}/>
@@ -42,7 +42,7 @@ const Signup: React.FunctionComponent<TProps> = ({ history }) => {
           </Container>
         </Col>
 
-        <Col lg={4} md={8} sm={8} xs={8} className='text-center pane-2'>
+        <Col lg={4} md={8} sm={8} xs={11} className='text-center pane-2'>
           <Container className=''>
             <Row className='p-4'>
               <h3>{strings('createAccount')}</h3>
