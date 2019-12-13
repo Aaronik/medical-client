@@ -1,5 +1,7 @@
 @import 'common/styles/variables.sass'
 
+$active-color: #5bcef5 // match the underline color of bootstrap
+
 @mixin auth-input-border
   border: none
   border-bottom: 1px solid
@@ -10,7 +12,7 @@
     @include auth-input-border
 
   .input-group-text
-    transition: border-bottom-color 0.3s
+    transition: border-bottom-color, color 0.3s
     background-color: $white
     @include auth-input-border
 
@@ -20,4 +22,5 @@
   // is light blue until it hits the icon, then the underline turns black.
   // This adds the continuity.
   input:focus + .input-group-append > .input-group-text
-    border-bottom-color: #5bcef5 // match the underline color of bootstrap
+    border-bottom-color: $active-color
+    color: darken($active-color, 15%) // just looked nicer to my eye darkened.
