@@ -1,6 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { useRouteMatch, RouteComponentProps, withRouter } from "react-router-dom"
+import { useRouteMatch, RouteComponentProps, withRouter } from 'react-router-dom'
 import Nav from 'react-bootstrap/Nav'
 import Container from 'react-bootstrap/Container'
 import { Link } from 'react-router-dom'
@@ -9,6 +9,7 @@ import * as icons from '@fortawesome/free-solid-svg-icons'
 import { toggleGutterNav } from './AppGutterNav.actions'
 import { TStoreState } from 'common/store'
 import PatientPicker from 'applets/patient-picker/PatientPicker'
+import Fade from 'common/components/Fade'
 import './AppGutterNav.sass'
 
 const Separator: React.FC<{}> = () => (
@@ -22,30 +23,34 @@ export type LinkEntryProps = {
   text: string
   icon: icons.IconDefinition
   exact?: boolean
+  fade?: boolean // If the links are going to be dis/appearing rapidly, setting this to true is easier on the eyes
 } | SeparatorType
 
 type LinkEntryPropsWithRouter = LinkEntryProps & RouteComponentProps
 
 const _NavEntry: React.FC<LinkEntryPropsWithRouter> = (props) => {
   // have to use props as any trick b/c typescript just cannot discriminate b/t two object types
-  // _along with a react hook.
-  const { to, text, icon, exact, history, separator } = props as any
+  // along with a react hook.
+  const { to, text, icon, exact, fade, history, separator } = props as any
 
   let match = useRouteMatch(to)
 
   if (separator) return <Separator/>
 
-  let containerClassName = "nav-entry"
+  let containerClassName = 'nav-entry'
 
   // the url is a match, and _if_ dev specified exact, if the match is an exact match
-  if (match && (exact ? match.isExact : true)) containerClassName += " active"
+  if (match && (exact ? match.isExact : true)) containerClassName += ' active'
 
-  return (
+  const entry = (
     <span className={containerClassName} onClick={() => history.push(to)}>
-      <FontAwesomeIcon icon={icon} className="icon" size="lg"/>
+      <FontAwesomeIcon icon={icon} className='icon' size='lg'/>
       <Nav.Link as={Link} to={to}>{text}</Nav.Link>
     </span>
-  )
+  ) as JSX.Element
+
+  if (fade) return <Fade>{entry}</Fade>
+  else      return entry
 }
 
 const NavEntry = withRouter(_NavEntry)
@@ -73,13 +78,13 @@ export const GutterNavToggleButton: React.FC<{ className?: string }> = ({ classN
 
   return (
     <div className={className} onClick={onSandwichClick} style={{ cursor: 'pointer' }}>
-      <FontAwesomeIcon icon={icons.faBars} size="2x" color="black"/>
+      <FontAwesomeIcon icon={icons.faBars} size='2x' color='black'/>
     </div>
   )
 }
 
 const AppGutterNav: React.FC<AppGutterNavProps> = ({ entries, gutterNavActive }) => {
-  let containerClassName = "app-gutter-nav flex-column"
+  let containerClassName = 'app-gutter-nav flex-column'
   containerClassName += ` col-xl-${cs.xl}`
   containerClassName += ` col-lg-${cs.lg}`
   containerClassName += ` col-md-${cs.md}`
@@ -106,7 +111,7 @@ export default connect((storeState: TStoreState) => {
 // This provides a container that allows you to place anything in it, while
 // respecting the size of the gutter nav.
 const GutterAwareFluidContainerSansConnect: React.FC<{ gutterNavActive: boolean}> = ({ children, gutterNavActive }) => {
-  let className = ""
+  let className = ''
 
   if (gutterNavActive) {
     className += ` col-xl-${12 - cs.xl}`

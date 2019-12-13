@@ -1,5 +1,5 @@
 import React from 'react'
-import { BrowserRouter as Router, Route, Link, Switch } from 'react-router-dom'
+import { BrowserRouter as Router, Route as RRRoute, RouteProps, RouteComponentProps, Link, Switch } from 'react-router-dom'
 import { Provider, connect } from 'react-redux'
 import { StylesManager } from 'survey-react'
 import * as icons from '@fortawesome/free-solid-svg-icons'
@@ -26,6 +26,7 @@ import DoctorSchedulePage from 'pages/doctor-schedule/DoctorSchedule'
 import DoctorOverviewPage from 'pages/doctor-overview/DoctorOverview'
 
 import Alert from 'applets/alert/Alert'
+import Fade from 'common/components/Fade'
 import AppGutterNav, { LinkEntryProps, GutterAwareFluidContainer, GutterNavToggleButton } from 'applets/app-gutter-nav/AppGutterNav'
 import { loadHostMap } from 'concerns/auth/Auth.actions'
 import store, { TStoreState } from 'common/store'
@@ -41,6 +42,21 @@ StylesManager.applyTheme('bootstrap')
 const AppNavBar: React.FC = ({ children }) => <Navbar sticky='top' className='justify-content-between app-navbar'>{children}</Navbar>
 const MilliBrandLink = () => <Navbar.Brand><Link to='/'><Image width={70} height={25} src='/milli-logo.png'/></Link></Navbar.Brand>
 const NavLink = ({ to, text }: { to: string, text: string }) => <Nav.Link as={Link} to={to}>{text}</Nav.Link>
+
+// This is so every Route gets a fade in when mounted.
+// Signin/out has background, which also fades and is super hard on the eyes.
+// So an option is here to not fade.
+// Note that if you have to take this option, you can still use <Fade> inside
+// the actual component you're working on.
+const Route: React.FC<RouteProps & { noFade?: boolean }> = ({ noFade, component, ...props }) => {
+  const Component = component as React.ComponentType<RouteProps>
+
+  const FadedComponent = (props: RouteComponentProps) => (
+    <Fade><Component {...props}/></Fade>
+  )
+
+  return <RRRoute {...props} component={noFade ? Component : FadedComponent} />
+}
 
 const SignedOutBase: React.FunctionComponent = () => {
   return (
@@ -59,8 +75,8 @@ const SignedOutBase: React.FunctionComponent = () => {
 
       <Switch>
         <Route path='/' exact component={NotSignedInPage} />
-        <Route path='/signin' component={SigninPage} />
-        <Route path='/signup' component={SignupPage} />
+        <Route path='/signin' component={SigninPage} noFade/>
+        <Route path='/signup' component={SignupPage} noFade/>
         <Route component={PageNotFound} />
       </Switch>
     </React.Fragment>
@@ -97,11 +113,11 @@ const DoctorWithPatientBase: React.FunctionComponent<{}> = () => {
     { to: '/', text: strings('dashboard'), icon: icons.faSquare, exact: true },
     { to: '/settings', text: strings('settings'), icon: icons.faCog },
     { separator: true },
-    { to: '/overview', text: strings('overview'), icon: icons.faTachometerAlt },
-    { to: '/messages', text: strings('messages'), icon: icons.faCommentDots },
-    { to: '/timeline', text: strings('healthTimeline'), icon: icons.faCheckCircle },
-    { to: '/schedule', text: strings('schedule'), icon: icons.faCalendar },
-    { to: '/activity', text: strings('activity'), icon: icons.faClock },
+    { to: '/overview', text: strings('overview'), icon: icons.faTachometerAlt, fade: true },
+    { to: '/messages', text: strings('messages'), icon: icons.faCommentDots, fade: true },
+    { to: '/timeline', text: strings('healthTimeline'), icon: icons.faCheckCircle, fade: true },
+    { to: '/schedule', text: strings('schedule'), icon: icons.faCalendar, fade: true },
+    { to: '/activity', text: strings('activity'), icon: icons.faClock, fade: true },
   ]
 
   return (

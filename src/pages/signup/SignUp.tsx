@@ -9,6 +9,7 @@ import Button from 'react-bootstrap/Button'
 import * as icons from '@fortawesome/free-solid-svg-icons'
 // import Spinner from 'react-bootstrap/Spinner'
 import FormInput from 'common/components/FormInput'
+import Fade from 'common/components/Fade'
 import connectWithDispatch from 'common/util/connectWithDispatch'
 import strings from './SignUp.strings'
 import './SignUp.sass'
@@ -26,67 +27,69 @@ const Signup: React.FunctionComponent<TProps> = ({ history }) => {
 
   return (
     <Container fluid className='pt-5 signup bg-primary with-background'>
-      <Row className='justify-content-center'>
+      <Fade>
+        <Row className='justify-content-center'>
 
-        <Col lg={4} md={8} sm={8} xs={11} className='text-center pane-1'>
-          <Container className='h-100 d-flex flex-column justify-content-around'>
-            <Row className='justify-content-lg-between justify-content-md-center justify-content-sm-center justify-content-xs-center p-4'>
-              <Image src="milli-logo.png" width={100} height={35}/>
-            </Row>
-            <Row className='justify-content-center'>
-              <Image fluid src="signup-image.png" />
-            </Row>
-            <Row className='justify-content-center'>
-              <h4 className='p-2'>{strings('milliBlurb')}</h4>
-            </Row>
-          </Container>
-        </Col>
+          <Col lg={4} md={8} sm={8} xs={11} className='text-center pane-1'>
+            <Container className='h-100 d-flex flex-column justify-content-around'>
+              <Row className='justify-content-lg-between justify-content-md-center justify-content-sm-center justify-content-xs-center p-4'>
+                <Image src="milli-logo.png" width={100} height={35}/>
+              </Row>
+              <Row className='justify-content-center'>
+                <Image fluid src="signup-image.png" />
+              </Row>
+              <Row className='justify-content-center'>
+                <h4 className='p-2'>{strings('milliBlurb')}</h4>
+              </Row>
+            </Container>
+          </Col>
 
-        <Col lg={4} md={8} sm={8} xs={11} className='text-center pane-2'>
-          <Container className=''>
-            <Row className='p-4'>
-              <h3>{strings('createAccount')}</h3>
-            </Row>
-            <Row className='p-4 text-left'>
-              <Form className="w-100">
+          <Col lg={4} md={8} sm={8} xs={11} className='text-center pane-2'>
+            <Container className=''>
+              <Row className='p-4'>
+                <h3>{strings('createAccount')}</h3>
+              </Row>
+              <Row className='p-4 text-left'>
+                <Form className="w-100">
 
-                <FormInput
-                  label={strings('fullName')}
-                  type="text"
-                  icon={icons.faUser}
-                  onChange={setName}
-                  value={name}/>
+                  <FormInput
+                    label={strings('fullName')}
+                    type="text"
+                    icon={icons.faUser}
+                    onChange={setName}
+                    value={name}/>
 
-                <FormInput
-                  label={strings('email')}
-                  type="email"
-                  icon={icons.faAt}
-                  onChange={setEmail}
-                  value={email}/>
+                  <FormInput
+                    label={strings('email')}
+                    type="email"
+                    icon={icons.faAt}
+                    onChange={setEmail}
+                    value={email}/>
 
-                <FormInput
-                  label={strings('businessUrl')}
-                  type="text"
-                  icon={icons.faGlobe}
-                  onChange={setBusinessUrl}
-                  value={businessUrl}/>
+                  <FormInput
+                    label={strings('businessUrl')}
+                    type="text"
+                    icon={icons.faGlobe}
+                    onChange={setBusinessUrl}
+                    value={businessUrl}/>
 
-                <FormInput
-                  label={strings('password')}
-                  type="password"
-                  icon={icons.faLock}
-                  onChange={setPassword}
-                  value={password}/>
+                  <FormInput
+                    label={strings('password')}
+                    type="password"
+                    icon={icons.faLock}
+                    onChange={setPassword}
+                    value={password}/>
 
-              </Form>
-            </Row>
-            <Row className='p-4'>
-              <Button block size='lg'>{strings('createAccount')}</Button>
-            </Row>
-          </Container>
-        </Col>
+                </Form>
+              </Row>
+              <Row className='p-4'>
+                <Button block size='lg'>{strings('createAccount')}</Button>
+              </Row>
+            </Container>
+          </Col>
 
-      </Row>
+        </Row>
+      </Fade>
     </Container>
   )
 }
