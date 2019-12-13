@@ -11,7 +11,7 @@ type TProps = {
 }
 
 const Avatar: React.FC<TProps> = ({ user, className, onClick, size }) => {
-  const initials = user.name.split(' ').map(name => name[0]).join('')
+  const initials = user.name.split(' ').map(name => name[0]).join('').toUpperCase()
 
   const eventlessOnClick = (e: React.MouseEvent<HTMLElement>) => {
     onClick && onClick()
