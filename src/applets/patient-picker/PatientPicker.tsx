@@ -35,6 +35,7 @@ const AddPatientModal: React.FC<{ show: boolean, onHide: () => void, onComplete:
     onComplete(name)
   }
 
+  // TODO have to make sure submit does not lead to page refresh
   return (
     <Modal show={show} onHide={onHide} >
       <Modal.Header><h2>{strings('addPatientModalHeader')}</h2></Modal.Header>
