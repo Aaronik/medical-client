@@ -8,7 +8,7 @@ import Container from 'react-bootstrap/Container'
 const Fade: React.FC<{}> = ({ children }) => {
   const [ className, setClassName ] = useState('fade')
 
-  useEffect(() => setClassName('fade show'))
+  useEffect(() => setClassName('fade show'), [])
 
   return <Container fluid className={className + ' p-0'}>{children}</Container>
 }
