@@ -1,12 +1,12 @@
 import React, { useEffect, useRef, useState } from 'react'
 import * as timeline from 'vis-timeline'
-import { min } from 'lodash'
+import { min, max } from 'lodash'
 import jsxToString from 'jsx-to-string'
 import ErrorBoundary from 'common/components/ErrorBoundary'
 
 import * as T from './Timeline.d'
 import strings from './Timeline.strings'
-import formatDate from 'common/util/dateToTimelineDate'
+import formatDate from 'common/util/formatDate'
 import './Timeline.sass'
 
 const tooltipTemplater = (item: timeline.TimelineItem, editedData?: timeline.TimelineItem) => {
@@ -70,6 +70,10 @@ const earliestStartDateOfItems = (items: T.TTimelineItem[]) => {
   return min(items.map(i => i.start))
 }
 
+const latestEndDateOfItems = (items: T.TTimelineItem[]) => {
+  return max(items.map(i => i.end))
+}
+
 const onMoveWithoutGroupEditability = (onMove: TOnMove, items: T.TTimelineItem[]) => (updatedItem: T.TTimelineItem) => {
   const originalItem = items.find(item => item.id === updatedItem.id)
   if (!originalItem) return onMove(updatedItem)
@@ -86,16 +90,7 @@ type TOnMove = TOnItemChange
 // Trample over any react created elements, adding the timeline.
 // This is the transformation from react's beautiful declarative
 // paradigm to timeline's imperative paradigm.
-const renderTimeline = (container: HTMLDivElement, items: T.TTimelineItem[], groups: T.TTimelineGroup[], onAdd: TOnAdd, onUpdate: TOnUpdate, onMove: TOnMove) => {
-
-  // Calculating the earliest date the timeline shows here allows us to only
-  // show what dates the user is concerned with, so they don't get super
-  // lost in an infinity of time on the timeline. It'll literally go into negative
-  // years if you sroll enough, which isn't hard to do by just zooming out a bunch.
-  const earliestDate = earliestStartDateOfItems(items) || new Date()
-
-  const options = optionsWith({ onAdd, onUpdate, onMove, min: earliestDate })
-
+const renderTimeline = (container: HTMLDivElement, items: T.TTimelineItem[], groups: T.TTimelineGroup[], options: timeline.TimelineOptions) => {
   container.innerHTML = ''
 
   // We have to use a DataSet rather than an array b/c a bug in vis-timeline around
@@ -121,9 +116,13 @@ type TProps = {
   onMove: TOnMove
 }
 
-const TimelineSansErrorBoundary: React.FC<TProps> = ({ items, groups, onAdd, onUpdate, onMove }) => {
+const _Timeline: React.FC<TProps> = ({ items, groups, onAdd, onUpdate, onMove }) => {
   const timelineTargetRef = useRef<HTMLDivElement>(null)
   const [ timelineRef, setTimelineRef ] = useState()
+
+  const min = earliestStartDateOfItems(items) || new Date()
+  const max = latestEndDateOfItems(items) || new Date()
+  const options = optionsWith({ onAdd, onUpdate, onMove, min, max })
 
   // Simply using the setting, groupUpdate: false, does not
   // work with vis timeline. So we need to ensure the item's
@@ -133,7 +132,7 @@ const TimelineSansErrorBoundary: React.FC<TProps> = ({ items, groups, onAdd, onU
 
   useEffect(() => {
     const ref = timelineTargetRef.current as HTMLDivElement
-    setTimelineRef(renderTimeline(ref, items, groups, onAdd, onUpdate, onMove))
+    setTimelineRef(renderTimeline(ref, items, groups, options))
     // ESLint needs onAdd to be in the array below. However, doing so introduces a bug,
     // that the timeline then gets rendered every time the Timeline FC gets rendered.
     // That's a bunch of extra renders that don't need to happen. It basically is breaking
@@ -144,8 +143,6 @@ const TimelineSansErrorBoundary: React.FC<TProps> = ({ items, groups, onAdd, onU
   }, [])
 
   useEffect(() => {
-    const min = earliestStartDateOfItems(items) || new Date()
-    const options = optionsWith({ onAdd, onUpdate, onMove, min })
     if (timelineRef) redrawTimeline(timelineRef, items, groups, options)
     // eslint-disable-next-line
   }, [items, groups])
@@ -157,7 +154,7 @@ const TimelineSansErrorBoundary: React.FC<TProps> = ({ items, groups, onAdd, onU
 
 const Timeline: React.FC<TProps> = (props: TProps) => (
   <ErrorBoundary>
-    <TimelineSansErrorBoundary {...props}/>
+    <_Timeline {...props}/>
   </ErrorBoundary>
 )
 export default Timeline
