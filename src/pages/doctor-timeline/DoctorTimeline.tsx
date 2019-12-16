@@ -14,6 +14,7 @@ import * as icons from '@fortawesome/free-solid-svg-icons'
 import Select, { ValueType } from 'react-select'
 
 import FormInput from 'common/components/FormInput'
+import preventDefault from 'common/util/preventDefault'
 import DatePickerModal from 'common/components/DatePickerModal'
 import { TStoreState } from 'common/store'
 import { TUser } from 'concerns/user/User.d'
@@ -148,8 +149,9 @@ const EventModal: React.FC<TEventModalProps> = ({ show, item, onSave, updateItem
           <Modal.Title>{strings('addPatientEvent')}</Modal.Title>
         </Modal.Header>
 
-        <Modal.Body>
-          <Form>
+        <Form onSubmit={preventDefault}>
+
+          <Modal.Body>
             <Form.Label className='text-muted'>{strings('category')}</Form.Label>
             <Select
               className='pb-3'
@@ -158,6 +160,7 @@ const EventModal: React.FC<TEventModalProps> = ({ show, item, onSave, updateItem
               options={groupOptions}/>
 
             <FormInput
+              autoFocus={true}
               label={strings('eventDesc')}
               value={item.content}
               type="text"
@@ -176,13 +179,15 @@ const EventModal: React.FC<TEventModalProps> = ({ show, item, onSave, updateItem
               onIconClick={() => setIsEndDateModalActive(true)}
               type="text"
               onChange={end => updateItem({ end })}/>
-          </Form>
-        </Modal.Body>
+          </Modal.Body>
 
-        <Modal.Footer>
-          <Button variant="secondary" onClick={onClose}>{strings('close')}</Button>
-          <Button variant="primary" onClick={onSave}>{strings('save')}</Button>
-        </Modal.Footer>
+          <Modal.Footer>
+            <Button variant="secondary" onClick={onClose}>{strings('close')}</Button>
+            <Button type='submit' variant="primary" onClick={onSave}>{strings('save')}</Button>
+          </Modal.Footer>
+
+        </Form>
+
       </Modal>
     </React.Fragment>
   )

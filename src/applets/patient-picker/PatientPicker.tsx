@@ -13,6 +13,7 @@ import strings from './PatientPicker.strings'
 import { patients } from 'common/util/users'
 import Avatar from 'common/components/Avatar'
 import FormInput from 'common/components/FormInput'
+import preventDefault from 'common/util/preventDefault'
 import { addPatient, setActiveUser } from 'concerns/user/User.actions'
 import { faUser } from '@fortawesome/free-solid-svg-icons'
 
@@ -30,25 +31,24 @@ type TOption = { value: string, label: string }
 const AddPatientModal: React.FC<{ show: boolean, onHide: () => void, onComplete: (name: string) => void }> = ({ show, onHide, onComplete }) => {
   const [ name, setName ] = useState('')
 
-  const onC = () => {
+  const clearNameAndOnComplete = () => {
     setName('')
     onComplete(name)
   }
 
-  // TODO have to make sure submit does not lead to page refresh
   return (
     <Modal show={show} onHide={onHide} >
       <Modal.Header><h2>{strings('addPatientModalHeader')}</h2></Modal.Header>
       <Modal.Body>
-        <Form onSubmit={(e: React.FormEvent<HTMLFormElement>) => e.preventDefault()}>
+        <Form onSubmit={preventDefault}>
           <FormInput
-            autoFocus={true} // TODO
+            autoFocus={true}
             label={strings('name')}
             type="text"
             icon={faUser}
             value={name}
             onChange={setName}/>
-          <Button onClick={onC}>{strings('addPatient')}</Button>
+          <Button type='submit' onClick={clearNameAndOnComplete}>{strings('addPatient')}</Button>
         </Form>
       </Modal.Body>
     </Modal>
