@@ -22,7 +22,7 @@ import Timeline from 'applets/timeline/Timeline'
 import { TTimelineItem, TTimelineGroup } from 'applets/timeline/Timeline.d'
 import { TimelineItem as VisTimelineItem } from 'vis-timeline'
 import { addTimelineItem, updateTimelineItem } from 'applets/timeline/Timeline.actions'
-import formatDate from 'common/util/dateToTimelineDate'
+import formatDate from 'common/util/formatDate'
 import strings from './DoctorTimeline.strings'
 import './DoctorTimelinne.sass'
 
