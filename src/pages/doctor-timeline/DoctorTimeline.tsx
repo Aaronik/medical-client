@@ -110,7 +110,7 @@ const EventModal: React.FC<TEventModalProps> = ({ show, item, onSave, updateItem
   const [ isStartDateModalActive, setIsStartDateModalActive ] = useState(false)
   const [ isEndDateModalActive, setIsEndDateModalActive ] = useState(false)
 
-  const endDate = item.end ? item.end.toString() : item.start.toString()
+  const endDate = item.end ? item.end : item.start
 
   const groupOptions: TOption[] = groups.map(g => (
     { value: g.id, label: g.content }
@@ -136,13 +136,13 @@ const EventModal: React.FC<TEventModalProps> = ({ show, item, onSave, updateItem
         show={isStartDateModalActive}
         initialDate={new Date(item.start)}
         onClose={() => setIsStartDateModalActive(false)}
-        onSelect={date => updateItem({ start: formatDate(date) })} />
+        onSelect={date => updateItem({ start: date })} />
 
       <DatePickerModal
         show={isEndDateModalActive}
         initialDate={new Date(item.end || "")}
         onClose={() => setIsEndDateModalActive(false)}
-        onSelect={date => updateItem({ end: formatDate(date) })} />
+        onSelect={date => updateItem({ end: date })} />
 
       <Modal show={show} centered onHide={onClose}>
         <Modal.Header>
@@ -167,14 +167,14 @@ const EventModal: React.FC<TEventModalProps> = ({ show, item, onSave, updateItem
               onChange={content => updateItem({ content })}/>
             <FormInput
               label={strings('formStartDate')}
-              value={item.start.toString()}
+              value={formatDate(item.start)}
               type="text"
               icon={icons.faCalendarAlt}
               onIconClick={() => setIsStartDateModalActive(true)}
               onChange={start => updateItem({ start })}/>
             <FormInput
               label={strings('formEndDate')}
-              value={endDate}
+              value={formatDate(endDate)}
               icon={icons.faCalendarAlt}
               onIconClick={() => setIsEndDateModalActive(true)}
               type="text"
@@ -221,19 +221,13 @@ const DoctorTimelinePage: React.FC<TProps> = ({ patient, patientTimelineData, pa
   const onTimelineDoubleClick = (item: VisTimelineItem) => {
     // we'll default to a point event, and user can change to range if desired,
     // or if the item is already a range.
-    if (item.end) item.end = formatDate(item.end)
-    else item.end = formatDate(item.start)
-
-    item.start = formatDate(item.start)
+    if (!item.end) item.end = item.start
 
     setActiveTimelineItem(item)
     setIsEventModalActive(true)
   }
 
   const onMoveItemInTimeline = (item: VisTimelineItem) => {
-    item.start = formatDate(item.start)
-    if (item.end) item.end = formatDate(item.end)
-
     updateTimelineItem(patient.id, item)
   }
 

@@ -116,7 +116,8 @@ type TProps = {
   onMove: TOnMove
 }
 
-const _Timeline: React.FC<TProps> = ({ items, groups, onAdd, onUpdate, onMove }) => {
+// Sans error boundary. _Timeline scores a linter error.
+const XTimeline: React.FC<TProps> = ({ items, groups, onAdd, onUpdate, onMove }) => {
   const timelineTargetRef = useRef<HTMLDivElement>(null)
   const [ timelineRef, setTimelineRef ] = useState()
 
@@ -154,7 +155,7 @@ const _Timeline: React.FC<TProps> = ({ items, groups, onAdd, onUpdate, onMove })
 
 const Timeline: React.FC<TProps> = (props: TProps) => (
   <ErrorBoundary>
-    <_Timeline {...props}/>
+    <XTimeline {...props}/>
   </ErrorBoundary>
 )
 export default Timeline
