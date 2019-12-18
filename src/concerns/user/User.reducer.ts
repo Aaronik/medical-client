@@ -11,7 +11,11 @@ const startingState: T.TBranchState = {
       name: 'Bob Marley',
       userName: '',
       type: 'PATIENT',
-      imageUrl: 'https://i.ytimg.com/vi/vdB-8eLEW8g/hqdefault.jpg'
+      imageUrl: 'https://i.ytimg.com/vi/vdB-8eLEW8g/hqdefault.jpg',
+      birthday: 'Tue Feb 06 1945 00:00:00 GMT-0700 (Pacific Standard Time)',
+      adherence: 45,
+      lastVisit: 'Tue Feb 06 1945 00:00:00 GMT-0700 (Pacific Standard Time)',
+      joinDate: 'Tue Feb 06 1945 00:00:00 GMT-0700 (Pacific Standard Time)',
     },
     'c545dde9-56e0-4260-a13d-cc25de10311b': {
       id: 'c545dde9-56e0-4260-a13d-cc25de10311b',

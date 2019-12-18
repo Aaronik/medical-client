@@ -6,6 +6,10 @@ export type TUser = {
   userName: string
   type: TUserType
   imageUrl?: string
+  birthday?: string
+  joinDate?: string
+  lastVisit?: string
+  adherence?: number
 }
 
 export type TInvitationResponse = {
