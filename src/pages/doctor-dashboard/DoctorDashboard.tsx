@@ -126,7 +126,7 @@ const DoctorDashboard: React.FunctionComponent<TProps> = ({ patients, currentUse
     <Container fluid>
       <Row className='p-5'>
         <Col xs={2}>
-          <img className='d-none d-xl-block' src='/millibot.png'/>
+          <img alt='milli bot' className='d-none d-xl-block' src='/millibot.png'/>
         </Col>
         <Col xs={10}>
           <div>
