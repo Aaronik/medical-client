@@ -29,9 +29,9 @@ const Avatar: React.FC<TProps> = ({ user, className, onClick, size }) => {
   let src = user.imageUrl ? user.imageUrl : 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7'
 
   if (user.imageUrl)
-    return <img alt={strings('userAvatar')} src={src} className={cName} style={style} onClick={eventlessOnClick} />
+    return <img alt={strings('userAvatar')} src={src} className={cName} style={style} onMouseDown={eventlessOnClick} />
   else
-    return <div className={cName} style={style} onClick={eventlessOnClick}>{initials}</div>
+    return <div className={cName} style={style} onMouseDown={eventlessOnClick}>{initials}</div>
 }
 
 export default Avatar

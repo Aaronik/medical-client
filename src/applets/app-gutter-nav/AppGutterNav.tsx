@@ -3,7 +3,6 @@ import { connect } from 'react-redux'
 import { useRouteMatch, RouteComponentProps, withRouter } from 'react-router-dom'
 import Nav from 'react-bootstrap/Nav'
 import Container from 'react-bootstrap/Container'
-import { Link } from 'react-router-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import * as icons from '@fortawesome/free-solid-svg-icons'
 import { toggleGutterNav } from './AppGutterNav.actions'
@@ -43,9 +42,9 @@ const _NavEntry: React.FC<LinkEntryPropsWithRouter> = (props) => {
   if (match && (exact ? match.isExact : true)) containerClassName += ' active'
 
   const entry = (
-    <span className={containerClassName} onClick={() => history.push(to)}>
+    <span className={containerClassName} onMouseDown={() => history.push(to)}>
       <FontAwesomeIcon icon={icon} className='icon' size='lg'/>
-      <Nav.Link as={Link} to={to}>{text}</Nav.Link>
+      <Nav.Link>{text}</Nav.Link>
     </span>
   ) as JSX.Element
 
