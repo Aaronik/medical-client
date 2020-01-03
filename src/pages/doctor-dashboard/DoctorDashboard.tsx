@@ -141,7 +141,7 @@ const DoctorDashboard: React.FunctionComponent<TProps> = ({ patients, currentUse
       </Row>
       <br/>
       <h3>{strings('patientList')}</h3>
-      <Row className='justify-content-center'>
+      <Row className=''>
         { patients.map(p => <PatientCard key={p.id} patient={p}/>)}
       </Row>
     </Container>
