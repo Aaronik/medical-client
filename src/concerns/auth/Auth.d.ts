@@ -44,10 +44,13 @@ export type TBranchState = {
   apiUrl: string
   userUrn: string
   milliAtToken: string
+  authenticating: boolean
 }
 
 export type TAction =
   { type: ActionKeys.LOADED_HOST_MAP, payload: TDiscoveryResponse } |
   { type: ActionKeys.AUTHENTICATED, payload: TAuthenticationResponse & { csrfToken: string, milliAtToken: string } } |
-  { type: ActionKeys.LOGOUT, payload: TLogoutResponse }
+  { type: ActionKeys.LOGOUT, payload: TLogoutResponse } |
+  { type: ActionKeys.APP_LOADING } |
+  { type: ActionKeys.APP_NOT_LOADING }
 

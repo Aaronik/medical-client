@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { BrowserRouter as Router, Route as RRRoute, RouteProps, RouteComponentProps, Link, Switch } from 'react-router-dom'
 import { Provider, connect } from 'react-redux'
 import { StylesManager } from 'survey-react'
@@ -28,7 +28,7 @@ import DoctorOverviewPage from 'pages/doctor-overview/DoctorOverview'
 import Alert from 'applets/alert/Alert'
 import Fade from 'common/components/Fade'
 import AppGutterNav, { LinkEntryProps, GutterAwareFluidContainer, GutterNavToggleButton } from 'applets/app-gutter-nav/AppGutterNav'
-import { loadHostMap } from 'concerns/auth/Auth.actions'
+import { loadHostMap, signInWithPersistentStateIfExists } from 'concerns/auth/Auth.actions'
 import store, { TStoreState } from 'common/store'
 import currentUser from 'common/util/currentUser'
 import { TUserType as TStoreUserType } from 'concerns/user/User.d'
@@ -36,7 +36,6 @@ import strings from './App.strings'
 import 'App.sass'
 
 // Things to do once when the page loads
-loadHostMap()
 StylesManager.applyTheme('bootstrap')
 
 const AppNavBar: React.FC = ({ children }) => <Navbar sticky='top' className='justify-content-between app-navbar'>{children}</Navbar>
@@ -215,7 +214,12 @@ const PatientBase: React.FunctionComponent = () => {
 
 type TUserType = TStoreUserType | 'SIGNED_OUT'
 
-const Base: React.FunctionComponent<{ userType: TUserType, activePatientId: string | false }> = ({ userType, activePatientId }) => {
+type TBaseProps = {
+  userType: TUserType
+  activePatientId: string | false
+}
+
+const Base: React.FunctionComponent<TBaseProps> = ({ userType, activePatientId }) => {
 
   let Component = <SignedOutBase />
 
@@ -243,14 +247,22 @@ const BaseWithProps = connect((storeState: TStoreState) => {
 
   return {
     userType: userType,
-    activePatientId: storeState.user.activePatientId
+    activePatientId: storeState.user.activePatientId,
   }
 })(Base)
 
-const App: React.FunctionComponent = () => (
-  <Provider store={store}>
-    <BaseWithProps/>
-  </Provider>
-)
+const App: React.FunctionComponent = () => {
+
+  // Stuff to do on initial mount
+  useEffect(() => {
+    loadHostMap().then(() => signInWithPersistentStateIfExists())
+  }, [])
+
+  return (
+    <Provider store={store}>
+      <BaseWithProps/>
+    </Provider>
+  )
+}
 
 export default App

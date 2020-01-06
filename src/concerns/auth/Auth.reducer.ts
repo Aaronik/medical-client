@@ -5,7 +5,8 @@ import * as T from './Auth.d'
 const startingState = {
   userUrn: "",
   apiUrl: "",
-  milliAtToken: ""
+  milliAtToken: "",
+  authenticating: false
 }
 
 const reducer = (state: T.TBranchState = startingState, action: T.TAction): T.TBranchState => {
@@ -21,6 +22,12 @@ const reducer = (state: T.TBranchState = startingState, action: T.TAction): T.TB
       newState.apiUrl = hosts[randomHostIndex].fullUrl
       break
     }
+    case ActionKeys.APP_LOADING:
+      newState.authenticating = true
+      break
+    case ActionKeys.APP_NOT_LOADING:
+      newState.authenticating = false
+      break
     case ActionKeys.AUTHENTICATED:
       newState.milliAtToken = action.payload.milliAtToken
       newState.userUrn      = action.payload.userUrn
