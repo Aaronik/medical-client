@@ -16,3 +16,8 @@ export const doctors = () => {
   return filterUsersByType('DOCTOR')
 }
 
+export const activePatient = () => {
+  const apid = store.getState().user.activePatientId
+  if (apid === false) return null
+  return store.getState().user.users[apid]
+}

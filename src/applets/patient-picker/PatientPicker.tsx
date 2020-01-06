@@ -10,7 +10,7 @@ import Select, { ValueType } from 'react-select'
 import { TUser } from 'concerns/user/User.d'
 import { TStoreState } from 'common/store'
 import strings from './PatientPicker.strings'
-import { patients } from 'common/util/users'
+import { patients, activePatient } from 'common/util/users'
 import Avatar from 'common/components/Avatar'
 import FormInput from 'common/components/FormInput'
 import preventDefault from 'common/util/preventDefault'
@@ -23,7 +23,7 @@ import { faUser } from '@fortawesome/free-solid-svg-icons'
 type TProps = {
   patients: TUser[]
   className?: string
-  activePatientId: string | false
+  activePatient: TUser | null
 } & RouteComponentProps
 
 type TOption = { value: string, label: string }
@@ -73,11 +73,9 @@ const formatOptionLabel = (patients: TUser[]) => ({ value, label }: TOption) => 
   )
 }
 
-const _PatientPicker: React.FC<TProps> = ({ patients, className, activePatientId, history }) => {
+const _PatientPicker: React.FC<TProps> = ({ patients, className, activePatient, history }) => {
 
   const [ isAddPatientModalActive, setIsAddPatientModalActive ] = useState(false)
-
-  const activePatient = patients.find(p => p.id === activePatientId)
 
   // For the dropdown, let's sort the patients alphabetically for ease of finding.
   // The Avatar list will be sorted by the server, hopefully by frequency of use.
@@ -128,4 +126,4 @@ const _PatientPicker: React.FC<TProps> = ({ patients, className, activePatientId
 
 const PatientPicker = withRouter(_PatientPicker)
 
-export default connect((storeState: TStoreState) => ({ patients: patients(), activePatientId: storeState.user.activePatientId }))(PatientPicker)
+export default connect((storeState: TStoreState) => ({ patients: patients(), activePatient: activePatient() }))(PatientPicker)

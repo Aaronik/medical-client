@@ -4,6 +4,7 @@ import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 // import Button from 'react-bootstrap/Button'
 import Avatar from 'common/components/Avatar'
+import UpdateCard from 'common/components/UpdateCard'
 import { connect } from 'react-redux'
 import { TStoreState } from 'common/store'
 import { patients } from 'common/util/users'
@@ -12,8 +13,6 @@ import { TUser } from 'concerns/user/User.d'
 import { TNotification } from 'concerns/notification/Notification.d'
 import formatDate from 'common/util/formatDate'
 import { setActiveUser } from 'concerns/user/User.actions'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import * as icons from '@fortawesome/free-solid-svg-icons'
 import strings from './DoctorDashboard.strings'
 
 interface TProps {
@@ -79,47 +78,6 @@ const PatientCard: React.FC<{ patient: TUser }> = ({ patient }) => {
   )
 }
 
-const UpdateCard: React.FC<{ symbol: 'up' | 'down' | 'neutral', body: string, footer: string }> = ({ symbol, body, footer }) => {
-  let indicatorColor: 'success' | 'pink' | 'warning' = 'success'
-  let icon: typeof icons.faArrowUp | typeof icons.faArrowDown | typeof icons.faMinus = icons.faArrowUp
-
-  if (symbol === 'down') {
-    indicatorColor = 'pink'
-    icon = icons.faArrowDown
-  }
-
-  if (symbol === 'neutral') {
-    indicatorColor = 'warning'
-    icon = icons.faMinus
-  }
-
-  const cardStyle = {
-    width: '250px',
-    height: '125px',
-    borderRadius: '15px',
-  } as const
-
-  const indicatorStyle = {
-    marginTop: '-25px', // randomly found to bring it up enough
-    borderRadius: '20px',
-    width: '60px',
-    height: '60px',
-  } as const
-
-  return (
-    <div style={cardStyle} className='bg-white m-5 d-flex flex-column align-items-center justify-content-around'>
-
-      <div className={'d-flex align-items-center justify-content-center mx-auto bg-' + indicatorColor} style={indicatorStyle}>
-        <FontAwesomeIcon icon={icon} size='lg'/>
-      </div>
-
-      <h3>{body}</h3>
-
-      <p className='text-muted'>{footer}</p>
-    </div>
-  )
-}
-
 const DoctorDashboard: React.FunctionComponent<TProps> = ({ patients, currentUser, notifications }) => {
 
   return (
@@ -132,9 +90,9 @@ const DoctorDashboard: React.FunctionComponent<TProps> = ({ patients, currentUse
           <div>
             <h1>{strings('welcomeBackDoctor', currentUser && currentUser.name, notifications.length)}</h1>
             <Row>
-              <UpdateCard symbol='up' body='85%' footer={strings('avgHealthScore')} />
-              <UpdateCard symbol='down' body='12' footer={strings('dystfunctionsIdentified')} />
-              <UpdateCard symbol='neutral' body='15' footer={strings('interventionRecommendations')} />
+              <UpdateCard className='m-5' symbol='up' charge='good' body='85%' footer={strings('avgHealthScore')} />
+              <UpdateCard className='m-5' symbol='up' charge='bad' body='12' footer={strings('dystfunctionsIdentified')} />
+              <UpdateCard className='m-5' symbol='neutral' charge='neutral' body='15' footer={strings('interventionRecommendations')} />
             </Row>
           </div>
         </Col>
