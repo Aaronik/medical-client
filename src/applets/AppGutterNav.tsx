@@ -7,7 +7,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import * as icons from '@fortawesome/free-solid-svg-icons'
 import { toggleGutterNav } from './AppGutterNav.actions'
 import { TStoreState } from 'common/store'
-import PatientPicker from 'applets/patient-picker/PatientPicker'
+import PatientPicker from 'applets/PatientPicker'
 import Fade from 'common/components/Fade'
 import './AppGutterNav.sass'
 

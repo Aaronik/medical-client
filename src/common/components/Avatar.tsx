@@ -1,5 +1,5 @@
 import React from 'react'
-import { TUser } from 'concerns/user/User.d'
+import { TUser } from 'concerns/User.d'
 import strings from './Avatar.strings'
 import './Avatar.sass'
 

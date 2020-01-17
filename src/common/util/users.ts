@@ -2,7 +2,7 @@
 // from the store
 
 import store from 'common/store'
-import { TUserType } from 'concerns/user/User.d'
+import { TUserType } from 'concerns/User.d'
 
 const filterUsersByType = (userType: TUserType) => {
   return Object.values(store.getState().user.users).filter(u => u.type === userType)

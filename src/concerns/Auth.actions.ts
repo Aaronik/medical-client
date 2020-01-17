@@ -4,7 +4,7 @@ import { dispatch } from 'common/store'
 import * as T from './Auth.d'
 import { safely } from 'common/util/safely'
 import api from 'common/util/api'
-import { fetchUser } from 'concerns/user/User.actions'
+import { fetchUser } from 'concerns/User.actions'
 
 // temporary until we get better persistent signin
 const saveUnamePass = async (username: string, password: string) => {

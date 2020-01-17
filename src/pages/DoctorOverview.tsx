@@ -8,7 +8,7 @@ import UpdateCard, { TProps as UpdateCardProps } from 'common/components/UpdateC
 import Avatar from 'common/components/Avatar'
 import { activePatient } from 'common/util/users'
 import strings from './DoctorOverview.strings'
-import { TUser } from 'concerns/user/User.d'
+import { TUser } from 'concerns/User.d'
 import store from 'common/store'
 import currentUser from 'common/util/currentUser'
 import moment from 'moment'

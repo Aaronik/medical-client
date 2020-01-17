@@ -4,7 +4,7 @@ import store, { dispatch } from 'common/store'
 import currentUser from 'common/util/currentUser'
 import api from 'common/util/api'
 import * as T from './User.d'
-import { TPatientInfo } from 'pages/doctor-dashboard/DoctorDashboard.d'
+import { TPatientInfo } from 'pages/DoctorDashboard.d'
 import { ActionKeys } from 'common/actionKeys'
 
 export const fetchUser = async () => {

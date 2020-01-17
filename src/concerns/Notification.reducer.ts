@@ -1,5 +1,5 @@
 import { cloneDeep } from 'lodash'
-import * as T from 'concerns/notification/Notification.d'
+import * as T from 'concerns/Notification.d'
 import { ActionKeys } from 'common/actionKeys'
 
 const startingState: T.TBranchState = {

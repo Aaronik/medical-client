@@ -9,10 +9,10 @@ import { connect } from 'react-redux'
 import { TStoreState } from 'common/store'
 import { patients } from 'common/util/users'
 import currentUser from 'common/util/currentUser'
-import { TUser } from 'concerns/user/User.d'
-import { TNotification } from 'concerns/notification/Notification.d'
+import { TUser } from 'concerns/User.d'
+import { TNotification } from 'concerns/Notification.d'
 import formatDate from 'common/util/formatDate'
-import { setActiveUser } from 'concerns/user/User.actions'
+import { setActiveUser } from 'concerns/User.actions'
 import strings from './DoctorDashboard.strings'
 
 interface TProps {

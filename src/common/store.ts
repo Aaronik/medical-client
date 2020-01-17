@@ -1,22 +1,22 @@
 import { createStore, combineReducers } from 'redux'
 
-import authReducer from 'concerns/auth/Auth.reducer'
-import * as authTypes from 'concerns/auth/Auth.d'
+import authReducer from 'concerns/Auth.reducer'
+import * as authTypes from 'concerns/Auth.d'
 
-import alertReducer from 'applets/alert/Alert.reducer'
-import * as alertTypes from 'applets/alert/Alert.d'
+import alertReducer from 'applets/Alert.reducer'
+import * as alertTypes from 'applets/Alert.d'
 
-import timelineReducer from 'applets/timeline/Timeline.reducer'
-import * as timelineTypes from 'applets/timeline/Timeline.d'
+import timelineReducer from 'applets/Timeline.reducer'
+import * as timelineTypes from 'applets/Timeline.d'
 
-import userReducer from 'concerns/user/User.reducer'
-import * as userTypes from 'concerns/user/User.d'
+import userReducer from 'concerns/User.reducer'
+import * as userTypes from 'concerns/User.d'
 
-import appGutterNavReducer from 'applets/app-gutter-nav/AppGutterNav.reducer'
-import * as gutterNavTypes from 'applets/app-gutter-nav/AppGutterNav.d'
+import appGutterNavReducer from 'applets/AppGutterNav.reducer'
+import * as gutterNavTypes from 'applets/AppGutterNav.d'
 
-import notificationReducer from 'concerns/notification/Notification.reducer'
-import * as notificationTypes from 'concerns/notification/Notification.d'
+import notificationReducer from 'concerns/Notification.reducer'
+import * as notificationTypes from 'concerns/Notification.d'
 
 export type TStoreState = {
   alerts: alertTypes.TBranchState

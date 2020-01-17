@@ -10,8 +10,8 @@ import Spinner from 'react-bootstrap/Spinner'
 import { TStoreState } from 'common/store'
 import currentUser from 'common/util/currentUser'
 import { doctors } from 'common/util/users'
-import { TUser } from 'concerns/user/User.d'
-import { inviteUser } from 'concerns/user/User.actions'
+import { TUser } from 'concerns/User.d'
+import { inviteUser } from 'concerns/User.actions'
 import strings from './AdminDashboard.strings'
 
 interface IProps extends RouteComponentProps {

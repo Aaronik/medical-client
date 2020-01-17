@@ -8,7 +8,7 @@ import Row from 'react-bootstrap/Row'
 import Button from 'react-bootstrap/Button'
 
 import { TStoreState } from 'common/store'
-import { TUser } from 'concerns/user/User.d'
+import { TUser } from 'concerns/User.d'
 import strings from './DoctorProfile.strings'
 
 interface IProps extends RouteComponentProps {
