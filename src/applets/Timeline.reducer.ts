@@ -1,64 +1,19 @@
 import uuid from 'uuid/v4'
-import { cloneDeep } from 'lodash'
+import { cloneDeep, times, random } from 'lodash'
 import * as T from './Timeline.d'
 import { ActionKeys } from 'common/actionKeys'
+import * as faker from 'faker'
 
 const GROUP_STYLE = 'max-width: 15vw; padding-left: 0px'
+const BMID = 'f15c625d-9173-4ca7-a2f1-b1a1c34989d9'
+const EJID = 'c545dde9-56e0-4260-a13d-cc25de10311b'
 
 const startingState: T.TBranchState = {
-  'f15c625d-9173-4ca7-a2f1-b1a1c34989d9': {
-    items: [{
-      id: uuid(),
-      group: 1,
-      type: 'point',
-      start: '2019-10-14',
-      content: 'Joined Milli Health'
-    }, {
-      id: uuid(),
-      group: 1,
-      type: 'range',
-      end: '2019-10-16',
-      start: '2019-10-15',
-      content: 'Recovered from gout'
-    }, {
-      id: uuid(),
-      group: 1,
-      type: 'range',
-      end: '2019-10-17',
-      start: '2019-10-15',
-      content: 'Recovered from amputation'
-    }, {
-      id: uuid(),
-      group: 2,
-      type: 'point',
-      start: '2019-10-16',
-      content: 'Stubbed Toe'
-    }, {
-      id: uuid(),
-      group: 2,
-      type: 'point',
-      start: '2019-10-13',
-      content: 'Lost favorite hat'
-    }, {
-      id: uuid(),
-      group: 2,
-      type: 'range',
-      end: '2019-10-18',
-      start: '2019-10-17',
-      content: 'Was in Coma'
-    }],
-    groups: [{
-      id: 1,
-      content: 'Category 1',
-      style: GROUP_STYLE,
-      nestedGroups: [2]
-    }, {
-      id: 2,
-      content: 'Category 2',
-      style: GROUP_STYLE
-    }]
+  [BMID]: {
+    items: [],
+    groups: []
   },
-  'c545dde9-56e0-4260-a13d-cc25de10311b': {
+  [EJID]: {
     items: [{
       id: uuid(),
       type: 'point',
@@ -72,6 +27,33 @@ const startingState: T.TBranchState = {
     }]
   }
 }
+
+// Takes an array, returns a random member of that array
+const randomOf = <T>(...array: T[]): T => {
+  const idx = Math.floor(Math.random() * array.length)
+  return array[idx]
+}
+
+// Add groups
+times(20, idx => {
+  startingState[BMID].groups.push({
+    id: idx,
+    content: faker.lorem.word(),
+    style: GROUP_STYLE,
+  })
+})
+
+// Add timeline items
+times(300, () => {
+  startingState[BMID].items.push({
+    id: uuid(),
+    type: randomOf('range', 'point'),
+    start: faker.date.past(20),
+    end: faker.date.future(),
+    content: faker.lorem.words(),
+    group: random(20)
+  })
+})
 
 const reducer = (state: T.TBranchState = startingState, action: T.TAction): T.TBranchState => {
 

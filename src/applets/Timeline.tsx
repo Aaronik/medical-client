@@ -31,8 +31,8 @@ const tooltipTemplater = (item: timeline.TimelineItem, editedData?: timeline.Tim
 
 const optionsWith = (partialOptions: Partial<timeline.TimelineOptions>) => {
   const options: timeline.TimelineOptions = {
-    min: new Date(1900, 1, 1), // earliest date timeline will allow scrolling to
-    max: new Date(),           // latest ''
+    // min: new Date(1900, 1, 1), // earliest date timeline will allow scrolling to
+    // max: new Date(),           // latest ''
     selectable: true,
     minHeight: '60vh',
     maxHeight: '60vh',
@@ -67,11 +67,14 @@ const optionsWith = (partialOptions: Partial<timeline.TimelineOptions>) => {
 }
 
 const earliestStartDateOfItems = (items: T.TTimelineItem[]) => {
-  return min(items.map(i => i.start))
+  return min(items.map(i => (new Date(i.start)).valueOf()))
 }
 
 const latestEndDateOfItems = (items: T.TTimelineItem[]) => {
-  return max(items.map(i => i.end))
+  return max(items.map(i => {
+    if (i.end) return (new Date(i.end)).valueOf()
+    else       return (new Date()).valueOf()
+  }))
 }
 
 const onMoveWithoutGroupEditability = (onMove: TOnMove, items: T.TTimelineItem[]) => (updatedItem: T.TTimelineItem) => {
@@ -146,7 +149,7 @@ const XTimeline: React.FC<TProps> = ({ items, groups, onAdd, onUpdate, onMove })
   useEffect(() => {
     if (timelineRef) redrawTimeline(timelineRef, items, groups, options)
     // eslint-disable-next-line
-  }, [items, groups])
+  }, (items as any[]).concat(groups))
 
   return (
     <div id='timeline-container' ref={timelineTargetRef}></div>

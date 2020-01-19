@@ -11,6 +11,7 @@
     "@types/react-transition-group": "^4.2.3",
     "axios": "^0.19.0",
     "bootstrap": "^4.3.1",
+    "faker": "^4.1.0",
     "jsx-to-string": "^1.4.0",
     "lodash": "^4.17.15",
     "moment": "^2.24.0",
@@ -52,6 +53,7 @@
   },
   "devDependencies": {
     "@types/axios": "^0.14.0",
+    "@types/faker": "^4.1.9",
     "@types/jest": "24.0.18",
     "@types/lodash": "^4.14.138",
     "@types/node": "12.7.4",
