@@ -110,6 +110,8 @@ const EventModal: React.FC<TEventModalProps> = ({ show, item, onSave, updateItem
   const [ isStartDateModalActive, setIsStartDateModalActive ] = useState(false)
   const [ isEndDateModalActive, setIsEndDateModalActive ] = useState(false)
 
+  const isNewItem = item.content === 'new item'
+
   const endDate = item.end ? item.end : item.start
 
   const groupOptions: TOption[] = groups.map(g => (
@@ -146,7 +148,7 @@ const EventModal: React.FC<TEventModalProps> = ({ show, item, onSave, updateItem
 
       <Modal show={show} centered onHide={onClose}>
         <Modal.Header>
-          <Modal.Title>{strings('addPatientEvent')}</Modal.Title>
+          <Modal.Title>{isNewItem ? strings('addPatientEvent') : strings('updatePatientEvent')}</Modal.Title>
         </Modal.Header>
 
         <Form onSubmit={preventDefault}>

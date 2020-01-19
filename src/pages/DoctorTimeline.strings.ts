@@ -4,6 +4,7 @@ const map = {
   searchFilterPlaceholder: "Filter Events",
   groupFilterLabel: "Show",
   addPatientEvent: 'Add Patient Event',
+  updatePatientEvent: 'Update Patient Event',
   eventDesc: 'Event Description',
   formStartDate: '(Start) Date (yyyy-mm-dd)',
   formEndDate: 'End date (yyyy-mm-dd):',
