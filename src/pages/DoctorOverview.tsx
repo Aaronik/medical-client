@@ -30,18 +30,18 @@ type Message = {
   senderId: string
   receiverId: string
   message: string
-  date: string
+  date: Date
 }
 
 const messages: Message[] = [
-  { id: '1', senderId: 'urn:milli:milliUser:200069880266371072', receiverId: 'f15c625d-9173-4ca7-a2f1-b1a1c34989d9', message: 'This is the first message', date: 'Tue 07 Jan 2020 01:18:11 PM PST' },
-  { id: '2', receiverId: 'urn:milli:milliUser:200069880266371072', senderId: 'f15c625d-9173-4ca7-a2f1-b1a1c34989d9', message: 'This is the second message', date: 'Tue 07 Jan 2020 01:18:11 PM PST' },
-  { id: '3', senderId: 'urn:milli:milliUser:200069880266371072', receiverId: 'f15c625d-9173-4ca7-a2f1-b1a1c34989d9', message: 'This is the first message', date: 'Tue 07 Jan 2020 01:18:11 PM PST' },
-  { id: '4', receiverId: 'urn:milli:milliUser:200069880266371072', senderId: 'f15c625d-9173-4ca7-a2f1-b1a1c34989d9', message: 'This is the second message', date: 'Tue 07 Jan 2020 01:18:11 PM PST' },
-  { id: '5', senderId: 'urn:milli:milliUser:200069880266371072', receiverId: 'f15c625d-9173-4ca7-a2f1-b1a1c34989d9', message: 'This is the first message', date: 'Tue 07 Jan 2020 01:18:11 PM PST' },
-  { id: '6', receiverId: 'urn:milli:milliUser:200069880266371072', senderId: 'f15c625d-9173-4ca7-a2f1-b1a1c34989d9', message: 'This is the second message', date: 'Tue 07 Jan 2020 01:18:11 PM PST' },
-  { id: '7', senderId: 'urn:milli:milliUser:200069880266371072', receiverId: 'f15c625d-9173-4ca7-a2f1-b1a1c34989d9', message: 'This is the first message', date: 'Tue 07 Jan 2020 01:18:11 PM PST' },
-  { id: '8', receiverId: 'urn:milli:milliUser:200069880266371072', senderId: 'f15c625d-9173-4ca7-a2f1-b1a1c34989d9', message: 'This is the second message', date: 'Tue 07 Jan 2020 01:18:11 PM PST' }
+  { id: '1', senderId: 'urn:milli:milliUser:200069880266371072', receiverId: 'f15c625d-9173-4ca7-a2f1-b1a1c34989d9', message: 'This is the first message', date: new Date() },
+  { id: '2', receiverId: 'urn:milli:milliUser:200069880266371072', senderId: 'f15c625d-9173-4ca7-a2f1-b1a1c34989d9', message: 'This is the second message', date: new Date() },
+  { id: '3', senderId: 'urn:milli:milliUser:200069880266371072', receiverId: 'f15c625d-9173-4ca7-a2f1-b1a1c34989d9', message: 'This is the first message', date: new Date() },
+  { id: '4', receiverId: 'urn:milli:milliUser:200069880266371072', senderId: 'f15c625d-9173-4ca7-a2f1-b1a1c34989d9', message: 'This is the second message', date: new Date() },
+  { id: '5', senderId: 'urn:milli:milliUser:200069880266371072', receiverId: 'f15c625d-9173-4ca7-a2f1-b1a1c34989d9', message: 'This is the first message', date: new Date() },
+  { id: '6', receiverId: 'urn:milli:milliUser:200069880266371072', senderId: 'f15c625d-9173-4ca7-a2f1-b1a1c34989d9', message: 'This is the second message', date: new Date() },
+  { id: '7', senderId: 'urn:milli:milliUser:200069880266371072', receiverId: 'f15c625d-9173-4ca7-a2f1-b1a1c34989d9', message: 'This is the first message', date: new Date() },
+  { id: '8', receiverId: 'urn:milli:milliUser:200069880266371072', senderId: 'f15c625d-9173-4ca7-a2f1-b1a1c34989d9', message: 'This is the second message', date: new Date() }
 ]
 
 const Message: React.FC<{ message: Message }> = ({ message }) => {

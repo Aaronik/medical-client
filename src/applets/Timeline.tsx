@@ -149,7 +149,7 @@ const XTimeline: React.FC<TProps> = ({ items, groups, onAdd, onUpdate, onMove })
   useEffect(() => {
     if (timelineRef) redrawTimeline(timelineRef, items, groups, options)
     // eslint-disable-next-line
-  }, (items as any[]).concat(groups))
+  }, [items, groups])
 
   return (
     <div id='timeline-container' ref={timelineTargetRef}></div>
