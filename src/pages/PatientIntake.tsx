@@ -1,6 +1,5 @@
 import React from 'react'
 import Container from 'react-bootstrap/Container'
-
 import Survey from 'common/components/Survey'
 
 const surveyJson = {
@@ -10,7 +9,7 @@ const surveyJson = {
       elements: [
         {
           type: 'multipletext',
-          name: 'patientName1',
+          name: 'patientName',
           title: 'Patient Name',
           items: [
             {
@@ -154,7 +153,7 @@ const Intake: React.FunctionComponent = () => {
     <Container>
       <h1>Intake Form</h1>
       <hr/>
-      <Survey json={surveyJson} onComplete={() => alert("Thanks for taking the intake survey!")} />
+      <Survey json={surveyJson} onComplete={console.log} />
     </Container>
   )
 }
