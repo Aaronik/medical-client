@@ -1,20 +1,14 @@
 import React, { useState } from 'react'
-import { RouteComponentProps } from 'react-router-dom'
-import { connect } from 'react-redux'
 import Container from 'react-bootstrap/Container'
 import Row from 'react-bootstrap/Row'
 import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
 import Spinner from 'react-bootstrap/Spinner'
 
-import { TStoreState } from 'common/store'
-import currentUser from 'common/util/currentUser'
-import { doctors } from 'common/util/users'
-import { TUser } from 'concerns/User.d'
-import { inviteUser } from 'concerns/User.actions'
+import { TUser } from 'types/User.d'
 import strings from './AdminDashboard.strings'
 
-interface IProps extends RouteComponentProps {
+interface IProps {
   doctors: TUser[]
   user: TUser
   invitationLoading: boolean
@@ -22,16 +16,17 @@ interface IProps extends RouteComponentProps {
 
 const DEFAULT_MESSAGE = strings('invitationDefaultMessage')
 
-const AdminDashboard: React.FunctionComponent<IProps> = ({ user, history, doctors, invitationLoading }) => {
+const AdminDashboard: React.FunctionComponent<IProps> = ({ user, doctors, invitationLoading }) => {
 
   const [ email, setEmail ] = useState('')
   const [ message, setMessage ] = useState(DEFAULT_MESSAGE)
 
   const onInvite = () => {
-    inviteUser({
-      message, email,
-      senderId: currentUser().id,
-    })
+    alert('Sorry, user invitations have been temporarily disabled. (TODO)')
+    /* inviteUser({ */
+    /*   message, email, */
+    /*   senderId: user.id, */
+    /* }) */
   }
 
   const onEmailChange = (e: any) => {
@@ -80,10 +75,4 @@ const AdminDashboard: React.FunctionComponent<IProps> = ({ user, history, doctor
   )
 }
 
-export default connect((storeState: TStoreState) => {
-  return {
-    doctors: doctors(),
-    user: currentUser(),
-    invitationLoading: storeState.user.invitationLoading
-  }
-})(AdminDashboard)
+export default AdminDashboard

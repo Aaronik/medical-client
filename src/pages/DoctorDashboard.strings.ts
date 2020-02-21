@@ -1,4 +1,4 @@
-import strings from 'common/util/strings'
+import strings from 'util/strings'
 
 const map = {
   welcomeBackDoctor: (name: string, number: number) => `Hi Doctor ${name}! You have ${number} new notifications...`,

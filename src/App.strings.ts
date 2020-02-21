@@ -1,4 +1,4 @@
-import strings from 'common/util/strings'
+import strings from 'util/strings'
 
 const map = {
   signIn: 'Sign In',
@@ -12,6 +12,7 @@ const map = {
   dashboard: 'Dashboard',
   intakeSurvey: 'Intake Survey',
   overview: 'Overview',
+  questionnaires: 'Questionnaires',
 }
 
 export default strings(map)

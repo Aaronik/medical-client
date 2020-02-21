@@ -1,5 +1,5 @@
-import React, { useState} from 'react'
-import { RouteComponentProps } from 'react-router-dom'
+import React, { useState } from 'react'
+import { useMutation } from '@apollo/client'
 import Container from 'react-bootstrap/Container'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
@@ -7,23 +7,31 @@ import Image from 'react-bootstrap/Image'
 import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
 import * as icons from '@fortawesome/free-solid-svg-icons'
-// import Spinner from 'react-bootstrap/Spinner'
-import FormInput from 'common/components/FormInput'
-import Fade from 'common/components/Fade'
-import connectWithDispatch from 'common/util/connectWithDispatch'
+import Spinner from 'react-bootstrap/Spinner'
+import FormInput from 'components/FormInput'
+import Fade from 'components/Fade'
 import strings from './SignUp.strings'
 import './SignUp.sass'
+import { SIGNUP_MUTATION } from 'util/queries'
+import { useSignin } from 'util/hooks'
 
-interface TProps extends RouteComponentProps {
+interface TProps {
 }
 
-const Signup: React.FunctionComponent<TProps> = ({ history }) => {
+const Signup: React.FunctionComponent<TProps> = () => {
 
-  const [ name, setName ] = useState('')
-  const [ email, setEmail ] = useState('')
-  const [ businessUrl, setBusinessUrl ] = useState('')
-  const [ password, setPassword ] = useState('')
-  // const [ isLoading, setIsLoading ] = useState(false)
+  const [ signUp, { loading: signUpLoading, error: signUpError }] = useMutation(SIGNUP_MUTATION)
+  const [ signIn, { loading: signInLoading, error: signInError }] = useSignin()
+
+  const [ name, setName ] = useState('Aaron Sullivan')
+  const [ email, setEmail ] = useState('aaron@millihealth.com')
+  const [ password, setPassword ] = useState('password')
+
+  const onCreateClick = async () => {
+    signUp({ variables: { email, password, name }}).then(() => {
+      signIn({ variables: { email, password }})
+    }).catch(console.error)
+  }
 
   return (
     <Container fluid className='pt-5 signup bg-primary with-background'>
@@ -67,13 +75,6 @@ const Signup: React.FunctionComponent<TProps> = ({ history }) => {
                     value={email}/>
 
                   <FormInput
-                    label={strings('businessUrl')}
-                    type="text"
-                    icon={icons.faGlobe}
-                    onChange={setBusinessUrl}
-                    value={businessUrl}/>
-
-                  <FormInput
                     label={strings('password')}
                     type="password"
                     icon={icons.faLock}
@@ -82,8 +83,11 @@ const Signup: React.FunctionComponent<TProps> = ({ history }) => {
 
                 </Form>
               </Row>
+              <code>{(signUpError || signInError)?.graphQLErrors?.[0]?.message || (signUpError || signInError)?.message}</code>
               <Row className='p-4'>
-                <Button block size='lg'>{strings('createAccount')}</Button>
+                <Button block size='lg' onClick={onCreateClick}>
+                { (signUpLoading || signInLoading) ? <Spinner animation='grow'/> : strings('createAccount') }
+                </Button>
               </Row>
             </Container>
           </Col>
@@ -94,4 +98,4 @@ const Signup: React.FunctionComponent<TProps> = ({ history }) => {
   )
 }
 
-export default connectWithDispatch(Signup)
+export default Signup

@@ -1,17 +1,14 @@
 import React from 'react'
-import { connect } from 'react-redux'
-import { RouteComponentProps } from 'react-router-dom'
 import Container from 'react-bootstrap/Container'
 import Form from 'react-bootstrap/Form'
 import Col from 'react-bootstrap/Col'
 import Row from 'react-bootstrap/Row'
 import Button from 'react-bootstrap/Button'
 
-import { TStoreState } from 'common/store'
-import { TUser } from 'concerns/User.d'
+import { TUser } from 'types/User.d'
 import strings from './DoctorProfile.strings'
 
-interface IProps extends RouteComponentProps {
+interface IProps {
   user: TUser
 }
 
@@ -22,7 +19,7 @@ const FormInput: React.FC<{ label: string, type: string, placeholder: string }> 
   </Form.Group>
 )
 
-const DoctorProfile: React.FunctionComponent<IProps> = ({ user, history }) => {
+const DoctorProfile: React.FunctionComponent<IProps> = ({ user }) => {
 
   return (
     <Container>
@@ -59,9 +56,4 @@ const DoctorProfile: React.FunctionComponent<IProps> = ({ user, history }) => {
   )
 }
 
-export default connect((storeState: TStoreState, dispatchProps: RouteComponentProps): IProps => {
-  return {
-    ...dispatchProps,
-    user: storeState.user.users[storeState.auth.userUrn]
-  }
-})(DoctorProfile)
+export default DoctorProfile

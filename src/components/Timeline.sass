@@ -1,0 +1,72 @@
+@import 'variables.sass'
+@import 'util.sass'
+
+$group-margin: 10px
+
+// Date readouts
+.vis-time-axis .vis-text
+  text-align: center
+
+// "range" item
+.vis-item.vis-range
+  background-color: $pale-grey
+  border: 1px solid darken($pale-grey, 5%)
+  border-left-color: $turtle-green
+
+  .vis-item-overflow
+    display: flex
+    align-items: center
+    justify-content: flex-end
+
+// "point" item
+.vis-item.vis-point
+  border-left-color: $ruby
+
+  .vis-dot
+    border-color: $pale-grey
+    height: 100%
+    top: 0 !important
+    left: 0 !important
+    transform: none !important
+
+// all events
+.vis-item
+  border: 0
+  border-left-width: 10px !important
+  border-left-style: solid
+  border-radius: 3px 15px 15px 3px !important
+  padding: 15px
+
+// tooltips
+.timeline-tooltip
+  border-radius: 30px
+  padding: 25px
+  background-color: lighten($pale-grey, 2%)
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif
+
+.vis-tooltip
+  border-radius: 30px !important
+  border: 1px solid darken($pale-grey, 10%) !important
+  padding: 0 !important
+
+// groups
+// top level group
+.vis-label.vis-nesting-group
+
+  // The little arrows showing whether the group is collapsed or not
+  &.collapsed:before
+    font-family: FontAwesome // Need these or else chrome renders weird orange squares
+
+  &.expanded:before
+    font-family: FontAwesome
+
+// nested group
+.vis-group-level-unknown-but-gte1
+  border: none // default is a red border...
+
+// targeting the padding for a nested group label. For some reason
+// they give a static 150px default, and on mobile that makes the group labels
+// untenably huge. IMO they look fine with none, and objectively respect smaller
+// screen sizes.
+.vis-ltr .vis-label.vis-nested-group .vis-inner
+  padding-left: 0

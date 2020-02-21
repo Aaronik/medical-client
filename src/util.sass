@@ -1,0 +1,20 @@
+@import "variables"
+
+// Helper class to let backgrounds be assigned to an element and have it look like
+// the whole page
+.with-background
+  min-height: $viewport-height
+
+// Make something absolute be closest to the user
+.z-9999
+  z-index: 9999
+
+// We want one more bg- than bootstrap is providing
+.bg-pink
+  background-color: $darkish-pink
+
+@mixin auth-input-border
+  border: none
+  border-bottom: 1px solid
+  border-radius: 0
+

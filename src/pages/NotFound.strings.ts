@@ -1,4 +1,4 @@
-import strings from 'common/util/strings'
+import strings from 'util/strings'
 
 const map = {
   notFound: 'Page not found!',

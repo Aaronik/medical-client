@@ -1,5 +1,4 @@
 import React, { useState } from 'react'
-import { RouteComponentProps } from 'react-router-dom'
 import Container from 'react-bootstrap/Container'
 import Row from 'react-bootstrap/Row'
 import Form from 'react-bootstrap/Form'
@@ -7,30 +6,27 @@ import Button from 'react-bootstrap/Button'
 import Col from 'react-bootstrap/Col'
 import Spinner from 'react-bootstrap/Spinner'
 import * as icons from '@fortawesome/free-solid-svg-icons'
-import { authenticate } from 'concerns/Auth.actions'
-import { fetchUser } from 'concerns/User.actions'
-import FormInput from 'common/components/FormInput'
-import Fade from 'common/components/Fade'
-import connectWithDispatch from 'common/util/connectWithDispatch'
+import FormInput from 'components/FormInput'
+import Fade from 'components/Fade'
 import './SignIn.sass'
 import strings from './SignIn.strings'
+import { useSignin } from 'util/hooks'
 
-interface TProps extends RouteComponentProps {
+interface TProps {
 }
 
-const Signin: React.FunctionComponent<TProps> = ({ history }) => {
+const Signin: React.FunctionComponent<TProps> = () => {
 
-  const [ email, setEmail ] = useState('boomama')
-  const [ password, setPassword ] = useState('11111')
-  const [ isLoading, setIsLoading ] = useState(false)
+  const [ signIn, { loading, error }] = useSignin()
+
+  const [ email, setEmail ] = useState('aaron@millihealth.com')
+  const [ password, setPassword ] = useState('password')
 
   const onAuthenticateClick = async () => {
-    setIsLoading(true)
-    await authenticate(email, password)
-    await fetchUser()
-    history.push('/')
+    signIn({ variables: { email, password }})
   }
 
+  // TODO don't use <code> for error messages
   return (
     <Container fluid className='pt-5 signin bg-primary with-background'>
       <Fade>
@@ -60,9 +56,10 @@ const Signin: React.FunctionComponent<TProps> = ({ history }) => {
 
                 </Form>
               </Row>
+              <code>{error?.graphQLErrors?.[0]?.message || error?.message}</code>
               <Row className='p-4'>
                 <Button block size='lg' onClick={onAuthenticateClick}>
-                  { isLoading ? <Spinner animation="grow"/> : "Sign In" }
+                  { loading ? <Spinner animation="grow"/> : strings('signIn') }
                 </Button>
               </Row>
             </Container>
@@ -74,4 +71,4 @@ const Signin: React.FunctionComponent<TProps> = ({ history }) => {
   )
 }
 
-export default connectWithDispatch(Signin)
+export default Signin

@@ -1,5 +1,4 @@
 import React from 'react'
-import { connect } from 'react-redux'
 
 type TProps = {
 
@@ -11,7 +10,5 @@ const DoctorSchedule: React.FC<TProps> = () => {
   )
 }
 
-export default connect(() => {
-  return {}
-})(DoctorSchedule)
+export default DoctorSchedule
 

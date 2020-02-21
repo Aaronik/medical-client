@@ -1,0 +1,52 @@
+@import 'variables.sass'
+@import 'util.sass'
+
+$bg-color: white
+$horizontal-spacing: 30px
+$vertical-spacing: 55px
+
+.app-gutter-nav
+  padding-top: 20px
+  padding-right: 0
+  position: fixed
+  left: 0
+  height: 100vh
+  background-color: $bg-color
+  z-index: 1000
+  overflow: auto
+
+  .nav-entry
+    margin-top: 10px
+    height: $vertical-spacing
+    display: flex
+    align-items: center
+    padding-left: $horizontal-spacing
+    cursor: pointer
+    transition: background-color .1s
+
+    &:hover
+      background-color: darken($bg-color, 10%) !important
+
+  .nav-entry.active
+    color: $bright-blue
+    padding-left: 0 !important
+    background-color: darken($bg-color, 5%)
+
+    .nav-link
+      color: $bright-blue
+
+    &::before
+      display: inline-block
+      width: 3px
+      background-color: $bright-blue
+      border-top-right-radius: 5px
+      border-bottom-right-radius: 5px
+      margin-right: $horizontal-spacing - 3px
+      content: "|"
+      height: 40px
+
+  .nav-link
+    word-wrap: no-wrap
+    color: black
+    padding-left: $horizontal-spacing
+

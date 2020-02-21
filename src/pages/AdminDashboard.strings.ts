@@ -1,4 +1,4 @@
-import strings from 'common/util/strings'
+import strings from 'util/strings'
 
 const map = {
   invitationDefaultMessage: "I'd like to invite you to join Milli!",

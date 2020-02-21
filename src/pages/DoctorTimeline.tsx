@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react'
 import { without } from 'lodash'
-import { connect } from 'react-redux'
 import Container from 'react-bootstrap/Container'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
@@ -13,18 +12,117 @@ import Dropdown from 'react-bootstrap/Dropdown'
 import * as icons from '@fortawesome/free-solid-svg-icons'
 import Select, { ValueType } from 'react-select'
 
-import FormInput from 'common/components/FormInput'
-import preventDefault from 'common/util/preventDefault'
-import DatePickerModal from 'common/components/DatePickerModal'
-import { TStoreState } from 'common/store'
-import { TUser } from 'concerns/User.d'
-import Timeline from 'applets/Timeline'
-import { TTimelineItem, TTimelineGroup } from 'applets/Timeline.d'
+import FormInput from 'components/FormInput'
+import preventDefault from 'util/preventDefault'
+import DatePickerModal from 'components/DatePickerModal'
+import { TUser } from 'types/User.d'
+import Timeline from 'components/Timeline'
+import { TTimelineItem, TTimelineGroup } from 'types/Timeline.d'
 import { TimelineItem as VisTimelineItem } from 'vis-timeline'
-import { addTimelineItem, updateTimelineItem } from 'applets/Timeline.actions'
-import formatDate from 'common/util/formatDate'
+import formatDate from 'util/formatDate'
 import strings from './DoctorTimeline.strings'
 import './DoctorTimelinne.sass'
+import onSelectChange, { TOption } from 'util/onSelectChange'
+
+type TProps = {
+  patient: TUser
+  patientTimelineData: TTimelineItem[]
+  patientTimelineGroups: TTimelineGroup[]
+}
+
+const DoctorTimelinePage: React.FC<TProps> = ({ patient, patientTimelineData, patientTimelineGroups }) => {
+  const [ isEventModalActive, setIsEventModalActive ] = useState(false)
+  const [ filterString, setFilterString ] = useState('')
+  const [ activeGroupIds, setActiveGroupIds ] = useState<string[]>(mapGroupsToIds(patientTimelineGroups))
+
+  // store whatever event is being updated / created by the user
+  const [ activeTimelineItem, setActiveTimelineItem ] = useState(stubTimelineItem)
+
+  // When doctor switches b/t patients, we need to reinitialize the selected groups state
+  useEffect(() => {
+    setActiveGroupIds(mapGroupsToIds(patientTimelineGroups))
+  }, [patientTimelineGroups])
+
+  const updateActiveTimelineItem = (update: Partial<TTimelineItem>) => {
+    setActiveTimelineItem({ ...activeTimelineItem, ...update })
+  }
+
+  const onTimelineDoubleClick = (item: VisTimelineItem) => {
+    // we'll default to a point event, and user can change to range if desired,
+    // or if the item is already a range.
+    if (!item.end) item.end = item.start
+
+    setActiveTimelineItem(item)
+    setIsEventModalActive(true)
+  }
+
+  const onMoveItemInTimeline = (item: VisTimelineItem) => {
+    alert('Sorry, item updating/adding has been temporarily disabled (TODO)')
+    /* updateTimelineItem(patient.id, item) */
+  }
+
+  const onModalSaveClick = () => {
+    const type = activeTimelineItem.end === activeTimelineItem.start ? 'point' as 'point' : 'range' as 'range'
+    const item = { ...activeTimelineItem, type }
+    const isExistingItem = patientTimelineData.map(d => d.id).includes(activeTimelineItem.id)
+
+    alert('Sorry, item updating/adding has been temporarily disabled (TODO)')
+    /* if (isExistingItem) updateTimelineItem(patient.id, item) */
+    /* else addTimelineItem(patient.id, item) */
+
+    setIsEventModalActive(false)
+  }
+
+  const onFilterInputChange = (changeEvent: React.ChangeEvent<HTMLInputElement>) => {
+    setFilterString(changeEvent.currentTarget.value)
+  }
+
+  return (
+    <Container fluid className='doctor-dashboard-patient-container'>
+
+      <Row className='justify-content-around py-5'>
+        <Col xs={12} lg={4}>
+          <h1>{strings('yourPatient', patient.name)}</h1>
+        </Col>
+
+        <Col xs={12} lg={8}>
+          <ButtonToolbar className='align-items-center'>
+
+            <GroupSelect
+              className="mr-3"
+              activeGroupIds={activeGroupIds}
+              onChange={setActiveGroupIds}
+              groups={patientTimelineGroups} />
+
+            <input
+              className="ml-5"
+              value={filterString}
+              onChange={onFilterInputChange}
+              placeholder={strings('searchFilterPlaceholder')} />
+
+          </ButtonToolbar>
+        </Col>
+      </Row>
+
+
+      <Timeline
+        items={filterTimelineData(filterString, patientTimelineData)}
+        groups={filterTimelineGroups(activeGroupIds, patientTimelineGroups)}
+        onAdd={onTimelineDoubleClick}
+        onUpdate={onTimelineDoubleClick}
+        onMove={onMoveItemInTimeline} />
+
+      <EventModal
+        show={isEventModalActive}
+        item={activeTimelineItem}
+        updateItem={updateActiveTimelineItem}
+        onSave={onModalSaveClick}
+        groups={patientTimelineGroups}
+        onClose={() => setIsEventModalActive(false)} />
+
+    </Container>
+  )
+}
 
 // This is used as a temporary filler until the user edits/adds a new event.
 const stubTimelineItem: TTimelineItem = {
@@ -104,8 +202,6 @@ type TEventModalProps = {
   updateItem: (update: Partial<TTimelineItem>) => void
 }
 
-type TOption = { value: string | number, label: string | HTMLElement}
-
 const EventModal: React.FC<TEventModalProps> = ({ show, item, onSave, updateItem, onClose, groups }) => {
   const [ isStartDateModalActive, setIsStartDateModalActive ] = useState(false)
   const [ isEndDateModalActive, setIsEndDateModalActive ] = useState(false)
@@ -124,13 +220,6 @@ const EventModal: React.FC<TEventModalProps> = ({ show, item, onSave, updateItem
 
   const groupContent = activeGroup ? activeGroup.content : ''
   const groupName = typeof groupContent === 'string' ? groupContent : groupContent.innerHTML
-
-  const onSelectChange = (option: ValueType<TOption>) => {
-    if (!option) return // this happens sometimes with this select I guess
-    if (!option.hasOwnProperty('value')) return // I really don't understand when this would be the case either, the typing here is confusing me
-    // @ts-ignore and here, it seems like TS does not understand the hasOwnProperty guard above
-    updateItem({ group: option.value })
-  }
 
   return (
     <React.Fragment>
@@ -157,7 +246,7 @@ const EventModal: React.FC<TEventModalProps> = ({ show, item, onSave, updateItem
             <Form.Label className='text-muted'>{strings('category')}</Form.Label>
             <Select
               className='pb-3'
-              onChange={onSelectChange}
+              onChange={onSelectChange((group: string) => updateItem({ group }))}
               defaultInputValue={groupName}
               options={groupOptions}/>
 
@@ -197,115 +286,4 @@ const EventModal: React.FC<TEventModalProps> = ({ show, item, onSave, updateItem
 
 const mapGroupsToIds = (groups: TTimelineGroup[]) => groups.map(g => g.id.toString())
 
-type TProps = {
-  patient: TUser
-  patientTimelineData: TTimelineItem[]
-  patientTimelineGroups: TTimelineGroup[]
-}
-
-const DoctorTimelinePage: React.FC<TProps> = ({ patient, patientTimelineData, patientTimelineGroups }) => {
-  const [ isEventModalActive, setIsEventModalActive ] = useState(false)
-  const [ filterString, setFilterString ] = useState('')
-  const [ activeGroupIds, setActiveGroupIds ] = useState<string[]>(mapGroupsToIds(patientTimelineGroups))
-
-  // store whatever event is being updated / created by the user
-  const [ activeTimelineItem, setActiveTimelineItem ] = useState(stubTimelineItem)
-
-  // When doctor switches b/t patients, we need to reinitialize the selected groups state
-  useEffect(() => {
-    setActiveGroupIds(mapGroupsToIds(patientTimelineGroups))
-  }, [patientTimelineGroups])
-
-  const updateActiveTimelineItem = (update: Partial<TTimelineItem>) => {
-    setActiveTimelineItem({ ...activeTimelineItem, ...update })
-  }
-
-  const onTimelineDoubleClick = (item: VisTimelineItem) => {
-    // we'll default to a point event, and user can change to range if desired,
-    // or if the item is already a range.
-    if (!item.end) item.end = item.start
-
-    setActiveTimelineItem(item)
-    setIsEventModalActive(true)
-  }
-
-  const onMoveItemInTimeline = (item: VisTimelineItem) => {
-    updateTimelineItem(patient.id, item)
-  }
-
-  const onModalSaveClick = () => {
-    const type = activeTimelineItem.end === activeTimelineItem.start ? 'point' as 'point' : 'range' as 'range'
-    const item = { ...activeTimelineItem, type }
-    const isExistingItem = patientTimelineData.map(d => d.id).includes(activeTimelineItem.id)
-
-    if (isExistingItem) updateTimelineItem(patient.id, item)
-    else addTimelineItem(patient.id, item)
-
-    setIsEventModalActive(false)
-  }
-
-  const onFilterInputChange = (changeEvent: React.ChangeEvent<HTMLInputElement>) => {
-    setFilterString(changeEvent.currentTarget.value)
-  }
-
-  return (
-    <Container fluid className='doctor-dashboard-patient-container'>
-
-      <Row className='justify-content-around py-5'>
-        <Col xs={12} lg={4}>
-          <h1>{strings('yourPatient', patient.name)}</h1>
-        </Col>
-
-        <Col xs={12} lg={8}>
-          <ButtonToolbar className='align-items-center'>
-
-            <GroupSelect
-              className="mr-3"
-              activeGroupIds={activeGroupIds}
-              onChange={setActiveGroupIds}
-              groups={patientTimelineGroups} />
-
-            <input
-              className="ml-5"
-              value={filterString}
-              onChange={onFilterInputChange}
-              placeholder={strings('searchFilterPlaceholder')} />
-
-          </ButtonToolbar>
-        </Col>
-      </Row>
-
-
-      <Timeline
-        items={filterTimelineData(filterString, patientTimelineData)}
-        groups={filterTimelineGroups(activeGroupIds, patientTimelineGroups)}
-        onAdd={onTimelineDoubleClick}
-        onUpdate={onTimelineDoubleClick}
-        onMove={onMoveItemInTimeline} />
-
-      <EventModal
-        show={isEventModalActive}
-        item={activeTimelineItem}
-        updateItem={updateActiveTimelineItem}
-        onSave={onModalSaveClick}
-        groups={patientTimelineGroups}
-        onClose={() => setIsEventModalActive(false)} />
-
-    </Container>
-  )
-}
-
-export default connect((storeState: TStoreState): TProps => {
-  const patientId = storeState.user.activePatientId as string // case where false will be filtered out before this component
-
-  // but just in case
-  if (!patientId) throw new Error('Timeline component encountered situation where there\'s no active patient')
-
-  const patientTimeline = storeState.timeline[patientId]
-
-  return {
-    patient: storeState.user.users[patientId],
-    patientTimelineData: patientTimeline ? patientTimeline.items : [],
-    patientTimelineGroups: patientTimeline ? patientTimeline.groups : []
-  }
-})(DoctorTimelinePage)
+export default DoctorTimelinePage

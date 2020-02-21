@@ -1,6 +1,6 @@
 import React from 'react'
 import Container from 'react-bootstrap/Container'
-import Survey from 'common/components/Survey'
+import Survey from 'components/Survey'
 
 const surveyJson = {
   pages: [

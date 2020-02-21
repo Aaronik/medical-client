@@ -1,55 +1,49 @@
 import React from 'react'
-import { connect } from 'react-redux'
 import Container from 'react-bootstrap/Container'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
-import Spinner from 'react-bootstrap/Spinner'
-import UpdateCard, { TProps as UpdateCardProps } from 'common/components/UpdateCard'
-import Avatar from 'common/components/Avatar'
-import { activePatient } from 'common/util/users'
-import strings from './DoctorOverview.strings'
-import { TUser } from 'concerns/User.d'
-import store from 'common/store'
-import currentUser from 'common/util/currentUser'
+import UpdateCard, { TProps as UpdateCardProps } from 'components/UpdateCard'
+import Avatar from 'components/Avatar'
+import { TUser } from 'types/User.d'
 import moment from 'moment'
 
 type TProps = {
+  user: TUser
   patient: TUser
+  messages: Message[]
+  updates: UpdateCardProps[]
 }
-
-// temporary page data until we have real data
-const updates: UpdateCardProps[]  = [
-  { symbol: 'up', charge: 'bad', body: '11', footer: strings('alertsDetected') },
-  { symbol: 'up', charge: 'good', body: '89%', footer: strings('milliHealthScore') },
-  { symbol: 'up', charge: 'bad', body: '8', footer: strings('dystfunctionsIdentified') },
-  { symbol: 'up', charge: 'neutral', body: '12', footer: strings('interventionRecommendations') },
-]
 
 type Message = {
   id: string
-  senderId: string
-  receiverId: string
+  sender: TUser
   message: string
   date: Date
 }
 
-const messages: Message[] = [
-  { id: '1', senderId: 'urn:milli:milliUser:200069880266371072', receiverId: 'f15c625d-9173-4ca7-a2f1-b1a1c34989d9', message: 'This is the first message', date: new Date() },
-  { id: '2', receiverId: 'urn:milli:milliUser:200069880266371072', senderId: 'f15c625d-9173-4ca7-a2f1-b1a1c34989d9', message: 'This is the second message', date: new Date() },
-  { id: '3', senderId: 'urn:milli:milliUser:200069880266371072', receiverId: 'f15c625d-9173-4ca7-a2f1-b1a1c34989d9', message: 'This is the first message', date: new Date() },
-  { id: '4', receiverId: 'urn:milli:milliUser:200069880266371072', senderId: 'f15c625d-9173-4ca7-a2f1-b1a1c34989d9', message: 'This is the second message', date: new Date() },
-  { id: '5', senderId: 'urn:milli:milliUser:200069880266371072', receiverId: 'f15c625d-9173-4ca7-a2f1-b1a1c34989d9', message: 'This is the first message', date: new Date() },
-  { id: '6', receiverId: 'urn:milli:milliUser:200069880266371072', senderId: 'f15c625d-9173-4ca7-a2f1-b1a1c34989d9', message: 'This is the second message', date: new Date() },
-  { id: '7', senderId: 'urn:milli:milliUser:200069880266371072', receiverId: 'f15c625d-9173-4ca7-a2f1-b1a1c34989d9', message: 'This is the first message', date: new Date() },
-  { id: '8', receiverId: 'urn:milli:milliUser:200069880266371072', senderId: 'f15c625d-9173-4ca7-a2f1-b1a1c34989d9', message: 'This is the second message', date: new Date() }
-]
+const DoctorOverview: React.FC<TProps> = ({ patient, user, updates, messages }) => {
+  return (
+    <Container fluid className='m-2'>
 
-const Message: React.FC<{ message: Message }> = ({ message }) => {
-  const sender = store.getState().user.users[message.senderId]
+      <Row>
+        <h1>{patient.name}</h1>
+      </Row>
 
-  if (!sender) return <Spinner animation='border'/>
+      <Row className='mt-4'>
+        { updates.map(u => <UpdateCard key={u.footer} className='m-4' {...u} />)}
+      </Row>
 
-  const isMyMessage = sender.id === currentUser().id
+      <Row className='mt-4 d-flex justify-content-around'>
+        <big>Chart thing</big>
+        <MessageBox messages={messages} user={user}/>
+      </Row>
+
+    </Container>
+  )
+}
+
+const Message: React.FC<{ message: Message, user: TUser }> = ({ message, user }) => {
+  const isMyMessage = message.sender.id === user.id
 
   let rowClassName = isMyMessage ? '' : 'flex-row-reverse'
   rowClassName += ' m-2'
@@ -67,7 +61,7 @@ const Message: React.FC<{ message: Message }> = ({ message }) => {
 
   return (
     <Row className={rowClassName}>
-      <Avatar user={sender}/>
+      <Avatar user={message.sender}/>
       <Col className='m-2'>
         <p className={messageClassName + ' p-2'} style={messageStyle}>{message.message}</p>
         <small>{moment(message.date).fromNow()}</small>
@@ -76,40 +70,12 @@ const Message: React.FC<{ message: Message }> = ({ message }) => {
   )
 }
 
-const MessageBox: React.FC<{ messages: Message[], className?: string }> = ({ messages }) => {
+const MessageBox: React.FC<{ messages: Message[], user: TUser, className?: string }> = ({ messages, user }) => {
   return (
     <div className='bg-white p-2' style={{ maxHeight: '350px', overflowY: 'auto', borderRadius: '20px' }}>
-      { messages.map(m => <Message key={m.id} message={m}/>) }
+      { messages.map(m => <Message key={m.id} message={m} user={user}/>) }
     </div>
   )
 }
 
-const DoctorOverview: React.FC<TProps> = ({ patient }) => {
-  return (
-    <Container fluid className='m-2'>
-
-      <Row>
-        <h1>{patient.name}</h1>
-      </Row>
-
-      <Row className='mt-4'>
-        { updates.map(u => <UpdateCard key={u.footer} className='m-4' {...u} />)}
-      </Row>
-
-      <Row className='mt-4 d-flex justify-content-around'>
-        <big>Chart thing</big>
-        <MessageBox messages={messages}/>
-      </Row>
-
-    </Container>
-  )
-}
-
-export default connect(() => {
-  const ap = activePatient()
-
-  if (!ap) throw new Error('No active patient selected!')
-
-  return { patient: ap }
-})(DoctorOverview)
-
+export default DoctorOverview

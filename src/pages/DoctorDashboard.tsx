@@ -1,23 +1,21 @@
 import React from 'react'
+import { useHistory } from "react-router-dom"
+import { useMutation } from '@apollo/client'
 import Container from 'react-bootstrap/Container'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 // import Button from 'react-bootstrap/Button'
-import Avatar from 'common/components/Avatar'
-import UpdateCard from 'common/components/UpdateCard'
-import { connect } from 'react-redux'
-import { TStoreState } from 'common/store'
-import { patients } from 'common/util/users'
-import currentUser from 'common/util/currentUser'
-import { TUser } from 'concerns/User.d'
-import { TNotification } from 'concerns/Notification.d'
-import formatDate from 'common/util/formatDate'
-import { setActiveUser } from 'concerns/User.actions'
+import Avatar from 'components/Avatar'
+import UpdateCard from 'components/UpdateCard'
+import { TUser } from 'types/User.d'
+import { TNotification } from 'types/Notification.d'
+import formatDate from 'util/formatDate'
 import strings from './DoctorDashboard.strings'
+import { useSetActivePatient } from 'util/hooks'
 
 interface TProps {
   patients: TUser[]
-  currentUser: TUser
+  user: TUser
   notifications: TNotification[]
 }
 
@@ -33,18 +31,24 @@ const NumberBadge: React.FC<{ bg: string }> = ({ bg, children }) => {
 const PatientCard: React.FC<{ patient: TUser }> = ({ patient }) => {
   const { name, birthday, joinDate, lastVisit, adherence } = patient
 
+  const [ setActiveP ] = useSetActivePatient()
+
   const containerStyle = {
     cursor: 'pointer',
     borderRadius: '20px',
     width: '350px',
   } as const
 
+  const history = useHistory()
+
+  const onCardClick = () => setActiveP(patient.id, '/overview')
+
   return (
-    <div style={containerStyle} className='bg-white p-3 m-3' onClick={() => setActiveUser(patient.id)}>
+    <div style={containerStyle} className='bg-white p-3 m-3' onClick={onCardClick}>
 
       <Row className='justify-content-center mb-5'>
         <div className='flex-column'>
-          <Avatar user={patient} size={80} />
+          <Avatar user={patient} size={80} onClick={onCardClick}/>
           <div>{name}</div>
           <div className='text-muted text-center'>{birthday ? formatDate(birthday) : strings('na')}</div>
         </div>
@@ -63,7 +67,7 @@ const PatientCard: React.FC<{ patient: TUser }> = ({ patient }) => {
 
           <Col>
             <div className='text-muted badge'>{strings('adherence')}</div>
-            <div className='text-center font-weight-bolder'>{adherence ? `${adherence}%` : strings('na')}</div>
+            <div className='text-center font-weight-bolder'>{adherence ? adherence + "%" : strings('na')}</div>
           </Col>
       </Row>
 
@@ -78,7 +82,7 @@ const PatientCard: React.FC<{ patient: TUser }> = ({ patient }) => {
   )
 }
 
-const DoctorDashboard: React.FunctionComponent<TProps> = ({ patients, currentUser, notifications }) => {
+const DoctorDashboard: React.FunctionComponent<TProps> = ({ patients, user, notifications }) => {
 
   return (
     <Container fluid>
@@ -88,7 +92,7 @@ const DoctorDashboard: React.FunctionComponent<TProps> = ({ patients, currentUse
         </Col>
         <Col xs={10}>
           <div>
-            <h1>{strings('welcomeBackDoctor', currentUser && currentUser.name, notifications.length)}</h1>
+            <h1>{strings('welcomeBackDoctor', user.name, notifications.length)}</h1>
             <Row>
               <UpdateCard className='m-5' symbol='up' charge='good' body='85%' footer={strings('avgHealthScore')} />
               <UpdateCard className='m-5' symbol='up' charge='bad' body='12' footer={strings('dystfunctionsIdentified')} />
@@ -106,10 +110,4 @@ const DoctorDashboard: React.FunctionComponent<TProps> = ({ patients, currentUse
   )
 }
 
-export default connect((storeState: TStoreState): TProps => {
-  return {
-    patients: patients(),
-    currentUser: currentUser(),
-    notifications: storeState.notifications.notifications,
-  }
-})(DoctorDashboard)
+export default DoctorDashboard

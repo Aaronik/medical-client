@@ -1,6 +1,7 @@
-import React, { useEffect } from 'react'
+import React from 'react'
+import { gql } from '@apollo/client'
+import { ApolloProvider, useQuery } from '@apollo/client'
 import { BrowserRouter as Router, Route as RRRoute, RouteProps, RouteComponentProps, Link, Switch } from 'react-router-dom'
-import { Provider, connect } from 'react-redux'
 import { StylesManager } from 'survey-react'
 import * as icons from '@fortawesome/free-solid-svg-icons'
 
@@ -13,7 +14,8 @@ import NotSignedInPage from 'pages/NotSignedIn'
 import DoctorDashboard from 'pages/DoctorDashboard'
 import DoctorTimelinePage from 'pages/DoctorTimeline'
 import AdminDashboard from 'pages/AdminDashboard'
-import ProfileDropdown from 'applets/ProfileDropdown'
+import AdminQuestionnairesPage from 'pages/AdminQuestionnaires'
+import ProfileDropdown from 'components/ProfileDropdown'
 import SigninPage from 'pages/SignIn'
 import SignupPage from 'pages/SignUp'
 import DoctorProfilePage from 'pages/DoctorProfile'
@@ -24,15 +26,16 @@ import DoctorActivityPage from 'pages/DoctorActivity'
 import DoctorMessagesPage from 'pages/DoctorMessages'
 import DoctorSchedulePage from 'pages/DoctorSchedule'
 import DoctorOverviewPage from 'pages/DoctorOverview'
+import LoadingPage from 'pages/Loading'
 
-import Alert from 'applets/Alert'
-import Fade from 'common/components/Fade'
-import AppGutterNav, { LinkEntryProps, GutterAwareFluidContainer, GutterNavToggleButton } from 'applets/AppGutterNav'
-import { loadHostMap, signInWithPersistentStateIfExists } from 'concerns/Auth.actions'
-import store, { TStoreState } from 'common/store'
-import currentUser from 'common/util/currentUser'
-import { TUserType as TStoreUserType } from 'concerns/User.d'
+import Alert from 'components/Alert'
+import Fade from 'components/Fade'
+import AppGutterNav, { LinkEntryProps, GutterAwareFluidContainer, GutterNavToggleButton } from 'components/AppGutterNav'
+import { TUser } from 'types/User.d'
+import { TAlert } from 'types/Alert.d'
 import strings from './App.strings'
+import gqlClient from 'util/gql-client'
+import { ME_QUERY } from 'util/queries'
 import 'App.sass'
 
 // Things to do once when the page loads
@@ -47,17 +50,30 @@ const NavLink = ({ to, text }: { to: string, text: string }) => <Nav.Link as={Li
 // So an option is here to not fade.
 // Note that if you have to take this option, you can still use <Fade> inside
 // the actual component you're working on.
-const Route: React.FC<RouteProps & { noFade?: boolean }> = ({ noFade, component, ...props }) => {
+// Also note that this component can take a component= or a children prop as
+// what it should render, the same as React Router's <Route/> component.
+const Route: React.FC<RouteProps & { noFade?: boolean }> = ({ noFade, component, children, ...props }) => {
   const Component = component as React.ComponentType<RouteProps>
 
-  const FadedComponent = (props: RouteComponentProps) => (
-    <Fade><Component {...props}/></Fade>
+  const FadedComponent = (innerProps: RouteComponentProps) => (
+    <Fade>
+      { children ? children : <Component {...innerProps}/> }
+    </Fade>
   )
 
-  return <RRRoute {...props} component={noFade ? Component : FadedComponent} />
+  if (children)
+    return <RRRoute {...props}>{noFade ? children : FadedComponent}</RRRoute>
+  else
+    return <RRRoute {...props} component={noFade ? Component : FadedComponent}></RRRoute>
 }
 
-const SignedOutBase: React.FunctionComponent = () => {
+type BaseProps = {
+  user: TUser
+  gutterNavActive: boolean
+  alerts: TAlert[]
+}
+
+const SignedOutBase: React.FunctionComponent<{ alerts: TAlert[] }> = ({ alerts }) => {
   return (
     <React.Fragment>
       <AppNavBar>
@@ -70,46 +86,72 @@ const SignedOutBase: React.FunctionComponent = () => {
         </Nav>
       </AppNavBar>
 
-      <Alert />
+      <Alert alerts={alerts}/>
 
       <Switch>
-        <Route path='/' exact component={NotSignedInPage} />
-        <Route path='/signin' component={SigninPage} noFade/>
-        <Route path='/signup' component={SignupPage} noFade/>
-        <Route component={PageNotFound} />
+        <Route path='/' exact><NotSignedInPage/></Route>
+        <Route path='/signin' noFade><SigninPage/></Route>
+        <Route path='/signup' noFade><SignupPage/></Route>
+        <Route><PageNotFound/></Route>
       </Switch>
     </React.Fragment>
   )
 }
 
-const AdminBase: React.FunctionComponent = () => {
+const AdminBase: React.FunctionComponent<BaseProps> = ({ user, gutterNavActive, alerts }) => {
+
+  const gutterRoutes: LinkEntryProps[] = [
+    { to: '/', text: strings('dashboard'), icon: icons.faBorderAll, exact: true },
+    { to: '/doctors', text: strings('doctors'), icon: icons.faGraduationCap, exact: true },
+    { to: '/questionnaires', text: strings('questionnaires'), icon: icons.faBook, exact: true },
+    { to: '/settings', text: strings('settings'), icon: icons.faCog, exact: true },
+  ]
+
   return (
     <React.Fragment>
       <AppNavBar>
         <Nav>
           <MilliBrandLink/>
-          <NavLink to='/doctors' text={strings('doctors')} />
         </Nav>
         <Nav>
-          <ProfileDropdown/>
+          <ProfileDropdown user={user}/>
         </Nav>
       </AppNavBar>
 
-      <Alert />
+      <Alert alerts={alerts}/>
 
-      <Switch>
-        <Route path='/' exact component={AdminDashboard} />
-        <Route path='/doctors' component={() => <h1>Admin/Doctors</h1>} />
-        <Route path='/profile' component={() => <h1>Admin Profile</h1>} />
-        <Route component={PageNotFound} />
-      </Switch>
+      <AppGutterNav entries={gutterRoutes} gutterNavActive={gutterNavActive}/>
+
+      <GutterAwareFluidContainer gutterNavActive={gutterNavActive}>
+        <Switch>
+          <Route path='/' exact><AdminDashboard doctors={[]} user={user} invitationLoading={false}/></Route>
+          <Route path='/doctors' component={() => <h1>Admin/Doctors</h1>} />
+          <Route path='/profile' component={() => <h1>Admin Profile</h1>} />
+          <Route path='/questionnaires' component={AdminQuestionnairesPage} />
+          <Route path='/settings'><DoctorSettingsPage/></Route>
+          <Route component={PageNotFound} />
+        </Switch>
+      </GutterAwareFluidContainer>
     </React.Fragment>
   )
 }
 
-const DoctorWithPatientBase: React.FunctionComponent<{}> = () => {
+const PATIENT_QUERY = gql`
+  query {
+    timeline @client
+    messages @client
+    updates @client
+  }
+`
+
+const DoctorWithPatientBase: React.FunctionComponent<BaseProps & { patients: TUser[], patient: TUser}> = ({ user, patients, patient, gutterNavActive, alerts }) => {
+
+  const { data, loading } = useQuery(PATIENT_QUERY)
+
+  if (loading) return <LoadingPage />
+
   const gutterRoutes: LinkEntryProps[] = [
-    { to: '/', text: strings('dashboard'), icon: icons.faSquare, exact: true },
+    { to: '/', text: strings('dashboard'), icon: icons.faBorderAll, exact: true },
     { to: '/settings', text: strings('settings'), icon: icons.faCog },
     { separator: true },
     { to: '/overview', text: strings('overview'), icon: icons.faTachometerAlt, fade: true },
@@ -127,25 +169,30 @@ const DoctorWithPatientBase: React.FunctionComponent<{}> = () => {
           <MilliBrandLink/>
         </Nav>
         <Nav>
-          <ProfileDropdown/>
+          <ProfileDropdown user={user}/>
         </Nav>
       </AppNavBar>
 
-      <Alert />
+      <Alert alerts={alerts}/>
 
-      <AppGutterNav entries={gutterRoutes}/>
+      <AppGutterNav entries={gutterRoutes} patients={patients} activePatient={patient} gutterNavActive={gutterNavActive}/>
 
-      <GutterAwareFluidContainer>
+      <GutterAwareFluidContainer gutterNavActive={gutterNavActive}>
         <Switch>
-          <Route path='/' exact component={DoctorDashboard} />
-          <Route path='/settings' component={DoctorSettingsPage} />
-          <Route path='/profile' component={DoctorProfilePage} />
+          <Route path='/' exact><DoctorDashboard user={user} patients={patients} notifications={[]}/></Route>
+          <Route path='/settings'><DoctorSettingsPage/></Route>
+          <Route path='/profile' ><DoctorProfilePage user={user}/></Route>
 
-          <Route path='/timeline' component={DoctorTimelinePage} />
-          <Route path='/activity' component={DoctorActivityPage} />
-          <Route path='/messages' component={DoctorMessagesPage} />
-          <Route path='/overview' component={DoctorOverviewPage} />
-          <Route path='/schedule' component={DoctorSchedulePage} />
+          <Route path='/timeline'>
+            <DoctorTimelinePage
+              patient={patient}
+              patientTimelineData={data.timeline.data}
+              patientTimelineGroups={data.timeline.groups}/>
+          </Route>
+          <Route path='/activity'><DoctorActivityPage/></Route>
+          <Route path='/messages'><DoctorMessagesPage/></Route>
+          <Route path='/overview'><DoctorOverviewPage patient={patient} user={user} messages={data.messages} updates={data.updates}/></Route>
+          <Route path='/schedule'><DoctorSchedulePage/></Route>
           <Route component={PageNotFound} />
         </Switch>
       </GutterAwareFluidContainer>
@@ -153,9 +200,9 @@ const DoctorWithPatientBase: React.FunctionComponent<{}> = () => {
   )
 }
 
-const DoctorNoPatientBase: React.FunctionComponent<{}> = () => {
+const DoctorNoPatientBase: React.FunctionComponent<BaseProps & { patients: TUser[] }> = ({ user, patients, gutterNavActive, alerts }) => {
   const gutterRoutes: LinkEntryProps[] = [
-    { to: '/', text: strings('dashboard'), icon: icons.faSquare, exact: true },
+    { to: '/', text: strings('dashboard'), icon: icons.faBorderAll, exact: true },
     { to: '/settings', text: strings('settings'), icon: icons.faCog },
   ]
 
@@ -167,19 +214,19 @@ const DoctorNoPatientBase: React.FunctionComponent<{}> = () => {
           <MilliBrandLink/>
         </Nav>
         <Nav>
-          <ProfileDropdown/>
+          <ProfileDropdown user={user}/>
         </Nav>
       </AppNavBar>
 
-      <Alert />
+      <Alert alerts={alerts}/>
 
-      <AppGutterNav entries={gutterRoutes}/>
+      <AppGutterNav entries={gutterRoutes} patients={patients} gutterNavActive={gutterNavActive}/>
 
-      <GutterAwareFluidContainer>
+      <GutterAwareFluidContainer gutterNavActive={gutterNavActive}>
         <Switch>
-          <Route path='/' exact component={DoctorDashboard} />
-          <Route path='/settings' component={DoctorSettingsPage} />
-          <Route path='/profile' component={DoctorProfilePage} />
+          <Route path='/' exact><DoctorDashboard user={user} patients={patients} notifications={[]}/></Route>
+          <Route path='/settings'><DoctorSettingsPage/></Route>
+          <Route path='/profile'><DoctorProfilePage user={user}/></Route>
           <Route component={PageNotFound} />
         </Switch>
       </GutterAwareFluidContainer>
@@ -187,7 +234,7 @@ const DoctorNoPatientBase: React.FunctionComponent<{}> = () => {
   )
 }
 
-const PatientBase: React.FunctionComponent = () => {
+const PatientBase: React.FunctionComponent<BaseProps> = ({ user, alerts }) => {
   return (
     <React.Fragment>
       <AppNavBar>
@@ -196,15 +243,15 @@ const PatientBase: React.FunctionComponent = () => {
           <NavLink to='/intake' text={strings('intakeSurvey')} />
         </Nav>
         <Nav>
-          <ProfileDropdown/>
+          <ProfileDropdown user={user}/>
         </Nav>
       </AppNavBar>
 
-      <Alert />
+      <Alert alerts={alerts}/>
 
       <Switch>
-        <Route path='/' exact component={PatientDashboard} />
-        <Route path='/intake' exact component={PatientIntakePage} />
+        <Route path='/' exact><PatientDashboard/></Route>
+        <Route path='/intake' exact><PatientIntakePage/></Route>
         <Route path='/profile' component={() => <h1>Patient Profile</h1>} />
         <Route component={PageNotFound} />
       </Switch>
@@ -212,56 +259,68 @@ const PatientBase: React.FunctionComponent = () => {
   )
 }
 
-type TUserType = TStoreUserType | 'SIGNED_OUT'
+const LOCAL_FLAGS_QUERY = gql`
+  query {
+    hasAuthToken @client
+    activePatientId @client
+    patients @client
+    gutterNavActive @client
+    alerts @client
+  }
+`
 
-type TBaseProps = {
-  userType: TUserType
-  activePatientId: string | false
-}
+const Base: React.FunctionComponent = () => {
 
-const Base: React.FunctionComponent<TBaseProps> = ({ userType, activePatientId }) => {
+  const { data, loading } = useQuery(ME_QUERY, {
+    onError: (e) => {
+      // We're expecting a single 401 and don't want to pollute the logs when it comes in.
+      if (e.graphQLErrors.length > 1) console.error(e)
+    },
+    /* fetchPolicy: 'no-cache', // Using this means selecting MAKE ME A * doesn't work */
+    errorPolicy: 'all',
+    partialRefetch: true,
+    // returnPartialData: true, // can't do this b/c then client.refetchobservablequeries results in loading when local flags are toggled
+    /* notifyOnNetworkStatusChange: true */
+  })
 
-  let Component = <SignedOutBase />
+  const { data: flags } = useQuery(LOCAL_FLAGS_QUERY, { fetchPolicy: 'no-cache' })
 
-  switch (userType) {
+  const patients = flags?.patients || []
+  const alerts = flags?.alerts || []
+  const activePatientId = flags?.activePatientId
+  const gutterNavActive = flags?.gutterNavActive || true
+  const patient = patients.find((p: TUser) => p.id === activePatientId)
+  const me = data?.me
+
+  let Component = <SignedOutBase alerts={alerts}/>
+
+  if (!flags?.hasAuthToken) return <Router>{Component}</Router>
+
+  if (loading) return <LoadingPage/>
+
+  switch (data?.me?.role) {
     case 'ADMIN':
-      Component = <AdminBase />
+      Component = <AdminBase user={me} gutterNavActive={gutterNavActive} alerts={alerts}/>
       break
     case 'DOCTOR':
-      Component = !!activePatientId ? <DoctorWithPatientBase /> : <DoctorNoPatientBase />
+      Component = !!patient
+        ?  <DoctorWithPatientBase user={me} patients={patients} patient={patient} gutterNavActive={gutterNavActive} alerts={alerts}/>
+        : <DoctorNoPatientBase patients={patients} user={me} gutterNavActive={gutterNavActive} alerts={alerts}/>
       break
     case 'PATIENT':
-      Component = <PatientBase />
+      Component = <PatientBase user={me} gutterNavActive={gutterNavActive} alerts={alerts}/>
       break
   }
 
-  return (
-    <Router>
-      { Component }
-    </Router>
-  )
+  return <Router>{Component}</Router>
 }
-
-const BaseWithProps = connect((storeState: TStoreState) => {
-  const userType: TUserType = currentUser() ? currentUser().type : 'SIGNED_OUT'
-
-  return {
-    userType: userType,
-    activePatientId: storeState.user.activePatientId,
-  }
-})(Base)
 
 const App: React.FunctionComponent = () => {
 
-  // Stuff to do on initial mount
-  useEffect(() => {
-    loadHostMap().then(() => signInWithPersistentStateIfExists())
-  }, [])
-
   return (
-    <Provider store={store}>
-      <BaseWithProps/>
-    </Provider>
+    <ApolloProvider client={gqlClient}>
+      <Base/>
+    </ApolloProvider>
   )
 }
 
