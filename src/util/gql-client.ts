@@ -7,50 +7,6 @@ import * as Alert from 'types/Alert.d'
 import uuid from 'uuid/v4'
 import strings from 'pages/DoctorOverview.strings'
 
-let gutterNavActive = true
-
-// Takes an array, returns a random member of that array
-const randomOf = <T>(...array: T[]): T => {
-  const idx = random(array.length)
-  return array[idx]
-}
-
-// Make some fake groups
-const timelineGroups = (count: number) => {
-  let groups: Timeline.TTimelineGroup[] = []
-
-  times(count, idx => {
-    groups.push({
-      id: idx,
-      content: faker.lorem.word(),
-      style: 'max-width: 15vw; padding-left: 0px',
-    })
-  })
-
-  return groups
-}
-
-
-// Add timeline items
-const timelineData = (count: number) => {
-  let items: Timeline.TTimelineItem[] = []
-
-  times(count, () => {
-    items.push({
-      id: uuid(),
-      type: randomOf('range', 'point'),
-      start: faker.date.past(20),
-      end: faker.date.future(),
-      content: faker.lorem.words(),
-      group: random(20)
-    })
-  })
-
-  return items
-}
-
-let alerts: Alert.TAlert[] = []
-
 const client = new ApolloClient({
   cache: new InMemoryCache(),
   uri: 'http://localhost:4000',
@@ -118,5 +74,47 @@ const client = new ApolloClient({
     }
   },
 })
+
+let gutterNavActive = true
+let alerts: Alert.TAlert[] = []
+
+// Takes an array, returns a random member of that array
+const randomOf = <T>(...array: T[]): T => {
+  const idx = random(array.length)
+  return array[idx]
+}
+
+// Make some fake groups
+const timelineGroups = (count: number) => {
+  let groups: Timeline.TTimelineGroup[] = []
+
+  times(count, idx => {
+    groups.push({
+      id: idx,
+      content: faker.lorem.word(),
+      style: 'max-width: 15vw; padding-left: 0px',
+    })
+  })
+
+  return groups
+}
+
+// Add timeline items
+const timelineData = (count: number) => {
+  let items: Timeline.TTimelineItem[] = []
+
+  times(count, () => {
+    items.push({
+      id: uuid(),
+      type: randomOf('range', 'point'),
+      start: faker.date.past(20),
+      end: faker.date.future(),
+      content: faker.lorem.words(),
+      group: random(20)
+    })
+  })
+
+  return items
+}
 
 export default client
