@@ -78,21 +78,21 @@ const Wrapper: React.FC = ({ children }) => {
 
       <Modal show={isModalOpen} centered onHide={() => setIsModalOpen(false)}>
         <Modal.Header>
-          <Modal.Title>TODO Add Questionnaire</Modal.Title>
+          <Modal.Title>Add Questionnaire</Modal.Title>
         </Modal.Header>
 
           <Modal.Body>
             <FormInput
               autoFocus={true}
-              label={'TODO label'}
+              label={'Questionnaire Title'}
               value={newQuestionnaireTitle}
               type="text"
               onChange={setNewQuestionnaireTitle}/>
           </Modal.Body>
 
           <Modal.Footer>
-            <Button variant="secondary" onClick={() => setIsModalOpen(false)}>TODO close</Button>
-            <Button variant="primary" onClick={onCreateClick}>TODO save</Button>
+            <Button variant="secondary" onClick={() => setIsModalOpen(false)}>close</Button>
+            <Button variant="primary" onClick={onCreateClick}>save</Button>
           </Modal.Footer>
 
       </Modal>
@@ -191,7 +191,7 @@ const Questionnaire: React.FC<{ questionnaire: TQuestionnaire }> = ({ questionna
 
       <Modal show={isQuestionModalOpen} centered onHide={() => setIsQuestionModalOpen(false)}>
         <Modal.Header>
-          <Modal.Title>TODO Add Question</Modal.Title>
+          <Modal.Title>Add Question</Modal.Title>
         </Modal.Header>
 
         <Modal.Body>
@@ -203,7 +203,7 @@ const Questionnaire: React.FC<{ questionnaire: TQuestionnaire }> = ({ questionna
 
           <FormInput
             autoFocus={true}
-            label={'TODO Question Text'}
+            label={'Question Text'}
             value={questionText}
             type="text"
             onChange={setQuestionText}/>
@@ -214,7 +214,7 @@ const Questionnaire: React.FC<{ questionnaire: TQuestionnaire }> = ({ questionna
             <FormInput
               key='options-value'
               autoFocus={true}
-              label={'TODO Option Value'}
+              label={'Option Value'}
               value={optionValue}
               type="text"
               onChange={setOptionValue}/>,
@@ -222,42 +222,35 @@ const Questionnaire: React.FC<{ questionnaire: TQuestionnaire }> = ({ questionna
             <FormInput
               key='options-text'
               autoFocus={true}
-              label={'TODO Option Text'}
+              label={'Option Text'}
               value={optionText}
               type="text"
               onChange={setOptionText}/>,
 
-            <code key='options'>TODO Question Options: {JSON.stringify(questionOptions, null, 2)}</code>
+            <code key='options'>Question Options: {JSON.stringify(questionOptions, null, 2)}</code>
           ]}
 
         </Modal.Body>
 
         <Modal.Footer>
           { questionTypeHasOptions &&
-            <Button variant="success" onClick={onAddOptionClick}>TODO add option</Button>
+            <Button variant="success" onClick={onAddOptionClick}>add option</Button>
           }
-          <Button variant="secondary" onClick={() => setIsQuestionModalOpen(false)}>TODO close</Button>
-          <Button variant="primary" onClick={onCreateQuestionClick}>TODO save</Button>
+          <Button variant="secondary" onClick={() => setIsQuestionModalOpen(false)}>close</Button>
+          <Button variant="primary" onClick={onCreateQuestionClick}>save</Button>
         </Modal.Footer>
       </Modal>
 
       <Modal show={isRelationModalOpen} centered onHide={() => setIsRelationModalOpen(false)}>
         <Modal.Header>
-          <Modal.Title>TODO Add Relation</Modal.Title>
+          <Modal.Title>Add Relation</Modal.Title>
         </Modal.Header>
 
           <Modal.Body>
             <Form.Label>From</Form.Label>
             <Select
               className='pb-3'
-              label={'TODO From ID'}
-              onChange={onSelectChange(setRelationFromId)}
-              options={questionIdOptions}/>
-
-            <Form.Label>To</Form.Label>
-            <Select
-              className='pb-3'
-              label={'TODO To ID'}
+              label={'To ID'}
               onChange={onSelectChange(setRelationToId)}
               options={questionIdOptions}/>
 
@@ -279,10 +272,10 @@ const Questionnaire: React.FC<{ questionnaire: TQuestionnaire }> = ({ questionna
 
           <Modal.Footer>
             { questionTypeHasOptions &&
-              <Button variant="success" onClick={onAddOptionClick}>TODO add option</Button>
+              <Button variant="success" onClick={onAddOptionClick}>add option</Button>
             }
-            <Button variant="secondary" onClick={() => setIsRelationModalOpen(false)}>TODO close</Button>
-            <Button variant="primary" onClick={onCreateRelationClick}>TODO save</Button>
+            <Button variant="secondary" onClick={() => setIsRelationModalOpen(false)}>close</Button>
+            <Button variant="primary" onClick={onCreateRelationClick}>save</Button>
           </Modal.Footer>
         </Modal>
     </div>
