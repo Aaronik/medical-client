@@ -11,6 +11,7 @@ import Loading from 'pages/Loading'
 import { TUser } from 'types/User.d'
 import Select from 'react-select'
 import onSelectChange from 'util/onSelectChange'
+import './AdminUsers.sass'
 
 type TProps = {
 
@@ -71,8 +72,8 @@ const AdminUsersPage: React.FC<TProps> = () => {
                 <td>{user.role}</td>
                 <td>{prettyDate(user.joinDate)}</td>
                 <td>{prettyDate(user.lastVisit)}</td>
-                <td>{user.patients?.map(p => <p key={p.id} onClick={onPatientNameClick(p.id, user.id)}>{p.name}</p>)}</td>
-                <td>{user.doctors?.map(d => <p key={d.id} onClick={onPatientNameClick(user.id, d.id)}>{d.name}</p>)}</td>
+                <td>{user.patients?.map(p => <p key={p.id} className='association-name' onClick={onPatientNameClick(p.id, user.id)}>{p.name}</p>)}</td>
+                <td>{user.doctors?.map(d => <p key={d.id} className='association-name' onClick={onPatientNameClick(user.id, d.id)}>{d.name}</p>)}</td>
               </tr>
             )
           })}

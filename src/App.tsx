@@ -53,19 +53,28 @@ const NavLink = ({ to, text }: { to: string, text: string }) => <Nav.Link as={Li
 // the actual component you're working on.
 // Also note that this component can take a component= or a children prop as
 // what it should render, the same as React Router's <Route/> component.
-const Route: React.FC<RouteProps & { noFade?: boolean }> = ({ noFade, component, children, ...props }) => {
+// TODO There's a weird bug where when a component prop is given, fade only
+// works the first time. Maybe we should just switch to only using children.
+const Route: React.FC<RouteProps & { noFade?: boolean }> = ({ noFade, children, component, ...props }) => {
   const Component = component as React.ComponentType<RouteProps>
 
   const FadedComponent = (innerProps: RouteComponentProps) => (
-    <Fade>
-      { children ? children : <Component {...innerProps}/> }
-    </Fade>
+    <Fade><Component {...innerProps}/></Fade>
   )
 
-  if (children)
-    return <RRRoute {...props}>{noFade ? children : FadedComponent}</RRRoute>
-  else
-    return <RRRoute {...props} component={noFade ? Component : FadedComponent}></RRRoute>
+  switch (true) {
+    case !!component && noFade:
+      return <RRRoute component={Component} {...props}/>
+    case !!component && !noFade:
+      return <RRRoute component={FadedComponent} {...props}/>
+    case !component && noFade:
+      return <RRRoute {...props}>{children}</RRRoute>
+    case !component && !noFade:
+      return <RRRoute {...props}><Fade>{children}</Fade></RRRoute>
+    // default logically will never trigger but is in there to keep TS happy
+    default:
+      return <RRRoute {...props}><Fade>{children}</Fade></RRRoute>
+  }
 }
 
 type BaseProps = {
