@@ -54,11 +54,11 @@ const AddPatientModal: React.FC<{ show: boolean, onHide: () => void, onComplete:
 const mapPatientsToOptions = (patients: TUser[]): TOption[] => patients.map(mapPatientToOption)
 
 const mapPatientToOption = (patient: TUser): TOption => (
-  { value: patient.id, label: patient.name }
+  { value: patient.id.toString(), label: patient.name }
 )
 
 const formatOptionLabel = (patients: TUser[]) => ({ value, label }: TOption) => {
-  const patient = patients.find(p => p.id === value)
+  const patient = patients.find(p => p.id === Number(value))
   if (!patient) return <span>{strings('patientNotFound')}</span>
 
   return (
@@ -85,7 +85,7 @@ const PatientPicker: React.FC<TProps> = ({ patients, className, activePatient })
 
   const onSelectChange = (option: ValueType<TOption>) => {
     if (!option) {
-      return setActiveP('0', '/')
+      return setActiveP(0, '/')
     }
     // @ts-ignore -- I really don't know how to type this, sorry
     setActivePatient({ variables: { id: option?.value }})

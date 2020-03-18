@@ -36,12 +36,12 @@ export const useSignin = (opts: MutationHookOptions = {}) => {
   return mutationResponse
 }
 
-export const useSetActivePatient = (opts: MutationHookOptions = {}): [ (id: string, redirPath: string) => void, MutationResult<any> ] => {
+export const useSetActivePatient = (opts: MutationHookOptions = {}): [ (id: number, redirPath: string) => void, MutationResult<any> ] => {
   const history = useHistory()
 
   const mutationResponse = useMutation(queries.SET_ACTIVE_PATIENT, Object.assign({ onError: console.error }, opts))
 
-  const setActiveP = async (id: string, redirPath: string) => {
+  const setActiveP = async (id: number, redirPath: string) => {
     await mutationResponse[0]({ variables: { id }})
     mutationResponse[1]?.client?.reFetchObservableQueries()
     history.push(redirPath)

@@ -1,15 +1,17 @@
 import { ActionKeys } from 'common/actionKeys'
 
 export type TUser = {
-  id: string
+  id: number
   name: string
-  userName: string
+  email: string
   role: TUserRole
   imageUrl?: string
   birthday?: string
   joinDate?: string
   lastVisit?: string
   adherence?: number
+  patients?: TUser[]
+  doctors?: TUser[]
 }
 
 export type TInvitationResponse = {

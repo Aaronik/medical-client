@@ -198,6 +198,7 @@ const Questionnaire: React.FC<{ questionnaire: TQuestionnaire }> = ({ questionna
           <Select
             className='pb-3'
             onChange={onSelectChange(setQuestionType)}
+            defaultValue={QUESTION_TYPE_OPTIONS[0]}
             options={QUESTION_TYPE_OPTIONS}/>
 
           <FormInput

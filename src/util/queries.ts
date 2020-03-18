@@ -25,7 +25,27 @@ export const ME_QUERY = gql`
       birthday
       lastVisit
       imageUrl
+    }
+  }
+`
+
+export const USERS = gql`
+  query {
+    users {
+      id
+      name
+      email
       role
+      joinDate
+      lastVisit
+      patients{
+        id
+        name
+      }
+      doctors{
+        id
+        name
+      }
     }
   }
 `

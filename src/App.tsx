@@ -15,6 +15,7 @@ import DoctorDashboard from 'pages/DoctorDashboard'
 import DoctorTimelinePage from 'pages/DoctorTimeline'
 import AdminDashboard from 'pages/AdminDashboard'
 import AdminQuestionnairesPage from 'pages/AdminQuestionnaires'
+import AdminUsersPage from 'pages/AdminUsers'
 import ProfileDropdown from 'components/ProfileDropdown'
 import SigninPage from 'pages/SignIn'
 import SignupPage from 'pages/SignUp'
@@ -102,7 +103,7 @@ const AdminBase: React.FunctionComponent<BaseProps> = ({ user, gutterNavActive, 
 
   const gutterRoutes: LinkEntryProps[] = [
     { to: '/', text: strings('dashboard'), icon: icons.faBorderAll, exact: true },
-    { to: '/doctors', text: strings('doctors'), icon: icons.faGraduationCap, exact: true },
+    { to: '/users', text: strings('users'), icon: icons.faUsers, exact: true },
     { to: '/questionnaires', text: strings('questionnaires'), icon: icons.faBook, exact: true },
     { to: '/settings', text: strings('settings'), icon: icons.faCog, exact: true },
   ]
@@ -125,7 +126,7 @@ const AdminBase: React.FunctionComponent<BaseProps> = ({ user, gutterNavActive, 
       <GutterAwareFluidContainer gutterNavActive={gutterNavActive}>
         <Switch>
           <Route path='/' exact><AdminDashboard doctors={[]} user={user} invitationLoading={false}/></Route>
-          <Route path='/doctors' component={() => <h1>Admin/Doctors</h1>} />
+          <Route path='/users' component={AdminUsersPage} />
           <Route path='/profile' component={() => <h1>Admin Profile</h1>} />
           <Route path='/questionnaires' component={AdminQuestionnairesPage} />
           <Route path='/settings'><DoctorSettingsPage/></Route>

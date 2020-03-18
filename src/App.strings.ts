@@ -4,6 +4,7 @@ const map = {
   signIn: 'Sign In',
   signUp: 'Sign Up',
   doctors: 'Doctors',
+  users: 'Users',
   messages: 'Messages',
   healthTimeline: 'Health Timeline',
   schedule: 'Schedule',
