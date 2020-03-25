@@ -37,7 +37,10 @@ const QuestionModal = (props: QuestionModalProps) => {
   }
 
   const onSaveClick = () => {
-    save({ type, text, options })
+    let updatedQuestion = { type, text }
+    if (question?.id) Object.assign(updatedQuestion, { id: question.id })
+    if (options.length) Object.assign(updatedQuestion, { options })
+    save(updatedQuestion)
     setType(initialType)
     setText(initialText)
     setOptions(initialOptions)

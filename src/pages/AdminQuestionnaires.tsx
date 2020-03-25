@@ -75,7 +75,7 @@ const Wrapper: React.FC = ({ children }) => {
   )
 }
 
-const Question: React.FC<{ question: TQuestion }> = ({ question }) => {
+const Question: React.FC<{ question: TQuestion, saveQuestion: (question: TQuestion) => void }> = ({ question, saveQuestion }) => {
   const [ deleteQuestion ] = useMutation(DELETE_QUESTION, { refetchQueries: [{ query: GET_ALL_QUESTIONNAIRES }]})
   const [ updateQuestion ] = useMutation(UPDATE_QUESTION, { refetchQueries: [{ query: GET_ALL_QUESTIONNAIRES }]})
   const [ isUpdateModalOpen, setIsUpdateModalOpen ] = useState(false)
@@ -85,7 +85,12 @@ const Question: React.FC<{ question: TQuestion }> = ({ question }) => {
   }
 
   const onUpdateClick = () => {
+    setIsUpdateModalOpen(true)
+  }
 
+  const onSaveQuestion = (question: TQuestion) => {
+    setIsUpdateModalOpen(false)
+    saveQuestion(question)
   }
 
   return (
@@ -99,14 +104,12 @@ const Question: React.FC<{ question: TQuestion }> = ({ question }) => {
       <p>Options: {JSON.stringify(question.options, null, 2)}</p>
       <p>Next: {JSON.stringify(question.next, null, 2)}</p>
 
-      <Modal>
-        <Modal.Header>Update Question</Modal.Header>
-        <Modal.Body></Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={() => setIsUpdateModalOpen(false)}>close</Button>
-          <Button variant="primary" onClick={onUpdateClick}>save</Button>
-        </Modal.Footer>
-      </Modal>
+      <QuestionModal
+        show={isUpdateModalOpen}
+        close={() => setIsUpdateModalOpen(false)}
+        save={onSaveQuestion}
+        question={question}
+      />
     </div>
   )
 }
@@ -121,6 +124,7 @@ const Questionnaire: React.FC<{ questionnaire: TQuestionnaire }> = ({ questionna
 
   const [ deleteQuestionnaire ] = useMutation(DELETE_QUESTIONNAIRE, { refetchQueries: [{ query: GET_ALL_QUESTIONNAIRES }]})
   const [ addQuestion ] = useMutation(ADD_QUESTIONS, { refetchQueries: [{ query: GET_ALL_QUESTIONNAIRES }]})
+  const [ updateQuestion ] = useMutation(UPDATE_QUESTION, { refetchQueries: [{ query: GET_ALL_QUESTIONNAIRES }]})
   const [ addRelation ] = useMutation(CREATE_QUESTION_RELATIONS, { refetchQueries: [{ query: GET_ALL_QUESTIONNAIRES }]})
 
   const onDelete = (id: number) => () => {
@@ -132,6 +136,10 @@ const Questionnaire: React.FC<{ questionnaire: TQuestionnaire }> = ({ questionna
       { questionnaireId: questionnaire.id, ...question }
     ]}})
     setIsQuestionModalOpen(false)
+  }
+
+  const onUpdateQuestion = (question: TQuestion) => {
+    updateQuestion({ variables: { question }})
   }
 
   const onCreateRelationClick = () => {
@@ -159,7 +167,7 @@ const Questionnaire: React.FC<{ questionnaire: TQuestionnaire }> = ({ questionna
         <h2 onClick={() => setIsQuestionModalOpen(true)}>(Add Question)</h2>
         <h2 onClick={() => setIsRelationModalOpen(true)}>(Add Question Relation)</h2>
       </Row>
-      {questionnaire.questions.map((q: TQuestion) => <Question question={q} key={q.id}/> )}
+      {questionnaire.questions.map((q: TQuestion) => <Question saveQuestion={onUpdateQuestion} question={q} key={q.id}/> )}
       <br/>
 
       <QuestionModal
