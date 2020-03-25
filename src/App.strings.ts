@@ -14,6 +14,7 @@ const map = {
   intakeSurvey: 'Intake Survey',
   overview: 'Overview',
   questionnaires: 'Questionnaires',
+  profile: 'Profile',
 }
 
 export default strings(map)

@@ -23,6 +23,7 @@ import DoctorProfilePage from 'pages/DoctorProfile'
 import DoctorSettingsPage from 'pages/DoctorSettings'
 import PatientDashboard from 'pages/PatientDashboard'
 import PatientIntakePage from 'pages/PatientIntake'
+import PatientQuestionnairesPage from 'pages/PatientQuestionnaires'
 import DoctorActivityPage from 'pages/DoctorActivity'
 import DoctorMessagesPage from 'pages/DoctorMessages'
 import DoctorSchedulePage from 'pages/DoctorSchedule'
@@ -244,7 +245,14 @@ const DoctorNoPatientBase: React.FunctionComponent<BaseProps & { patients: TUser
   )
 }
 
-const PatientBase: React.FunctionComponent<BaseProps> = ({ user, alerts }) => {
+const PatientBase: React.FunctionComponent<BaseProps> = ({ user, alerts, gutterNavActive }) => {
+  const gutterRoutes: LinkEntryProps[] = [
+    { to: '/', text: strings('dashboard'), icon: icons.faBorderAll, exact: true },
+    { to: '/questionnaires', text: strings('questionnaires'), icon: icons.faCheckSquare },
+    { to: '/settings', text: strings('settings'), icon: icons.faCog },
+    { to: '/profile', text: strings('profile'), icon: icons.faUserEdit },
+  ]
+
   return (
     <React.Fragment>
       <AppNavBar>
@@ -257,14 +265,20 @@ const PatientBase: React.FunctionComponent<BaseProps> = ({ user, alerts }) => {
         </Nav>
       </AppNavBar>
 
+      <AppGutterNav entries={gutterRoutes} gutterNavActive={gutterNavActive}/>
+
       <Alert alerts={alerts}/>
 
-      <Switch>
-        <Route path='/' exact><PatientDashboard/></Route>
-        <Route path='/intake' exact><PatientIntakePage/></Route>
-        <Route path='/profile' component={() => <h1>Patient Profile</h1>} />
-        <Route component={PageNotFound} />
-      </Switch>
+      <GutterAwareFluidContainer gutterNavActive={gutterNavActive}>
+        <Switch>
+          <Route path='/' exact><PatientDashboard/></Route>
+          <Route path='/intake' exact><PatientIntakePage/></Route>
+          <Route path='/questionnaires' exact><PatientQuestionnairesPage/></Route>
+          <Route path='/settings'><DoctorSettingsPage/></Route>
+          <Route path='/profile' component={() => <h1>Patient Profile</h1>} />
+          <Route component={PageNotFound} />
+        </Switch>
+      </GutterAwareFluidContainer>
     </React.Fragment>
   )
 }
