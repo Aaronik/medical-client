@@ -16,28 +16,33 @@ type QuestionModalProps = {
 const QuestionModal = (props: QuestionModalProps) => {
   const { question, show, close, save } = props
 
-  const defaultQuestionType = 'TEXT'
+  const defaultType = 'TEXT'
 
-  const [ questionType, setQuestionType ] = useState(question?.type || defaultQuestionType)
-  const [ questionText, setQuestionText ] = useState(question?.text || '')
-  const [ questionOptions, setQuestionOptions ] = useState<TQuestionOption[]>(question?.options || [])
+  const initialType = question?.type || defaultType
+  const initialText = question?.text || ''
+  const initialOptions = question?.options || []
+
+  const [ type, setType ] = useState(initialType)
+  const [ text, setText ] = useState(initialText)
+  const [ options, setOptions ] = useState<TQuestionOption[]>(initialOptions)
   const [ optionValue, setOptionValue ] = useState('')
   const [ optionText, setOptionText ] = useState('')
 
-  const questionTypeHasOptions = ['SINGLE_CHOICE', 'MULTIPLE_CHOICE'].includes(questionType)
+  const questionTypeHasOptions = ['SINGLE_CHOICE', 'MULTIPLE_CHOICE'].includes(type)
 
   const onAddOptionClick = () => {
-    setQuestionOptions(questionOptions.concat([{value: optionValue, text: optionText}]))
+    setOptions(options.concat([{value: optionValue, text: optionText}]))
     setOptionValue('')
     setOptionText('')
   }
 
   const onSaveClick = () => {
-    save({
-      type: questionType,
-      text: questionText,
-      options: questionOptions
-    })
+    save({ type, text, options })
+    setType(initialType)
+    setText(initialText)
+    setOptions(initialOptions)
+    setOptionValue('')
+    setOptionText('')
   }
 
   const modalTitle = question
@@ -53,16 +58,16 @@ const QuestionModal = (props: QuestionModalProps) => {
       <Modal.Body>
         <Select
           className='pb-3'
-          onChange={onSelectChange(setQuestionType)}
+          onChange={onSelectChange(setType)}
           defaultValue={QUESTION_TYPE_OPTIONS[0]}
           options={QUESTION_TYPE_OPTIONS}/>
 
         <FormInput
           autoFocus={true}
           label='Question Text'
-          value={questionText}
+          value={text}
           type="text"
-          onChange={setQuestionText}/>
+          onChange={setText}/>
 
         { questionTypeHasOptions && [
 
@@ -82,7 +87,7 @@ const QuestionModal = (props: QuestionModalProps) => {
             type="text"
             onChange={setOptionText}/>,
 
-          <code key='options'>Question Options: {JSON.stringify(questionOptions, null, 2)}</code>
+          <code key='options'>Question Options: {JSON.stringify(options, null, 2)}</code>
         ]}
 
       </Modal.Body>
