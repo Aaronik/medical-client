@@ -149,6 +149,12 @@ export const ADD_QUESTIONS = gql`
   }
 `
 
+export const UPDATE_QUESTION = gql`
+  mutation UpdateQuestion($question: QuestionInput!) {
+    updateQuestion(question: $question) ${QUESTIONS_FRAGMENT}
+  }
+`
+
 export const DELETE_QUESTION = gql`
   mutation DeleteQuestion($id: Int!) {
     deleteQuestion(id: $id)

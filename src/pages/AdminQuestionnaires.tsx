@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { useQuery, useMutation } from '@apollo/client'
-import { GET_ALL_QUESTIONNAIRES, CREATE_QUESTIONNAIRE, DELETE_QUESTIONNAIRE, ADD_QUESTIONS, DELETE_QUESTION, CREATE_QUESTION_RELATIONS } from 'util/queries'
+import { UPDATE_QUESTION, GET_ALL_QUESTIONNAIRES, CREATE_QUESTIONNAIRE, DELETE_QUESTIONNAIRE, ADD_QUESTIONS, DELETE_QUESTION, CREATE_QUESTION_RELATIONS } from 'util/queries'
 import Container from 'react-bootstrap/Container'
 import Spinner from 'react-bootstrap/Spinner'
 import Modal from 'react-bootstrap/Modal'
@@ -8,8 +8,11 @@ import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
 import Row from 'react-bootstrap/Row'
 import FormInput from 'components/FormInput'
+import QuestionModal from 'components/QuestionModal'
 import Select from 'react-select'
-import onSelectChange from 'util/onSelectChange'
+import onSelectChange, { TOption } from 'util/onSelectChange'
+import { TQuestionnaire } from 'types/Questionnaire.d'
+import { TQuestion, TQuestionOption } from 'types/Question.d'
 
 const AdminQuestionnairesPage = () => {
 
@@ -26,34 +29,6 @@ const AdminQuestionnairesPage = () => {
   )
 
 }
-
-// TODO any way to share these?
-type TQuestionnaire = {
-  id: number
-  title: string
-  questions: any[]
-  next: any[]
-}
-
-type TQuestion = {
-  id: number
-  text: string
-  type: string
-  options?: TQuestionOption[]
-  next?: any[] // TODO
-}
-
-type TQuestionOption = {
-  value: string
-  text: string
-}
-
-const QUESTION_TYPE_OPTIONS = [
-  { value: 'TEXT', label: 'Text' },
-  { value: 'BOOLEAN', label: 'Boolean' },
-  { value: 'SINGLE_CHOICE', label: 'Radio Group (Choose Single Answer)' },
-  { value: 'MULTIPLE_CHOICE', label: 'Check Boxes (Choose Multiple Answers)' },
-]
 
 const Wrapper: React.FC = ({ children }) => {
   const [ isModalOpen, setIsModalOpen ] = useState(false)
@@ -81,19 +56,19 @@ const Wrapper: React.FC = ({ children }) => {
           <Modal.Title>Add Questionnaire</Modal.Title>
         </Modal.Header>
 
-          <Modal.Body>
-            <FormInput
-              autoFocus={true}
-              label={'Questionnaire Title'}
-              value={newQuestionnaireTitle}
-              type="text"
-              onChange={setNewQuestionnaireTitle}/>
-          </Modal.Body>
+        <Modal.Body>
+          <FormInput
+            autoFocus={true}
+            label={'Questionnaire Title'}
+            value={newQuestionnaireTitle}
+            type="text"
+            onChange={setNewQuestionnaireTitle}/>
+        </Modal.Body>
 
-          <Modal.Footer>
-            <Button variant="secondary" onClick={() => setIsModalOpen(false)}>close</Button>
-            <Button variant="primary" onClick={onCreateClick}>save</Button>
-          </Modal.Footer>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setIsModalOpen(false)}>close</Button>
+          <Button variant="primary" onClick={onCreateClick}>save</Button>
+        </Modal.Footer>
 
       </Modal>
     </Container>
@@ -102,21 +77,36 @@ const Wrapper: React.FC = ({ children }) => {
 
 const Question: React.FC<{ question: TQuestion }> = ({ question }) => {
   const [ deleteQuestion ] = useMutation(DELETE_QUESTION, { refetchQueries: [{ query: GET_ALL_QUESTIONNAIRES }]})
+  const [ updateQuestion ] = useMutation(UPDATE_QUESTION, { refetchQueries: [{ query: GET_ALL_QUESTIONNAIRES }]})
+  const [ isUpdateModalOpen, setIsUpdateModalOpen ] = useState(false)
 
   const onXClick = () => {
     deleteQuestion({ variables: { id: question.id }})
+  }
+
+  const onUpdateClick = () => {
+
   }
 
   return (
     <div>
       <Row>
         <small>{question.id}</small>
-        <h3>{question.text}</h3>
+        <h3 onClick={onUpdateClick}>{question.text}</h3>
         <small>({question.type})</small>
         <code onClick={onXClick}>x</code>
       </Row>
       <p>Options: {JSON.stringify(question.options, null, 2)}</p>
       <p>Next: {JSON.stringify(question.next, null, 2)}</p>
+
+      <Modal>
+        <Modal.Header>Update Question</Modal.Header>
+        <Modal.Body></Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setIsUpdateModalOpen(false)}>close</Button>
+          <Button variant="primary" onClick={onUpdateClick}>save</Button>
+        </Modal.Footer>
+      </Modal>
     </div>
   )
 }
@@ -124,17 +114,10 @@ const Question: React.FC<{ question: TQuestion }> = ({ question }) => {
 const Questionnaire: React.FC<{ questionnaire: TQuestionnaire }> = ({ questionnaire }) => {
   const [ isQuestionModalOpen, setIsQuestionModalOpen ] = useState(false)
   const [ isRelationModalOpen, setIsRelationModalOpen ] = useState(false)
-  const [ questionText, setQuestionText ] = useState('')
-  const [ questionOptions, setQuestionOptions ] = useState<TQuestionOption[]>([])
-  const [ optionValue, setOptionValue ] = useState('')
-  const [ optionText, setOptionText ] = useState('')
   const [ relationFromId, setRelationFromId ] = useState(0)
   const [ relationToId, setRelationToId ] = useState(0)
   const [ relationIncludes, setRelationIncludes ] = useState('')
   const [ relationEquals, setRelationEquals ] = useState('')
-
-  const defaultQuestionType = 'TEXT'
-  const [ questionType, setQuestionType ] = useState(defaultQuestionType)
 
   const [ deleteQuestionnaire ] = useMutation(DELETE_QUESTIONNAIRE, { refetchQueries: [{ query: GET_ALL_QUESTIONNAIRES }]})
   const [ addQuestion ] = useMutation(ADD_QUESTIONS, { refetchQueries: [{ query: GET_ALL_QUESTIONNAIRES }]})
@@ -144,13 +127,11 @@ const Questionnaire: React.FC<{ questionnaire: TQuestionnaire }> = ({ questionna
     deleteQuestionnaire({ variables: { id }})
   }
 
-  const onCreateQuestionClick = () => {
+  const onCreateQuestionClick = (question: TQuestion) => {
     addQuestion({ variables: { questions: [
-      { text: questionText, type: questionType, questionnaireId: questionnaire.id, options: questionOptions }
+      { questionnaireId: questionnaire.id, ...question }
     ]}})
-    setQuestionText('')
     setIsQuestionModalOpen(false)
-    setQuestionOptions([])
   }
 
   const onCreateRelationClick = () => {
@@ -168,14 +149,6 @@ const Questionnaire: React.FC<{ questionnaire: TQuestionnaire }> = ({ questionna
     setIsRelationModalOpen(false)
   }
 
-  const onAddOptionClick = () => {
-    setQuestionOptions(questionOptions.concat([{value: optionValue, text: optionText}]))
-    setOptionValue('')
-    setOptionText('')
-  }
-
-  const questionTypeHasOptions = ['SINGLE_CHOICE', 'MULTIPLE_CHOICE'].includes(questionType)
-
   const questionIdOptions = questionnaire.questions.map(q => ({ value: q.id, label: q.text }))
 
   return (
@@ -189,57 +162,11 @@ const Questionnaire: React.FC<{ questionnaire: TQuestionnaire }> = ({ questionna
       {questionnaire.questions.map((q: TQuestion) => <Question question={q} key={q.id}/> )}
       <br/>
 
-      <Modal show={isQuestionModalOpen} centered onHide={() => setIsQuestionModalOpen(false)}>
-        <Modal.Header>
-          <Modal.Title>Add Question</Modal.Title>
-        </Modal.Header>
-
-        <Modal.Body>
-          <Select
-            className='pb-3'
-            onChange={onSelectChange(setQuestionType)}
-            defaultValue={QUESTION_TYPE_OPTIONS[0]}
-            options={QUESTION_TYPE_OPTIONS}/>
-
-          <FormInput
-            autoFocus={true}
-            label={'Question Text'}
-            value={questionText}
-            type="text"
-            onChange={setQuestionText}/>
-
-
-          { questionTypeHasOptions && [
-
-            <FormInput
-              key='options-value'
-              autoFocus={true}
-              label={'Option Value'}
-              value={optionValue}
-              type="text"
-              onChange={setOptionValue}/>,
-
-            <FormInput
-              key='options-text'
-              autoFocus={true}
-              label={'Option Text'}
-              value={optionText}
-              type="text"
-              onChange={setOptionText}/>,
-
-            <code key='options'>Question Options: {JSON.stringify(questionOptions, null, 2)}</code>
-          ]}
-
-        </Modal.Body>
-
-        <Modal.Footer>
-          { questionTypeHasOptions &&
-            <Button variant="success" onClick={onAddOptionClick}>add option</Button>
-          }
-          <Button variant="secondary" onClick={() => setIsQuestionModalOpen(false)}>close</Button>
-          <Button variant="primary" onClick={onCreateQuestionClick}>save</Button>
-        </Modal.Footer>
-      </Modal>
+      <QuestionModal
+        show={isQuestionModalOpen}
+        close={() => setIsQuestionModalOpen(false)}
+        save={(question: TQuestion) => onCreateQuestionClick(question)}
+      />
 
       <Modal show={isRelationModalOpen} centered onHide={() => setIsRelationModalOpen(false)}>
         <Modal.Header>
@@ -250,7 +177,12 @@ const Questionnaire: React.FC<{ questionnaire: TQuestionnaire }> = ({ questionna
             <Form.Label>From</Form.Label>
             <Select
               className='pb-3'
-              label={'To ID'}
+              onChange={onSelectChange(setRelationFromId)}
+              options={questionIdOptions}/>
+            <Form.Label>To</Form.Label>
+
+            <Select
+              className='pb-3'
               onChange={onSelectChange(setRelationToId)}
               options={questionIdOptions}/>
 
@@ -271,9 +203,6 @@ const Questionnaire: React.FC<{ questionnaire: TQuestionnaire }> = ({ questionna
           </Modal.Body>
 
           <Modal.Footer>
-            { questionTypeHasOptions &&
-              <Button variant="success" onClick={onAddOptionClick}>add option</Button>
-            }
             <Button variant="secondary" onClick={() => setIsRelationModalOpen(false)}>close</Button>
             <Button variant="primary" onClick={onCreateRelationClick}>save</Button>
           </Modal.Footer>
