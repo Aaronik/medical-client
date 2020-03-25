@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { TQuestion, TQuestionOption } from 'types/Question.d'
+import { Question, QuestionOption } from 'types/Question.d'
 import Modal from 'react-bootstrap/Modal'
 import Button from 'react-bootstrap/Button'
 import FormInput from 'components/FormInput'
@@ -7,10 +7,10 @@ import Select from 'react-select'
 import onSelectChange, { TOption } from 'util/onSelectChange'
 
 type QuestionModalProps = {
-  question?: TQuestion
+  question?: Question
   show: boolean
   close: () => void
-  save: (question: TQuestion) => void
+  save: (question: Question) => void
 }
 
 const QuestionModal = (props: QuestionModalProps) => {
@@ -24,7 +24,7 @@ const QuestionModal = (props: QuestionModalProps) => {
 
   const [ type, setType ] = useState(initialType)
   const [ text, setText ] = useState(initialText)
-  const [ options, setOptions ] = useState<TQuestionOption[]>(initialOptions)
+  const [ options, setOptions ] = useState<QuestionOption[]>(initialOptions)
   const [ optionValue, setOptionValue ] = useState('')
   const [ optionText, setOptionText ] = useState('')
 
@@ -37,7 +37,7 @@ const QuestionModal = (props: QuestionModalProps) => {
   }
 
   const onSaveClick = () => {
-    let updatedQuestion = { type, text }
+    let updatedQuestion = { type, text } as Question
     if (question?.id) Object.assign(updatedQuestion, { id: question.id })
     if (options.length) Object.assign(updatedQuestion, { options })
     save(updatedQuestion)

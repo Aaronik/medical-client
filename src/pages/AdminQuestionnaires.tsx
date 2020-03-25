@@ -12,7 +12,7 @@ import QuestionModal from 'components/QuestionModal'
 import Select from 'react-select'
 import onSelectChange, { TOption } from 'util/onSelectChange'
 import { TQuestionnaire } from 'types/Questionnaire.d'
-import { TQuestion, TQuestionOption } from 'types/Question.d'
+import { Question, QuestionOption } from 'types/Question.d'
 
 const AdminQuestionnairesPage = () => {
 
@@ -75,7 +75,7 @@ const Wrapper: React.FC = ({ children }) => {
   )
 }
 
-const Question: React.FC<{ question: TQuestion, saveQuestion: (question: TQuestion) => void }> = ({ question, saveQuestion }) => {
+const QuestionView: React.FC<{ question: Question, saveQuestion: (question: Question) => void }> = ({ question, saveQuestion }) => {
   const [ deleteQuestion ] = useMutation(DELETE_QUESTION, { refetchQueries: [{ query: GET_ALL_QUESTIONNAIRES }]})
   const [ updateQuestion ] = useMutation(UPDATE_QUESTION, { refetchQueries: [{ query: GET_ALL_QUESTIONNAIRES }]})
   const [ isUpdateModalOpen, setIsUpdateModalOpen ] = useState(false)
@@ -88,7 +88,7 @@ const Question: React.FC<{ question: TQuestion, saveQuestion: (question: TQuesti
     setIsUpdateModalOpen(true)
   }
 
-  const onSaveQuestion = (question: TQuestion) => {
+  const onSaveQuestion = (question: Question) => {
     setIsUpdateModalOpen(false)
     saveQuestion(question)
   }
@@ -131,14 +131,14 @@ const Questionnaire: React.FC<{ questionnaire: TQuestionnaire }> = ({ questionna
     deleteQuestionnaire({ variables: { id }})
   }
 
-  const onCreateQuestionClick = (question: TQuestion) => {
+  const onCreateQuestionClick = (question: Question) => {
     addQuestion({ variables: { questions: [
       { questionnaireId: questionnaire.id, ...question }
     ]}})
     setIsQuestionModalOpen(false)
   }
 
-  const onUpdateQuestion = (question: TQuestion) => {
+  const onUpdateQuestion = (question: Question) => {
     updateQuestion({ variables: { question }})
   }
 
@@ -167,13 +167,13 @@ const Questionnaire: React.FC<{ questionnaire: TQuestionnaire }> = ({ questionna
         <h2 onClick={() => setIsQuestionModalOpen(true)}>(Add Question)</h2>
         <h2 onClick={() => setIsRelationModalOpen(true)}>(Add Question Relation)</h2>
       </Row>
-      {questionnaire.questions.map((q: TQuestion) => <Question saveQuestion={onUpdateQuestion} question={q} key={q.id}/> )}
+      {questionnaire.questions.map((q: Question) => <QuestionView saveQuestion={onUpdateQuestion} question={q} key={q.id}/> )}
       <br/>
 
       <QuestionModal
         show={isQuestionModalOpen}
         close={() => setIsQuestionModalOpen(false)}
-        save={(question: TQuestion) => onCreateQuestionClick(question)}
+        save={(question: Question) => onCreateQuestionClick(question)}
       />
 
       <Modal show={isRelationModalOpen} centered onHide={() => setIsRelationModalOpen(false)}>
