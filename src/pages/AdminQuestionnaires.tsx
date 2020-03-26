@@ -10,9 +10,9 @@ import Row from 'react-bootstrap/Row'
 import FormInput from 'components/FormInput'
 import QuestionModal from 'components/QuestionModal'
 import Select from 'react-select'
-import onSelectChange, { TOption } from 'util/onSelectChange'
+import onSelectChange from 'util/onSelectChange'
 import { TQuestionnaire } from 'types/Questionnaire.d'
-import { Question, QuestionOption } from 'types/Question.d'
+import { Question } from 'types/Question.d'
 
 const AdminQuestionnairesPage = () => {
 
@@ -77,7 +77,6 @@ const Wrapper: React.FC = ({ children }) => {
 
 const QuestionView: React.FC<{ question: Question, saveQuestion: (question: Question) => void }> = ({ question, saveQuestion }) => {
   const [ deleteQuestion ] = useMutation(DELETE_QUESTION, { refetchQueries: [{ query: GET_ALL_QUESTIONNAIRES }]})
-  const [ updateQuestion ] = useMutation(UPDATE_QUESTION, { refetchQueries: [{ query: GET_ALL_QUESTIONNAIRES }]})
   const [ isUpdateModalOpen, setIsUpdateModalOpen ] = useState(false)
 
   const onXClick = () => {

@@ -4,7 +4,7 @@ import Modal from 'react-bootstrap/Modal'
 import Button from 'react-bootstrap/Button'
 import FormInput from 'components/FormInput'
 import Select from 'react-select'
-import onSelectChange, { TOption } from 'util/onSelectChange'
+import onSelectChange from 'util/onSelectChange'
 
 type QuestionModalProps = {
   question?: Question
@@ -53,7 +53,7 @@ const QuestionModal = (props: QuestionModalProps) => {
     : 'Add Question'
 
   return (
-    <Modal show={props.show} centered onHide={props.close}>
+    <Modal show={show} centered onHide={close}>
       <Modal.Header>
         <Modal.Title>{modalTitle}</Modal.Title>
       </Modal.Header>

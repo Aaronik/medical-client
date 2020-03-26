@@ -10,7 +10,7 @@ import Form from 'react-bootstrap/Form'
 import DropdownButton from 'react-bootstrap/DropdownButton'
 import Dropdown from 'react-bootstrap/Dropdown'
 import * as icons from '@fortawesome/free-solid-svg-icons'
-import Select, { ValueType } from 'react-select'
+import Select from 'react-select'
 
 import FormInput from 'components/FormInput'
 import preventDefault from 'util/preventDefault'
@@ -62,9 +62,9 @@ const DoctorTimelinePage: React.FC<TProps> = ({ patient, patientTimelineData, pa
   }
 
   const onModalSaveClick = () => {
-    const type = activeTimelineItem.end === activeTimelineItem.start ? 'point' as 'point' : 'range' as 'range'
-    const item = { ...activeTimelineItem, type }
-    const isExistingItem = patientTimelineData.map(d => d.id).includes(activeTimelineItem.id)
+    /* const type = activeTimelineItem.end === activeTimelineItem.start ? 'point' as 'point' : 'range' as 'range' */
+    /* const item = { ...activeTimelineItem, type } */
+    /* const isExistingItem = patientTimelineData.map(d => d.id).includes(activeTimelineItem.id) */
 
     alert('Sorry, item updating/adding has been temporarily disabled (TODO)')
     /* if (isExistingItem) updateTimelineItem(patient.id, item) */

@@ -1,6 +1,4 @@
 import React from 'react'
-import { useHistory } from "react-router-dom"
-import { useMutation } from '@apollo/client'
 import Container from 'react-bootstrap/Container'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
@@ -38,8 +36,6 @@ const PatientCard: React.FC<{ patient: TUser }> = ({ patient }) => {
     borderRadius: '20px',
     width: '350px',
   } as const
-
-  const history = useHistory()
 
   const onCardClick = () => setActiveP(patient.id, '/overview')
 

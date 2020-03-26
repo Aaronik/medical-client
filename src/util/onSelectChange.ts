@@ -1,4 +1,4 @@
-import Select, { ValueType } from 'react-select'
+import { ValueType } from 'react-select'
 
 export type TOption = { value: string | number, label: string | HTMLElement }
 

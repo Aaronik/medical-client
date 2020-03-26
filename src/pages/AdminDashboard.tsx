@@ -23,10 +23,11 @@ const AdminDashboard: React.FunctionComponent<IProps> = ({ user, doctors, invita
 
   const onInvite = () => {
     alert('Sorry, user invitations have been temporarily disabled. (TODO)')
-    /* inviteUser({ */
-    /*   message, email, */
-    /*   senderId: user.id, */
-    /* }) */
+    // TODO temporarily disabled
+    return ({
+      message, email,
+      senderId: user.id,
+    })
   }
 
   const onEmailChange = (e: any) => {
