@@ -1,7 +1,7 @@
 import React from 'react'
 import { gql } from '@apollo/client'
 import { ApolloProvider, useQuery } from '@apollo/client'
-import { BrowserRouter as Router, Route as RRRoute, RouteProps, RouteComponentProps, Link, Switch } from 'react-router-dom'
+import { BrowserRouter as Router, Route as RRRoute, RouteProps, RouteComponentProps, Link, Switch, useHistory } from 'react-router-dom'
 import { StylesManager } from 'survey-react'
 import * as icons from '@fortawesome/free-solid-svg-icons'
 
@@ -122,6 +122,7 @@ const AdminBase: React.FunctionComponent<BaseProps> = ({ user, gutterNavActive, 
     <React.Fragment>
       <AppNavBar>
         <Nav>
+          <GutterNavToggleButton className='align-self-center pr-3 d-lg-none d-md-block'/>
           <MilliBrandLink/>
         </Nav>
         <Nav>
@@ -253,10 +254,31 @@ const PatientBase: React.FunctionComponent<BaseProps> = ({ user, alerts, gutterN
     { to: '/profile', text: strings('profile'), icon: icons.faUserEdit },
   ]
 
+  const switchRoutes = (
+    <Switch>
+      <Route path='/' exact><PatientDashboard/></Route>
+      <Route path='/intake'><PatientIntakePage/></Route>
+      <Route path='/questionnaires'><PatientQuestionnairesPage/></Route>
+      <Route path='/settings'><DoctorSettingsPage/></Route>
+      <Route path='/profile' component={() => <h1>Patient Profile</h1>} />
+      <Route component={PageNotFound} />
+    </Switch>
+  )
+
+  const history = useHistory()
+
+  // So appending /frame to the end will isolate just the page
+  // (originally added so we can drop millimed into an iframe and not
+  // have the clutter of the navbars)
+  if (history.location.pathname.includes('/frame')) {
+    return switchRoutes
+  }
+
   return (
     <React.Fragment>
       <AppNavBar>
         <Nav>
+          <GutterNavToggleButton className='align-self-center pr-3 d-lg-none d-md-block'/>
           <MilliBrandLink/>
           <NavLink to='/intake' text={strings('intakeSurvey')} />
         </Nav>
@@ -270,14 +292,7 @@ const PatientBase: React.FunctionComponent<BaseProps> = ({ user, alerts, gutterN
       <Alert alerts={alerts}/>
 
       <GutterAwareFluidContainer gutterNavActive={gutterNavActive}>
-        <Switch>
-          <Route path='/' exact><PatientDashboard/></Route>
-          <Route path='/intake' exact><PatientIntakePage/></Route>
-          <Route path='/questionnaires' exact><PatientQuestionnairesPage/></Route>
-          <Route path='/settings'><DoctorSettingsPage/></Route>
-          <Route path='/profile' component={() => <h1>Patient Profile</h1>} />
-          <Route component={PageNotFound} />
-        </Switch>
+        { switchRoutes }
       </GutterAwareFluidContainer>
     </React.Fragment>
   )
@@ -309,6 +324,8 @@ const Base: React.FunctionComponent = () => {
 
   const { data: flags } = useQuery(LOCAL_FLAGS_QUERY, { fetchPolicy: 'no-cache' })
 
+  if (loading) return <LoadingPage/>
+
   const patients = flags?.patients || []
   const alerts = flags?.alerts || []
   const activePatientId = flags?.activePatientId
@@ -320,9 +337,7 @@ const Base: React.FunctionComponent = () => {
 
   if (!flags?.hasAuthToken) return <Router>{Component}</Router>
 
-  if (loading) return <LoadingPage/>
-
-  switch (data?.me?.role) {
+  switch (me?.role) {
     case 'ADMIN':
       Component = <AdminBase user={me} gutterNavActive={gutterNavActive} alerts={alerts}/>
       break
@@ -340,7 +355,6 @@ const Base: React.FunctionComponent = () => {
 }
 
 const App: React.FunctionComponent = () => {
-
   return (
     <ApolloProvider client={gqlClient}>
       <Base/>
