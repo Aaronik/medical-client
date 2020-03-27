@@ -8,24 +8,24 @@ export type Question =
 
 export interface BooleanQuestion extends QuestionMeta {
   type: 'BOOLEAN'
-  response?: Boolean
+  boolResp?: Boolean
 }
 
 export interface TextQuestion extends QuestionMeta {
   type: 'TEXT'
-  response?: string
+  textResp?: string
 }
 
 export interface SingleChoiceQuestion extends QuestionMeta {
   type: 'SINGLE_CHOICE'
   options: QuestionOption[]
-  response?: string
+  singleChoiceResp?: string
 }
 
 export interface MultipleChoiceQuestion extends QuestionMeta {
   type: 'MULTIPLE_CHOICE'
   options: QuestionOption[]
-  response?: string[]
+  multipleChoiceResp?: string[]
 }
 
 export interface QuestionMeta {

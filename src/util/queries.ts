@@ -185,6 +185,12 @@ export const SUBMIT_CHOICE_RESPONSE = gql`
   }
 `
 
+export const SUBMIT_CHOICE_RESPONSES = gql`
+  mutation SubmitChoice($questionId: Int!, $values: [String]!) {
+    submitChoiceQuestionResponses(questionId: $questionId, values: $values)
+  }
+`
+
 export const DELETE_QUESTIONNAIRE = gql`
   mutation DeleteQuestionnaire($id: Int!) {
     deleteQuestionnaire(id: $id)
