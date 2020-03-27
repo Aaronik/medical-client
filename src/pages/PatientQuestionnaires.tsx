@@ -6,6 +6,9 @@ import Button from 'react-bootstrap/Button'
 import Spinner from 'react-bootstrap/Spinner'
 import ToggleButtonGroup from 'react-bootstrap/ToggleButtonGroup'
 import ToggleButton from 'react-bootstrap/ToggleButton'
+import Card from 'react-bootstrap/Card'
+import ListGroup from 'react-bootstrap/ListGroup'
+import ListGroupItem from 'react-bootstrap/ListGroupItem'
 import Loading from 'pages/Loading'
 import FormInput from 'components/FormInput'
 import { GET_ALL_QUESTIONNAIRES, SUBMIT_BOOLEAN_RESPONSE, SUBMIT_TEXT_RESPONSE, SUBMIT_CHOICE_RESPONSE, SUBMIT_CHOICE_RESPONSES } from 'util/queries'
@@ -44,27 +47,34 @@ const Questionnaire: React.FC<QuestionnaireProps> = ({ questionnaire }) => {
 
   const [ isExpanded, setIsExpanded ] = useState(true)
 
-  const containerStyle = {
-    border: '1px solid black',
-    margin: '2px',
-    padding: '5px',
+  const headerStyle = {
     cursor: 'pointer',
   }
 
   if (!isExpanded) return (
-    <div style={containerStyle} onClick={() => setIsExpanded(true)}>
-      <h2>{questionnaire.title}</h2>
-    </div>
+    <Card style={headerStyle} onClick={() => setIsExpanded(true)}>
+      <Card.Header>{questionnaire.title}</Card.Header>
+    </Card>
   )
 
   return (
-    <div style={containerStyle}>
-      <h2 onClick={() => setIsExpanded(false)}>{questionnaire.title}</h2>
-      { questionnaire.questions.map((q: Q.Question) => {
-        const Component = questionTypeMap(q.type)
-        return <Component question={q} key={q.id}/>
-      })}
-    </div>
+    <Card>
+      <Card.Header style={headerStyle} onClick={() => setIsExpanded(false)}>{questionnaire.title}</Card.Header>
+      <Card.Body>
+      <ListGroup className='list-group-flush'>
+      {
+        questionnaire.questions.map((q: Q.Question) => {
+          const Component = questionTypeMap(q.type)
+          return (
+            <ListGroupItem>
+              <Component question={q} key={q.id}/>
+            </ListGroupItem>
+          )
+        })
+      }
+      </ListGroup>
+      </Card.Body>
+    </Card>
   )
 }
 
@@ -122,11 +132,12 @@ const BoolQuestion: React.FC<BoolQuestionProps> = ({ question }) => {
   return (
     <div>
       <Form.Label>{question.text}</Form.Label>
-      <ToggleButtonGroup name='what' type='radio' value={currentResponse} onChange={onChange}>
-        <ToggleButton value={true}>Yes</ToggleButton>
-        <ToggleButton value={false}>No</ToggleButton>
-      </ToggleButtonGroup>
-      <ButtonRow loading={loading} hasChangedSinceLastSave={hasChangedSinceLastSave} onSave={onSave}/>
+      <ButtonRow loading={loading} hasChangedSinceLastSave={hasChangedSinceLastSave} onSave={onSave}>
+        <ToggleButtonGroup name='what' type='radio' value={currentResponse} onChange={onChange}>
+          <ToggleButton value={true}>Yes</ToggleButton>
+          <ToggleButton value={false}>No</ToggleButton>
+        </ToggleButtonGroup>
+      </ButtonRow>
     </div>
   )
 }
@@ -153,12 +164,13 @@ const SingleChoiceQuestion: React.FC<SingleChoiceQuestionProps> = ({ question })
   return (
     <div>
       <Form.Label>{question.text}</Form.Label>
-      <ToggleButtonGroup name='Single choice button group' type='radio' value={currentResponse} onChange={onChange}>
-        {
-          question.options.map(option => <ToggleButton key={option.value} value={option.value}>{option.text}</ToggleButton>)
-        }
-      </ToggleButtonGroup>
-      <ButtonRow loading={loading} hasChangedSinceLastSave={hasChangedSinceLastSave} onSave={onSave}/>
+      <ButtonRow loading={loading} hasChangedSinceLastSave={hasChangedSinceLastSave} onSave={onSave}>
+        <ToggleButtonGroup name='Single choice button group' type='radio' value={currentResponse} onChange={onChange}>
+          {
+            question.options.map(option => <ToggleButton key={option.value} value={option.value}>{option.text}</ToggleButton>)
+          }
+        </ToggleButtonGroup>
+      </ButtonRow>
     </div>
   )
 }
@@ -168,7 +180,7 @@ type MultipleChoiceQuestionProps = {
 }
 
 const MultipleChoiceQuestion: React.FC<MultipleChoiceQuestionProps> = ({ question }) => {
-  const [ hasChangedSinceLastSave, setHasChangedSinceLastSave ] = useState(!question.multipleChoiceResp)
+  const [ hasChangedSinceLastSave, setHasChangedSinceLastSave ] = useState(!question.multipleChoiceResp?.length)
   const [ currentResponses, setCurrentResponse ] = useState(question.multipleChoiceResp || [])
   const [ respondToQuestion, { loading } ] = useMutation(SUBMIT_CHOICE_RESPONSES)
 
@@ -185,12 +197,13 @@ const MultipleChoiceQuestion: React.FC<MultipleChoiceQuestionProps> = ({ questio
   return (
     <div>
       <Form.Label>{question.text}</Form.Label>
-      <ToggleButtonGroup type='checkbox' value={currentResponses} onChange={onChange}>
-        {
-          question.options.map(option => <ToggleButton key={option.value} value={option.value}>{option.text}</ToggleButton>)
-        }
-      </ToggleButtonGroup>
-      <ButtonRow loading={loading} hasChangedSinceLastSave={hasChangedSinceLastSave} onSave={onSave}/>
+      <ButtonRow loading={loading} hasChangedSinceLastSave={hasChangedSinceLastSave} onSave={onSave}>
+        <ToggleButtonGroup type='checkbox' value={currentResponses} onChange={onChange}>
+          {
+            question.options.map(option => <ToggleButton key={option.value} value={option.value}>{option.text}</ToggleButton>)
+          }
+        </ToggleButtonGroup>
+      </ButtonRow>
     </div>
   )
 }
@@ -202,7 +215,7 @@ const questionTypeMap = (type: Q.QuestionType): React.FC<any> => ({
   MULTIPLE_CHOICE: MultipleChoiceQuestion
 }[type])
 
-const ButtonRow: React.FC<{ loading: boolean, hasChangedSinceLastSave: boolean, onSave: () => void}> = ({ loading, hasChangedSinceLastSave, onSave }) => {
+const ButtonRow: React.FC<{ loading: boolean, hasChangedSinceLastSave: boolean, onSave: () => void}> = ({ loading, hasChangedSinceLastSave, onSave, children }) => {
   const buttonValue = loading
     ? <Spinner animation='grow'/>
     : hasChangedSinceLastSave
@@ -216,8 +229,13 @@ const ButtonRow: React.FC<{ loading: boolean, hasChangedSinceLastSave: boolean, 
       ? 'primary'
       : 'success'
 
+  const justify = !!children
+    ? 'justify-content-between'
+    : 'justify-content-end'
+
   return (
-    <Row className='d-flex justify-content-end mr-3'>
+    <Row className={'d-flex mr-3 ' + justify} >
+      { children }
       <Button variant={buttonVariant} onClick={onSave}>{buttonValue}</Button>
     </Row>
   )
