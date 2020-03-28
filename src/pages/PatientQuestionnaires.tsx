@@ -217,7 +217,7 @@ const questionTypeMap = (type: Q.QuestionType): React.FC<any> => ({
 
 const ButtonRow: React.FC<{ loading: boolean, hasChangedSinceLastSave: boolean, onSave: () => void}> = ({ loading, hasChangedSinceLastSave, onSave, children }) => {
   const buttonValue = loading
-    ? <Spinner animation='grow'/>
+    ? <Spinner animation='grow' size={'sm'}/>
     : hasChangedSinceLastSave
       ? 'Save'
       : <FontAwesomeIcon icon={icons.faCheck} className='icon' size='lg'/>
