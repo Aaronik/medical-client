@@ -22,7 +22,7 @@ type TProps = {
   activePatient?: TUser | null
 }
 
-type TOption = { value: string, label: string }
+type TOption = { value: number, label: string }
 
 const AddPatientModal: React.FC<{ show: boolean, onHide: () => void, onComplete: (name: string) => void }> = ({ show, onHide, onComplete }) => {
   const [ name, setName ] = useState('')
@@ -54,11 +54,11 @@ const AddPatientModal: React.FC<{ show: boolean, onHide: () => void, onComplete:
 const mapPatientsToOptions = (patients: TUser[]): TOption[] => patients.map(mapPatientToOption)
 
 const mapPatientToOption = (patient: TUser): TOption => (
-  { value: patient.id.toString(), label: patient.name }
+  { value: patient.id, label: patient.name }
 )
 
 const formatOptionLabel = (patients: TUser[]) => ({ value, label }: TOption) => {
-  const patient = patients.find(p => p.id === Number(value))
+  const patient = patients.find(p => p.id === value)
   if (!patient) return <span>{strings('patientNotFound')}</span>
 
   return (
