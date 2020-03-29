@@ -68,7 +68,7 @@ const Questionnaire: React.FC<QuestionnaireProps> = ({ questionnaire }) => {
         questionnaire.questions.map((q: Q.Question) => {
           const Component = questionTypeMap(q.type)
           return (
-            <ListGroupItem>
+            <ListGroupItem key={q.id}>
               <Component question={q} key={q.id}/>
             </ListGroupItem>
           )
@@ -117,24 +117,29 @@ type BoolQuestionProps = {
 }
 
 const BoolQuestion: React.FC<BoolQuestionProps> = ({ question }) => {
-  const [ hasChangedSinceLastSave, setHasChangedSinceLastSave ] = useState(!question.boolResp)
-  const [ currentResponse, setCurrentResponse ] = useState(question.boolResp || null)
+  const hasResponse = question.boolResp === true || question.boolResp === false
+
+  const [ hasChangedSinceLastSave, setHasChangedSinceLastSave ] = useState(!hasResponse)
+  const [ currentResponse, setCurrentResponse ] = useState(question.boolResp)
   const [ respondToQuestion, { loading, error } ] = useMutation(SUBMIT_BOOLEAN_RESPONSE, { onError: console.error })
 
   const onChange = (b: unknown) => {
     setCurrentResponse(b as boolean)
-    setHasChangedSinceLastSave(true)
+    onSave(b as boolean)
   }
 
-  const onSave = () => {
-    respondToQuestion({ variables: { questionId: question.id, value: currentResponse }})
+  const onSave = (b?: boolean) => {
+    // setting currentResponse and then saving immediately after results in saving the previous
+    // value of currentResponse -- it doesn't have time to update yet. This is to circumvent that.
+    const value = b === undefined ? currentResponse : b
+    respondToQuestion({ variables: { questionId: question.id, value }})
     setHasChangedSinceLastSave(false)
   }
 
   return (
     <div>
       <Form.Label>{question.text}</Form.Label>
-      <ButtonRow error={error} loading={loading} hasChangedSinceLastSave={hasChangedSinceLastSave} onSave={onSave}>
+      <ButtonRow error={error} loading={loading} hasChangedSinceLastSave={hasChangedSinceLastSave} onSave={() => onSave()}>
         <ToggleButtonGroup name='what' type='radio' value={currentResponse} onChange={onChange}>
           <ToggleButton value={true}>Yes</ToggleButton>
           <ToggleButton value={false}>No</ToggleButton>
@@ -155,18 +160,21 @@ const SingleChoiceQuestion: React.FC<SingleChoiceQuestionProps> = ({ question })
 
   const onChange = (b: unknown) => {
     setCurrentResponse(b as string)
-    setHasChangedSinceLastSave(true)
+    onSave(b as string)
   }
 
-  const onSave = () => {
-    respondToQuestion({ variables: { questionId: question.id, value: currentResponse }})
+  const onSave = (b?: string) => {
+    // setting currentResponse and then saving immediately after results in saving the previous
+    // value of currentResponse -- it doesn't have time to update yet. This is to circumvent that.
+    const value = b === undefined ? currentResponse : b
+    respondToQuestion({ variables: { questionId: question.id, value }})
     setHasChangedSinceLastSave(false)
   }
 
   return (
     <div>
       <Form.Label>{question.text}</Form.Label>
-      <ButtonRow error={error} loading={loading} hasChangedSinceLastSave={hasChangedSinceLastSave} onSave={onSave}>
+      <ButtonRow error={error} loading={loading} hasChangedSinceLastSave={hasChangedSinceLastSave} onSave={() => onSave()}>
         <ToggleButtonGroup name='Single choice button group' type='radio' value={currentResponse} onChange={onChange}>
           {
             question.options.map(option => <ToggleButton key={option.value} value={option.value}>{option.text}</ToggleButton>)
