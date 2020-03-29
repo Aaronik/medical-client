@@ -4,6 +4,7 @@ import { Link, useHistory } from 'react-router-dom'
 import NavDropdown from 'react-bootstrap/NavDropdown'
 import Button from 'react-bootstrap/Button'
 import Spinner from 'react-bootstrap/Spinner'
+import Avatar from 'components/Avatar'
 import { TUser, TUserRole } from 'types/User.d'
 import strings from './ProfileDropdown.strings'
 
@@ -60,20 +61,20 @@ const ProfileDropdown: React.FunctionComponent<IProps> = ({ user }) => {
   const onMakePatientClick = () => changeRole('PATIENT')
 
   return (
-    <NavDropdown drop="left" id="auth-dropdown" title="Profile">
+    <NavDropdown bsPrefix='d-flex text-decoration-none text-black-50 align-items-center' drop="left" id="auth-dropdown" className='clickable' title={
+      user ? <Avatar user={user} size={40} onClick={() => {}}/> : strings('profile')}
+    >
       <NavDropdown.Header>{headerText()}</NavDropdown.Header>
       <NavDropdown.Divider/>
-      <NavDropdown.Item as={Link} to="/profile">{strings('profile')}</NavDropdown.Item>
+      <NavDropdown.Item target="_blank" href="https://millihealth.com">{strings('about')}</NavDropdown.Item>
       <NavDropdown.Divider/>
       <NavDropdown.Item onClick={onSignoutPress}>{
         loading ? <Spinner animation='grow'/> : strings('signOut')
       }</NavDropdown.Item>
       <NavDropdown.Divider/>
-      <NavDropdown.Header><Button variant="danger" onClick={onMakeAdminClick}>Make Me an Admin!</Button></NavDropdown.Header>
-      <NavDropdown.Header><Button variant="primary" onClick={onMakeDoctorClick}>Make Me a Doctor!</Button></NavDropdown.Header>
-      <NavDropdown.Header><Button variant="info" onClick={onMakePatientClick}>Make Me a Patient!</Button></NavDropdown.Header>
-      <NavDropdown.Divider/>
-      <NavDropdown.Item target="_blank" href="https://millihealth.com">{strings('about')}</NavDropdown.Item>
+      <NavDropdown.Header><Button variant="danger" onClick={onMakeAdminClick}>Make Me an Admin</Button></NavDropdown.Header>
+      <NavDropdown.Header><Button variant="primary" onClick={onMakeDoctorClick}>Make Me a Doctor</Button></NavDropdown.Header>
+      <NavDropdown.Header><Button variant="info" onClick={onMakePatientClick}>Make Me a Patient</Button></NavDropdown.Header>
     </NavDropdown>
   )
 }

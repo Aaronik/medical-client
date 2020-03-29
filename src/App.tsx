@@ -115,6 +115,7 @@ const AdminBase: React.FunctionComponent<BaseProps> = ({ user, gutterNavActive, 
     { to: '/', text: strings('dashboard'), icon: icons.faBorderAll, exact: true },
     { to: '/users', text: strings('users'), icon: icons.faUsers, exact: true },
     { to: '/questionnaires', text: strings('questionnaires'), icon: icons.faBook, exact: true },
+    { to: '/profile', text: strings('profile'), icon: icons.faUserEdit },
     { to: '/settings', text: strings('settings'), icon: icons.faCog, exact: true },
   ]
 
@@ -165,6 +166,7 @@ const DoctorWithPatientBase: React.FunctionComponent<BaseProps & { patients: TUs
   const gutterRoutes: LinkEntryProps[] = [
     { to: '/', text: strings('dashboard'), icon: icons.faBorderAll, exact: true },
     { to: '/settings', text: strings('settings'), icon: icons.faCog },
+    { to: '/profile', text: strings('profile'), icon: icons.faUserEdit },
     { separator: true },
     { to: '/overview', text: strings('overview'), icon: icons.faTachometerAlt, fade: true },
     { to: '/messages', text: strings('messages'), icon: icons.faCommentDots, fade: true },
@@ -216,6 +218,7 @@ const DoctorNoPatientBase: React.FunctionComponent<BaseProps & { patients: TUser
   const gutterRoutes: LinkEntryProps[] = [
     { to: '/', text: strings('dashboard'), icon: icons.faBorderAll, exact: true },
     { to: '/settings', text: strings('settings'), icon: icons.faCog },
+    { to: '/profile', text: strings('profile'), icon: icons.faUserEdit },
   ]
 
   return (
@@ -250,8 +253,8 @@ const PatientBase: React.FunctionComponent<BaseProps> = ({ user, alerts, gutterN
   const gutterRoutes: LinkEntryProps[] = [
     { to: '/', text: strings('dashboard'), icon: icons.faBorderAll, exact: true },
     { to: '/questionnaires', text: strings('questionnaires'), icon: icons.faCheckSquare },
-    { to: '/settings', text: strings('settings'), icon: icons.faCog },
     { to: '/profile', text: strings('profile'), icon: icons.faUserEdit },
+    { to: '/settings', text: strings('settings'), icon: icons.faCog },
   ]
 
   const switchRoutes = (
