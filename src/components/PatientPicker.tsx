@@ -110,7 +110,7 @@ const PatientPicker: React.FC<TProps> = ({ patients, className, activePatient })
         { patients.map(p => <Avatar key={p.id} user={p} className='ml-2' onClick={onAvatarClick(p)}/>)}
       </Row>
       <Row className='mt-3 ml-1'>
-        <Button variant='link' onClick={() => setIsAddPatientModalActive(true)}>{strings('addNewPatient')}</Button>
+      { /* <Button variant='link' onClick={() => setIsAddPatientModalActive(true)}>{strings('addNewPatient')}</Button> */ }
       </Row>
       <AddPatientModal
         show={isAddPatientModalActive}
