@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { ApolloError } from '@apollo/client'
 import Container from 'react-bootstrap/Container'
 import Form from 'react-bootstrap/Form'
 import Row from 'react-bootstrap/Row'
@@ -86,7 +87,7 @@ type TextQuestionProps = {
 const TextQuestion: React.FC<TextQuestionProps> = ({ question }) => {
   const [ hasChangedSinceLastSave, setHasChangedSinceLastSave ] = useState(!question.textResp)
   const [ currentResponse, setCurrentResponse ] = useState(question.textResp || '')
-  const [ respondToQuestion, { loading } ] = useMutation(SUBMIT_TEXT_RESPONSE)
+  const [ respondToQuestion, { loading, error } ] = useMutation(SUBMIT_TEXT_RESPONSE, { onError: console.error })
 
   const onChange = (text: string) => {
     setCurrentResponse(text)
@@ -106,7 +107,7 @@ const TextQuestion: React.FC<TextQuestionProps> = ({ question }) => {
         value={currentResponse}
         onChange={onChange}
       />
-      <ButtonRow loading={loading} hasChangedSinceLastSave={hasChangedSinceLastSave} onSave={onSave}/>
+      <ButtonRow error={error} loading={loading} hasChangedSinceLastSave={hasChangedSinceLastSave} onSave={onSave}/>
     </div>
   )
 }
@@ -118,7 +119,7 @@ type BoolQuestionProps = {
 const BoolQuestion: React.FC<BoolQuestionProps> = ({ question }) => {
   const [ hasChangedSinceLastSave, setHasChangedSinceLastSave ] = useState(!question.boolResp)
   const [ currentResponse, setCurrentResponse ] = useState(question.boolResp || null)
-  const [ respondToQuestion, { loading } ] = useMutation(SUBMIT_BOOLEAN_RESPONSE)
+  const [ respondToQuestion, { loading, error } ] = useMutation(SUBMIT_BOOLEAN_RESPONSE, { onError: console.error })
 
   const onChange = (b: unknown) => {
     setCurrentResponse(b as boolean)
@@ -133,7 +134,7 @@ const BoolQuestion: React.FC<BoolQuestionProps> = ({ question }) => {
   return (
     <div>
       <Form.Label>{question.text}</Form.Label>
-      <ButtonRow loading={loading} hasChangedSinceLastSave={hasChangedSinceLastSave} onSave={onSave}>
+      <ButtonRow error={error} loading={loading} hasChangedSinceLastSave={hasChangedSinceLastSave} onSave={onSave}>
         <ToggleButtonGroup name='what' type='radio' value={currentResponse} onChange={onChange}>
           <ToggleButton value={true}>Yes</ToggleButton>
           <ToggleButton value={false}>No</ToggleButton>
@@ -150,7 +151,7 @@ type SingleChoiceQuestionProps = {
 const SingleChoiceQuestion: React.FC<SingleChoiceQuestionProps> = ({ question }) => {
   const [ hasChangedSinceLastSave, setHasChangedSinceLastSave ] = useState(!question.singleChoiceResp)
   const [ currentResponse, setCurrentResponse ] = useState(question.singleChoiceResp || null)
-  const [ respondToQuestion, { loading } ] = useMutation(SUBMIT_CHOICE_RESPONSE)
+  const [ respondToQuestion, { loading, error } ] = useMutation(SUBMIT_CHOICE_RESPONSE, { onError: console.error })
 
   const onChange = (b: unknown) => {
     setCurrentResponse(b as string)
@@ -165,7 +166,7 @@ const SingleChoiceQuestion: React.FC<SingleChoiceQuestionProps> = ({ question })
   return (
     <div>
       <Form.Label>{question.text}</Form.Label>
-      <ButtonRow loading={loading} hasChangedSinceLastSave={hasChangedSinceLastSave} onSave={onSave}>
+      <ButtonRow error={error} loading={loading} hasChangedSinceLastSave={hasChangedSinceLastSave} onSave={onSave}>
         <ToggleButtonGroup name='Single choice button group' type='radio' value={currentResponse} onChange={onChange}>
           {
             question.options.map(option => <ToggleButton key={option.value} value={option.value}>{option.text}</ToggleButton>)
@@ -183,7 +184,7 @@ type MultipleChoiceQuestionProps = {
 const MultipleChoiceQuestion: React.FC<MultipleChoiceQuestionProps> = ({ question }) => {
   const [ hasChangedSinceLastSave, setHasChangedSinceLastSave ] = useState(!question.multipleChoiceResp?.length)
   const [ currentResponses, setCurrentResponse ] = useState(question.multipleChoiceResp || [])
-  const [ respondToQuestion, { loading } ] = useMutation(SUBMIT_CHOICE_RESPONSES)
+  const [ respondToQuestion, { loading, error } ] = useMutation(SUBMIT_CHOICE_RESPONSES, { onError: console.error })
 
   const onChange = (resp: string[]) => {
     setCurrentResponse(resp)
@@ -198,7 +199,7 @@ const MultipleChoiceQuestion: React.FC<MultipleChoiceQuestionProps> = ({ questio
   return (
     <div>
       <Form.Label>{question.text}</Form.Label>
-      <ButtonRow loading={loading} hasChangedSinceLastSave={hasChangedSinceLastSave} onSave={onSave}>
+      <ButtonRow error={error} loading={loading} hasChangedSinceLastSave={hasChangedSinceLastSave} onSave={onSave}>
         <ToggleButtonGroup type='checkbox' value={currentResponses} onChange={onChange}>
           {
             question.options.map(option => <ToggleButton key={option.value} value={option.value}>{option.text}</ToggleButton>)
@@ -216,19 +217,30 @@ const questionTypeMap = (type: Q.QuestionType): React.FC<any> => ({
   MULTIPLE_CHOICE: MultipleChoiceQuestion
 }[type])
 
-const ButtonRow: React.FC<{ loading: boolean, hasChangedSinceLastSave: boolean, onSave: () => void}> = ({ loading, hasChangedSinceLastSave, onSave, children }) => {
-  const buttonValue = loading
-    ? <Spinner animation='grow' size={'sm'}/>
-    : hasChangedSinceLastSave
-      ? 'Save'
-      : <FontAwesomeIcon icon={icons.faCheck} className='icon' size='lg'/>
+type ButtonRowProps = {
+  error?: ApolloError
+  loading: boolean
+  hasChangedSinceLastSave: boolean
+  onSave: () => void
+}
 
+const ButtonRow: React.FC<ButtonRowProps> = ({ error, loading, hasChangedSinceLastSave, onSave, children }) => {
 
-  const buttonVariant = loading
-    ? 'secondary'
-    : hasChangedSinceLastSave
-      ? 'primary'
-      : 'success'
+  const buttonValue = hasChangedSinceLastSave
+    ? 'Save'
+    : error
+      ? <FontAwesomeIcon icon={icons.faExclamation} className='icon' size='lg'/>
+      : loading
+        ? <Spinner animation='grow' size={'sm'}/>
+        :  <FontAwesomeIcon icon={icons.faCheck} className='icon' size='lg'/>
+
+  const buttonVariant = hasChangedSinceLastSave
+    ? 'primary'
+    : error
+      ? 'danger'
+      : loading
+        ? 'secondary'
+        : 'success'
 
   const justify = !!children
     ? 'justify-content-between'
@@ -237,7 +249,10 @@ const ButtonRow: React.FC<{ loading: boolean, hasChangedSinceLastSave: boolean, 
   return (
     <Row className={'d-flex mr-3 ' + justify} >
       { children }
-      <Button variant={buttonVariant} onClick={onSave}>{buttonValue}</Button>
+      <div className='d-flex flex-row'>
+        <p className='text-danger mr-3'>{error?.message}</p>
+        <Button variant={buttonVariant} onClick={onSave}>{buttonValue}</Button>
+      </div>
     </Row>
   )
 }
