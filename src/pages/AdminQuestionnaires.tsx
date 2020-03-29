@@ -7,6 +7,7 @@ import Modal from 'react-bootstrap/Modal'
 import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
 import Row from 'react-bootstrap/Row'
+import ErrorPage from 'pages/Error'
 import FormInput from 'components/FormInput'
 import QuestionModal from 'components/QuestionModal'
 import Select from 'react-select'
@@ -19,7 +20,7 @@ const AdminQuestionnairesPage = () => {
   const { data, loading, error } = useQuery(GET_ALL_QUESTIONNAIRES)
 
   if (loading) return <Wrapper><Spinner animation='grow'/></Wrapper>
-  if (error) return <Wrapper><code>{JSON.stringify(error, null, 2)}</code></Wrapper>
+  if (error) return <ErrorPage error={error}/>
   if (!data?.questionnaires?.length) return <Wrapper><h2>No questionnaires!</h2></Wrapper>
 
   return (

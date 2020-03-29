@@ -8,6 +8,7 @@ import Button from 'react-bootstrap/Button'
 import Modal from 'react-bootstrap/Modal'
 import Form from 'react-bootstrap/Form'
 import Loading from 'pages/Loading'
+import ErrorPage from 'pages/Error'
 import { TUser } from 'types/User.d'
 import Select from 'react-select'
 import onSelectChange from 'util/onSelectChange'
@@ -28,7 +29,7 @@ const AdminUsersPage: React.FC<TProps> = () => {
   const [ patientId, setPatientId ] = useState(0)
 
   if (loading) return <Loading/>
-  if (error) return <code>{JSON.stringify(error, null, 2)}</code>
+  if (error) return <ErrorPage error={error}/>
 
   const users = data?.users || []
 

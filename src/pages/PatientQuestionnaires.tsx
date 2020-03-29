@@ -10,6 +10,7 @@ import Card from 'react-bootstrap/Card'
 import ListGroup from 'react-bootstrap/ListGroup'
 import ListGroupItem from 'react-bootstrap/ListGroupItem'
 import Loading from 'pages/Loading'
+import ErrorPage from 'pages/Error'
 import FormInput from 'components/FormInput'
 import { GET_ALL_QUESTIONNAIRES, SUBMIT_BOOLEAN_RESPONSE, SUBMIT_TEXT_RESPONSE, SUBMIT_CHOICE_RESPONSE, SUBMIT_CHOICE_RESPONSES } from 'util/queries'
 import { useQuery, useMutation } from '@apollo/client'
@@ -22,7 +23,7 @@ const PatientQuestionnaires: React.FunctionComponent = () => {
   const { data, loading, error } = useQuery(GET_ALL_QUESTIONNAIRES)
 
   if (loading) return <Loading/>
-  if (error) return <code>{JSON.stringify(error, null, 2)}</code>
+  if (error) return <ErrorPage error={error}/>
 
   const questionnaires = data.questionnaires
 
