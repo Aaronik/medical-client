@@ -14,7 +14,7 @@ export const SIGNUP_MUTATION = gql`
   }
 `
 
-const ME_FRAGMENT = gql`
+const COMPLETE_USER_FRAGMENT = gql`
   {
     id
     name
@@ -29,13 +29,24 @@ const ME_FRAGMENT = gql`
 
 export const ME_QUERY = gql`
   query {
-    me ${ME_FRAGMENT}
+    me {
+      id
+      name
+      email
+      role
+      joinDate
+      birthday
+      lastVisit
+      imageUrl
+      patients ${COMPLETE_USER_FRAGMENT}
+      doctors ${COMPLETE_USER_FRAGMENT}
+    }
   }
 `
 
 export const UPDATE_ME = gql`
   mutation UpdateMe($user: MeInput) {
-    updateMe(user: $user) ${ME_FRAGMENT}
+    updateMe(user: $user) ${COMPLETE_USER_FRAGMENT}
   }
 `
 

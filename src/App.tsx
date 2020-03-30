@@ -154,7 +154,6 @@ const AdminBase: React.FunctionComponent<BaseProps> = ({ user, gutterNavActive, 
 const PATIENT_QUERY = gql`
   query {
     timeline @client
-    messages @client
     updates @client
   }
 `
@@ -207,7 +206,7 @@ const DoctorWithPatientBase: React.FunctionComponent<BaseProps & { patients: TUs
           </Route>
           <Route path='/activity'><DoctorActivityPage/></Route>
           <Route path='/messages'><DoctorMessagesPage/></Route>
-          <Route path='/overview'><DoctorOverviewPage patient={patient} user={user} messages={data.messages} updates={data.updates}/></Route>
+          <Route path='/overview'><DoctorOverviewPage patient={patient} user={user} messages={[]} updates={data.updates}/></Route>
           <Route path='/schedule'><DoctorSchedulePage/></Route>
           <Route component={PageNotFound} />
         </Switch>
@@ -307,7 +306,6 @@ const LOCAL_FLAGS_QUERY = gql`
   query {
     hasAuthToken @client
     activePatientId @client
-    patients @client
     gutterNavActive @client
     alerts @client
   }
@@ -331,12 +329,12 @@ const Base: React.FunctionComponent = () => {
 
   if (loading) return <LoadingPage/>
 
-  const patients = flags?.patients || []
   const alerts = flags?.alerts || []
   const activePatientId = flags?.activePatientId
   const gutterNavActive = flags?.gutterNavActive || true
-  const patient = patients.find((p: TUser) => p.id === activePatientId)
   const me = data?.me
+  const patients = me?.patients || []
+  const patient = patients.find((p: TUser) => p.id === Number(activePatientId))
 
   let Component = <SignedOutBase alerts={alerts}/>
 

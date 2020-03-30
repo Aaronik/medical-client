@@ -73,22 +73,25 @@ const PatientPicker: React.FC<TProps> = ({ patients, className, activePatient })
 
   const [ isAddPatientModalActive, setIsAddPatientModalActive ] = useState(false)
 
-  const [ setActiveP ] = useSetActivePatient()
+  const [ setActivePatient ] = useSetActivePatient()
 
   // For the dropdown, let's sort the patients alphabetically for ease of finding.
   // The Avatar list will be sorted by the server, hopefully by frequency of use.
   const alphabeticallySortedPatientOptions = mapPatientsToOptions(patients).sort((a, b) => a.label[0] < b.label[0] ? -1 : 1)
 
   const onAvatarClick = (patient: TUser) => () => {
-    setActiveP(patient.id, '/overview')
+    setActivePatient(patient.id, '/overview')
   }
 
   const onSelectChange = (option: ValueType<TOption>) => {
     if (!option) {
-      return setActiveP(0, '/')
+      return setActivePatient(0, '/')
     }
-    // @ts-ignore -- I really don't know how to type this, sorry
-    setActivePatient({ variables: { id: option?.value }})
+    setActivePatient(
+      // @ts-ignore -- i really don't know how to type this, sorry
+      option.value,
+      '/'
+    )
   }
 
   const onAddPatient = (name: string) => {

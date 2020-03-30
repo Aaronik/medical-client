@@ -2,7 +2,6 @@ import { ApolloClient, InMemoryCache } from '@apollo/client'
 import { times, random } from 'lodash'
 import * as faker from 'faker'
 import * as Timeline from 'types/Timeline.d'
-import * as User from 'types/User.d'
 import * as Alert from 'types/Alert.d'
 import uuid from 'uuid/v4'
 import strings from 'pages/DoctorOverview.strings'
@@ -24,38 +23,12 @@ const client = new ApolloClient({
       activePatientId() { return localStorage.activePatientId },
       alerts() { return alerts },
 
-      // Temporary until implemented on the server
-      patients() {
-        return [{
-          id: 'f15c625d-9173-4ca7-a2f1-b1a1c34989d9',
-          name: 'Bob Marley',
-          userName: '',
-          role: 'PATIENT',
-          imageUrl: 'https://i.ytimg.com/vi/vdB-8eLEW8g/hqdefault.jpg',
-          birthday: 'Tue Feb 06 1945 00:00:00 GMT-0700 (Pacific Standard Time)',
-          adherence: 45,
-          lastVisit: 'Tue Feb 06 1945 00:00:00 GMT-0700 (Pacific Standard Time)',
-          joinDate: 'Tue Feb 06 1945 00:00:00 GMT-0700 (Pacific Standard Time)',
-        }, {
-          id: 'c545dde9-56e0-4260-a13d-cc25de10311b',
-          name: 'Etta James',
-          userName: '',
-          role: 'PATIENT'
-        }]
-      },
       timeline() {
         const data = timelineData(300)
         const groups = timelineGroups(20)
         return { data, groups }
       },
-      messages() {
-        const patients = client.getResolvers().Query.patients() as User.TUser[]
 
-        return [
-          { id: '1', sender: patients[0], message: 'This is the first message', date: new Date() },
-          { id: '2', sender: patients[1], message: 'This is the second message', date: new Date() },
-        ]
-      },
       updates() {
         return [
           { symbol: 'up', charge: 'bad', body: '11', footer: strings('alertsDetected') },
