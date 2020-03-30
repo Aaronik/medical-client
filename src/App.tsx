@@ -16,6 +16,7 @@ import DoctorTimelinePage from 'pages/DoctorTimeline'
 import AdminDashboard from 'pages/AdminDashboard'
 import AdminQuestionnairesPage from 'pages/AdminQuestionnaires'
 import AdminUsersPage from 'pages/AdminUsers'
+import AdminProfile from 'pages/AdminProfile'
 import ProfileDropdown from 'components/ProfileDropdown'
 import SigninPage from 'pages/SignIn'
 import SignupPage from 'pages/SignUp'
@@ -24,6 +25,7 @@ import DoctorSettingsPage from 'pages/DoctorSettings'
 import PatientDashboard from 'pages/PatientDashboard'
 import PatientIntakePage from 'pages/PatientIntake'
 import PatientQuestionnairesPage from 'pages/PatientQuestionnaires'
+import PatientProfile from 'pages/PatientProfile'
 import DoctorActivityPage from 'pages/DoctorActivity'
 import DoctorMessagesPage from 'pages/DoctorMessages'
 import DoctorSchedulePage from 'pages/DoctorSchedule'
@@ -139,7 +141,7 @@ const AdminBase: React.FunctionComponent<BaseProps> = ({ user, gutterNavActive, 
         <Switch>
           <Route path='/' exact><AdminDashboard doctors={[]} user={user} invitationLoading={false}/></Route>
           <Route path='/users' component={AdminUsersPage} />
-          <Route path='/profile' component={() => <h1>Admin Profile</h1>} />
+          <Route path='/profile'><AdminProfile user={user}/></Route>
           <Route path='/questionnaires' component={AdminQuestionnairesPage} />
           <Route path='/settings'><DoctorSettingsPage/></Route>
           <Route component={PageNotFound} />
@@ -263,7 +265,7 @@ const PatientBase: React.FunctionComponent<BaseProps> = ({ user, alerts, gutterN
       <Route path='/intake'><PatientIntakePage/></Route>
       <Route path='/questionnaires'><PatientQuestionnairesPage/></Route>
       <Route path='/settings'><DoctorSettingsPage/></Route>
-      <Route path='/profile' component={() => <h1>Patient Profile</h1>} />
+      <Route path='/profile'><PatientProfile user={user}/></Route>
       <Route component={PageNotFound} />
     </Switch>
   )

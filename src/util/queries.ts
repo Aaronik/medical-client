@@ -14,18 +14,28 @@ export const SIGNUP_MUTATION = gql`
   }
 `
 
+const ME_FRAGMENT = gql`
+  {
+    id
+    name
+    email
+    role
+    joinDate
+    birthday
+    lastVisit
+    imageUrl
+  }
+`
+
 export const ME_QUERY = gql`
   query {
-    me {
-      id
-      name
-      email
-      role
-      joinDate
-      birthday
-      lastVisit
-      imageUrl
-    }
+    me ${ME_FRAGMENT}
+  }
+`
+
+export const UPDATE_ME = gql`
+  mutation UpdateMe($user: MeInput) {
+    updateMe(user: $user) ${ME_FRAGMENT}
   }
 `
 

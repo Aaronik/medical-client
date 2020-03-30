@@ -1,6 +1,6 @@
 import React from 'react'
 import { useMutation, gql } from '@apollo/client'
-import { Link, useHistory } from 'react-router-dom'
+import { useHistory } from 'react-router-dom'
 import NavDropdown from 'react-bootstrap/NavDropdown'
 import Button from 'react-bootstrap/Button'
 import Spinner from 'react-bootstrap/Spinner'

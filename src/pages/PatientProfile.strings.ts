@@ -1,7 +1,7 @@
 import strings from 'util/strings'
 
 const map = {
-  doctorProfile: (name: string) => `Doctor Profile: ${name}`,
+  patientProfile: (name: string) => `Patient Profile: ${name}`,
 }
 
 export default strings(map)
