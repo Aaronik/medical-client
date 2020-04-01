@@ -2,57 +2,59 @@ import React, { useState } from 'react'
 import { useQuery, useMutation } from '@apollo/client'
 import { UPDATE_QUESTION, GET_ALL_QUESTIONNAIRES, CREATE_QUESTIONNAIRE, DELETE_QUESTIONNAIRE, ADD_QUESTIONS, DELETE_QUESTION, CREATE_QUESTION_RELATIONS } from 'util/queries'
 import Container from 'react-bootstrap/Container'
-import Spinner from 'react-bootstrap/Spinner'
 import Modal from 'react-bootstrap/Modal'
 import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
 import Row from 'react-bootstrap/Row'
 import ErrorPage from 'pages/Error'
+import Loading from 'pages/Loading'
 import FormInput from 'components/FormInput'
 import QuestionModal from 'components/QuestionModal'
 import Select from 'react-select'
 import onSelectChange from 'util/onSelectChange'
 import { TQuestionnaire } from 'types/Questionnaire.d'
 import { Question } from 'types/Question.d'
+import Questionnaire from 'components/Questionnaire'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faTimes } from '@fortawesome/free-solid-svg-icons' // TODO narrow
 
 const AdminQuestionnairesPage = () => {
 
   const { data, loading, error } = useQuery(GET_ALL_QUESTIONNAIRES)
 
-  if (loading) return <Wrapper><Spinner animation='grow'/></Wrapper>
+  if (loading) return <Loading/>
   if (error) return <ErrorPage error={error}/>
   if (!data?.questionnaires?.length) return <Wrapper><h2>No questionnaires!</h2></Wrapper>
 
   return (
     <Wrapper>
-      { data.questionnaires.map((q: TQuestionnaire) => <Questionnaire questionnaire={q} key={q.id}/>) }
+      { data.questionnaires.map((q: TQuestionnaire) => <QuestionnaireWrapper questionnaire={q} key={q.id}/>) }
     </Wrapper>
   )
-
 }
 
 const Wrapper: React.FC = ({ children }) => {
-  const [ isModalOpen, setIsModalOpen ] = useState(false)
-  const [ newQuestionnaireTitle, setNewQuestionnaireTitle ] = useState('')
+  const [ isQuestionnaireModalOpen, setIsQuestionnaireModalOpen ] = useState(false)
+  const [ questionnaireTitle, setQuestionnaireTitle ] = useState('')
 
   const [ createQuestionnaire ] = useMutation(CREATE_QUESTIONNAIRE, {
     refetchQueries: [{ query: GET_ALL_QUESTIONNAIRES }]
   })
 
   const onCreateClick = () => {
-    createQuestionnaire({ variables: { title: newQuestionnaireTitle, questions: [] }})
-    setIsModalOpen(false)
-    setNewQuestionnaireTitle('')
+    createQuestionnaire({ variables: { title: questionnaireTitle, questions: [] }})
+    setIsQuestionnaireModalOpen(false)
+    setQuestionnaireTitle('')
   }
 
   return (
     <Container>
       <h1>Questionnaires</h1>
-      <Button onClick={() => setIsModalOpen(true)}>Add Questionnaire</Button>
+      <Button onClick={() => setIsQuestionnaireModalOpen(true)}>Add Questionnaire</Button>
       <hr/>
       { children }
 
-      <Modal show={isModalOpen} centered onHide={() => setIsModalOpen(false)}>
+      <Modal show={isQuestionnaireModalOpen} centered onHide={() => setIsQuestionnaireModalOpen(false)}>
         <Modal.Header>
           <Modal.Title>Add Questionnaire</Modal.Title>
         </Modal.Header>
@@ -61,13 +63,13 @@ const Wrapper: React.FC = ({ children }) => {
           <FormInput
             autoFocus={true}
             label={'Questionnaire Title'}
-            value={newQuestionnaireTitle}
+            value={questionnaireTitle}
             type="text"
-            onChange={setNewQuestionnaireTitle}/>
+            onChange={setQuestionnaireTitle}/>
         </Modal.Body>
 
         <Modal.Footer>
-          <Button variant="secondary" onClick={() => setIsModalOpen(false)}>close</Button>
+          <Button variant="secondary" onClick={() => setIsQuestionnaireModalOpen(false)}>close</Button>
           <Button variant="primary" onClick={onCreateClick}>save</Button>
         </Modal.Footer>
 
@@ -76,59 +78,28 @@ const Wrapper: React.FC = ({ children }) => {
   )
 }
 
-const QuestionView: React.FC<{ question: Question, saveQuestion: (question: Question) => void }> = ({ question, saveQuestion }) => {
-  const [ deleteQuestion ] = useMutation(DELETE_QUESTION, { refetchQueries: [{ query: GET_ALL_QUESTIONNAIRES }]})
-  const [ isUpdateModalOpen, setIsUpdateModalOpen ] = useState(false)
-
-  const onXClick = () => {
-    deleteQuestion({ variables: { id: question.id }})
-  }
-
-  const onUpdateClick = () => {
-    setIsUpdateModalOpen(true)
-  }
-
-  const onSaveQuestion = (question: Question) => {
-    setIsUpdateModalOpen(false)
-    saveQuestion(question)
-  }
-
-  return (
-    <div>
-      <Row>
-        <small>{question.id}</small>
-        <h3 onClick={onUpdateClick}>{question.text}</h3>
-        <small>({question.type})</small>
-        <code onClick={onXClick}>x</code>
-      </Row>
-      <p>Options: {JSON.stringify(question.options, null, 2)}</p>
-      <p>Next: {JSON.stringify(question.next, null, 2)}</p>
-
-      <QuestionModal
-        show={isUpdateModalOpen}
-        close={() => setIsUpdateModalOpen(false)}
-        save={onSaveQuestion}
-        question={question}
-      />
-    </div>
-  )
-}
-
-const Questionnaire: React.FC<{ questionnaire: TQuestionnaire }> = ({ questionnaire }) => {
+const QuestionnaireWrapper: React.FC<{ questionnaire: TQuestionnaire }> = ({ questionnaire }) => {
   const [ isQuestionModalOpen, setIsQuestionModalOpen ] = useState(false)
   const [ isRelationModalOpen, setIsRelationModalOpen ] = useState(false)
-  const [ relationFromId, setRelationFromId ] = useState(0)
-  const [ relationToId, setRelationToId ] = useState(0)
-  const [ relationIncludes, setRelationIncludes ] = useState('')
-  const [ relationEquals, setRelationEquals ] = useState('')
+  const [ relationFromId, setRelationFromId ]           = useState(0)
+  const [ relationToId, setRelationToId ]               = useState(0)
+  const [ relationIncludes, setRelationIncludes ]       = useState('')
+  const [ relationEquals, setRelationEquals ]           = useState('')
 
-  const [ deleteQuestionnaire ] = useMutation(DELETE_QUESTIONNAIRE, { refetchQueries: [{ query: GET_ALL_QUESTIONNAIRES }]})
-  const [ addQuestion ] = useMutation(ADD_QUESTIONS, { refetchQueries: [{ query: GET_ALL_QUESTIONNAIRES }]})
-  const [ updateQuestion ] = useMutation(UPDATE_QUESTION, { refetchQueries: [{ query: GET_ALL_QUESTIONNAIRES }]})
-  const [ addRelation ] = useMutation(CREATE_QUESTION_RELATIONS, { refetchQueries: [{ query: GET_ALL_QUESTIONNAIRES }]})
+  const options = { refetchQueries: [{ query: GET_ALL_QUESTIONNAIRES }]}
 
-  const onDelete = (id: number) => () => {
-    deleteQuestionnaire({ variables: { id }})
+  const [ deleteQuestionnaire ] = useMutation(DELETE_QUESTIONNAIRE, options)
+  const [ addQuestion ]         = useMutation(ADD_QUESTIONS, options)
+  const [ updateQuestion ]      = useMutation(UPDATE_QUESTION, options)
+  const [ addRelation ]         = useMutation(CREATE_QUESTION_RELATIONS, options)
+  const [ deleteQuestion ]      = useMutation(DELETE_QUESTION, options)
+
+  const onDeleteQuestionnaire = () => {
+    deleteQuestionnaire({ variables: { id: questionnaire.id }})
+  }
+
+  const onDeleteQuestion = (question: Question) => () => {
+    deleteQuestion({ variables: { id: question.id }})
   }
 
   const onCreateQuestionClick = (question: Question) => {
@@ -159,16 +130,52 @@ const Questionnaire: React.FC<{ questionnaire: TQuestionnaire }> = ({ questionna
 
   const questionIdOptions = questionnaire.questions.map(q => ({ value: q.id, label: q.text }))
 
-  return (
-    <div>
+  const withoutPropagation = (fn: Function) => (e: React.SyntheticEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
+    fn()
+  }
+
+  const QuestionnaireTitleAdditions = () => (
+    <React.Fragment>
+      <Button className='mr-1' variant='success' onClick={withoutPropagation(() => {})}>Update Title</Button>
+      <Button className='mr-1' onClick={withoutPropagation(() => setIsQuestionModalOpen(true))}>Add Question</Button>
+      <Button className='mr-1' onClick={withoutPropagation(() => setIsRelationModalOpen(true))}>Add Question Relation</Button>
+      <Button className='mr-1' variant='danger' onClick={withoutPropagation(onDeleteQuestionnaire)}>
+          <FontAwesomeIcon icon={faTimes} className='icon' size='sm'/>
+      </Button>
+    </React.Fragment>
+  )
+
+  const QuestionTitleAdditions: React.FC<{ question: Question }> = ({ question }) => {
+    const [ isUpdateModalOpen, setIsUpdateModalOpen ] = useState(false)
+
+    return (
       <Row>
-        <code style={{ cursor: 'pointer' }} onClick={onDelete(questionnaire.id)}>X</code>
-        <h2>{questionnaire.title}</h2>
-        <h2 onClick={() => setIsQuestionModalOpen(true)}>(Add Question)</h2>
-        <h2 onClick={() => setIsRelationModalOpen(true)}>(Add Question Relation)</h2>
+        <p className='mr-1'>({question.id})</p>
+        <p className='mr-1'>({question.type})</p>
+        <Button className='mr-1' variant='success' onClick={() => setIsUpdateModalOpen(true)}>Update</Button>
+        <Button className='mr-1' variant='danger' size='sm' onClick={onDeleteQuestion(question)}>
+          <FontAwesomeIcon icon={faTimes} className='icon' size='sm'/>
+        </Button>
+        <QuestionModal
+          show={isUpdateModalOpen}
+          close={() => setIsUpdateModalOpen(false)}
+          save={onUpdateQuestion}
+          question={question}
+        />
       </Row>
-      {questionnaire.questions.map((q: Question) => <QuestionView saveQuestion={onUpdateQuestion} question={q} key={q.id}/> )}
-      <br/>
+    )
+  }
+
+  return (
+    <React.Fragment>
+      <Questionnaire
+        questionnaire={questionnaire}
+        isAnswerable={false}
+        QuestionnaireTitleAdditions={QuestionnaireTitleAdditions}
+        QuestionTitleAdditions={QuestionTitleAdditions}
+      />
 
       <QuestionModal
         show={isQuestionModalOpen}
@@ -215,8 +222,7 @@ const Questionnaire: React.FC<{ questionnaire: TQuestionnaire }> = ({ questionna
             <Button variant="primary" onClick={onCreateRelationClick}>save</Button>
           </Modal.Footer>
         </Modal>
-    </div>
-
+    </React.Fragment>
   )
 }
 
