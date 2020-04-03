@@ -173,8 +173,8 @@ const QuestionnaireWrapper: React.FC<{ questionnaire: TQuestionnaire }> = ({ que
       <Questionnaire
         questionnaire={questionnaire}
         isAnswerable={false}
-        QuestionnaireTitleAdditions={QuestionnaireTitleAdditions}
-        QuestionTitleAdditions={QuestionTitleAdditions}
+        QuestionnaireButtons={QuestionnaireTitleAdditions}
+        QuestionButtons={QuestionTitleAdditions}
       />
 
       <QuestionModal

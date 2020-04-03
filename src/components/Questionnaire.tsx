@@ -20,11 +20,11 @@ import { faCheck, faExclamation } from '@fortawesome/free-solid-svg-icons' // TO
 type QuestionnaireProps = {
   questionnaire: TQuestionnaire
   isAnswerable?: boolean
-  QuestionnaireTitleAdditions?: React.FC<{}>
-  QuestionTitleAdditions?: TQuestionTitleAdditions
+  QuestionnaireButtons?: React.FC<{}>
+  QuestionButtons?: TQuestionTitleAdditions
 }
 
-const Questionnaire: React.FC<QuestionnaireProps> = ({ questionnaire, isAnswerable, QuestionnaireTitleAdditions, QuestionTitleAdditions }) => {
+const Questionnaire: React.FC<QuestionnaireProps> = ({ questionnaire, isAnswerable, QuestionnaireButtons, QuestionButtons }) => {
 
   const [ isExpanded, setIsExpanded ] = useState(true)
 
@@ -43,7 +43,7 @@ const Questionnaire: React.FC<QuestionnaireProps> = ({ questionnaire, isAnswerab
       <Card.Header style={headerStyle} onClick={() => setIsExpanded(false)}>
         <Row className='align-items-center'>
           <h4 className='m-2'>{questionnaire.title}</h4>
-          { QuestionnaireTitleAdditions && <QuestionnaireTitleAdditions/> }
+          { QuestionnaireButtons && <QuestionnaireButtons/> }
         </Row>
       </Card.Header>
       <Card.Body>
@@ -53,7 +53,7 @@ const Questionnaire: React.FC<QuestionnaireProps> = ({ questionnaire, isAnswerab
           const Component = questionTypeMap(q.type)
           return (
             <ListGroupItem key={q.id}>
-              <Component TitleAdditions={QuestionTitleAdditions} question={q} key={q.id} readOnly={isAnswerable === false}/>
+              <Component TitleAdditions={QuestionButtons} question={q} key={q.id} readOnly={isAnswerable === false}/>
             </ListGroupItem>
           )
         })
