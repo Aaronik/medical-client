@@ -114,7 +114,7 @@ const AdminBase: React.FunctionComponent<BaseProps> = ({ user, gutterNavActive, 
   const gutterRoutes: LinkEntryProps[] = [
     { to: '/', text: strings('dashboard'), icon: icons.faBorderAll, exact: true },
     { to: '/users', text: strings('users'), icon: icons.faUsers, exact: true },
-    { to: '/questionnaires', text: strings('questionnaires'), icon: icons.faBook, exact: true },
+    { to: '/questionnaires', text: strings('questionnaires'), icon: icons.faCheckSquare, exact: true },
     { to: '/profile', text: strings('profile'), icon: icons.faUserEdit },
     { to: '/settings', text: strings('settings'), icon: icons.faCog, exact: true },
   ]
