@@ -56,8 +56,6 @@ const NavLink = ({ to, text }: { to: string, text: string }) => <Nav.Link as={Li
 // the actual component you're working on.
 // Also note that this component can take a component= or a children prop as
 // what it should render, the same as React Router's <Route/> component.
-// TODO There's a weird bug where when a component prop is given, fade only
-// works the first time. Maybe we should just switch to only using children.
 const Route: React.FC<RouteProps & { noFade?: boolean }> = ({ noFade, children, component, ...props }) => {
   const Component = component as React.ComponentType<RouteProps>
 
