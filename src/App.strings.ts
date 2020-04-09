@@ -8,6 +8,7 @@ const map = {
   messages: 'Messages',
   healthTimeline: 'Health Timeline',
   schedule: 'Schedule',
+  assignments: 'Assignments',
   activity: 'Activity',
   settings: 'Settings',
   dashboard: 'Dashboard',

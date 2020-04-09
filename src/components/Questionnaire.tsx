@@ -26,7 +26,7 @@ type QuestionnaireProps = {
 
 const Questionnaire: React.FC<QuestionnaireProps> = ({ questionnaire, isAnswerable, QuestionnaireButtons, QuestionButtons }) => {
 
-  const [ isExpanded, setIsExpanded ] = useState(true)
+  const [ isExpanded, setIsExpanded ] = useState(false)
 
   const headerStyle = {
     cursor: 'pointer',

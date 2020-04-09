@@ -134,23 +134,35 @@ export const QUESTIONS_FRAGMENT = gql`
   }
 `
 
+const QUESTIONNAIRE_FRAGMENT = gql`
+  {
+    id
+    title
+    questions ${QUESTIONS_FRAGMENT}
+  }
+`
+
 export const GET_QUESTIONNAIRE = gql`
   query Questionnaire($id: Int!) {
-    questionnaire(id: $id) {
-      id
-      title
-      questions ${QUESTIONS_FRAGMENT}
-    }
+    questionnaire(id: $id) ${QUESTIONNAIRE_FRAGMENT}
   }
 `
 
 export const GET_ALL_QUESTIONNAIRES = gql`
   query {
-    questionnaires {
-      id
-      title
-      questions ${QUESTIONS_FRAGMENT}
-    }
+    allQuestionnaires ${QUESTIONNAIRE_FRAGMENT}
+  }
+`
+
+export const GET_QUESTIONNAIRES_ASSIGNED_TO_ME = gql`
+  query {
+    questionnairesAssignedToMe ${QUESTIONNAIRE_FRAGMENT}
+  }
+`
+
+export const GET_QUESTIONNAIRES_I_MADE = gql`
+  query {
+    questionnairesIMade ${QUESTIONNAIRE_FRAGMENT}
   }
 `
 

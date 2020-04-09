@@ -14,7 +14,7 @@ import NotSignedInPage from 'pages/NotSignedIn'
 import DoctorDashboard from 'pages/DoctorDashboard'
 import DoctorTimelinePage from 'pages/DoctorTimeline'
 import AdminDashboard from 'pages/AdminDashboard'
-import AdminQuestionnairesPage from 'pages/AdminQuestionnaires'
+import EditQuestionnairesPage from 'pages/EditQuestionnaires'
 import AdminUsersPage from 'pages/AdminUsers'
 import AdminProfile from 'pages/AdminProfile'
 import ProfileDropdown from 'components/ProfileDropdown'
@@ -28,7 +28,7 @@ import PatientQuestionnairesPage from 'pages/PatientQuestionnaires'
 import PatientProfile from 'pages/PatientProfile'
 import DoctorActivityPage from 'pages/DoctorActivity'
 import DoctorMessagesPage from 'pages/DoctorMessages'
-import DoctorSchedulePage from 'pages/DoctorSchedule'
+import DoctorAssignmentsPage from 'pages/DoctorAssignments'
 import DoctorOverviewPage from 'pages/DoctorOverview'
 import LoadingPage from 'pages/Loading'
 
@@ -39,7 +39,7 @@ import { TUser } from 'types/User.d'
 import { TAlert } from 'types/Alert.d'
 import strings from './App.strings'
 import gqlClient from 'util/gql-client'
-import { ME_QUERY } from 'util/queries'
+import { ME_QUERY, GET_ALL_QUESTIONNAIRES, GET_QUESTIONNAIRES_I_MADE } from 'util/queries'
 import 'App.sass'
 
 // Things to do once when the page loads
@@ -140,7 +140,7 @@ const AdminBase: React.FunctionComponent<BaseProps> = ({ user, gutterNavActive, 
           <Route path='/' exact><AdminDashboard doctors={[]} user={user} invitationLoading={false}/></Route>
           <Route path='/users' component={AdminUsersPage} />
           <Route path='/profile'><AdminProfile user={user}/></Route>
-          <Route path='/questionnaires' component={AdminQuestionnairesPage} />
+          <Route path='/questionnaires'><EditQuestionnairesPage questionnairesQuery={GET_ALL_QUESTIONNAIRES}/></Route>
           <Route path='/settings'><DoctorSettingsPage/></Route>
           <Route component={PageNotFound} />
         </Switch>
@@ -162,6 +162,8 @@ const DoctorWithPatientBase: React.FunctionComponent<BaseProps & { patients: TUs
 
   if (loading) return <LoadingPage />
 
+  const timeline = data.timeline
+
   const gutterRoutes: LinkEntryProps[] = [
     { to: '/', text: strings('dashboard'), icon: icons.faBorderAll, exact: true },
     { to: '/settings', text: strings('settings'), icon: icons.faCog },
@@ -169,9 +171,9 @@ const DoctorWithPatientBase: React.FunctionComponent<BaseProps & { patients: TUs
     { separator: true },
     { to: '/overview', text: strings('overview'), icon: icons.faTachometerAlt, fade: true },
     { to: '/messages', text: strings('messages'), icon: icons.faCommentDots, fade: true },
-    { to: '/timeline', text: strings('healthTimeline'), icon: icons.faCheckCircle, fade: true },
-    { to: '/schedule', text: strings('schedule'), icon: icons.faCalendar, fade: true },
-    { to: '/activity', text: strings('activity'), icon: icons.faClock, fade: true },
+    { to: '/timeline', text: strings('healthTimeline'), icon: icons.faCalendar, fade: true },
+    { to: '/assignments', text: strings('assignments'), icon: icons.faCheckSquare, fade: true },
+    { to: '/questionnaires', text: strings('questionnaires'), icon: icons.faCheckCircle, fade: true },
   ]
 
   return (
@@ -195,17 +197,14 @@ const DoctorWithPatientBase: React.FunctionComponent<BaseProps & { patients: TUs
           <Route path='/' exact><DoctorDashboard user={user} patients={patients} notifications={[]}/></Route>
           <Route path='/settings'><DoctorSettingsPage/></Route>
           <Route path='/profile' ><DoctorProfilePage user={user}/></Route>
-
           <Route path='/timeline'>
-            <DoctorTimelinePage
-              patient={patient}
-              patientTimelineData={data.timeline.data}
-              patientTimelineGroups={data.timeline.groups}/>
+            <DoctorTimelinePage patient={patient} patientTimelineData={timeline.data} patientTimelineGroups={timeline.groups}/>
           </Route>
           <Route path='/activity'><DoctorActivityPage/></Route>
           <Route path='/messages'><DoctorMessagesPage/></Route>
           <Route path='/overview'><DoctorOverviewPage patient={patient} user={user} messages={[]} updates={data.updates}/></Route>
-          <Route path='/schedule'><DoctorSchedulePage/></Route>
+          <Route path='/assignments'><DoctorAssignmentsPage/></Route>
+          <Route path='/questionnaires'><EditQuestionnairesPage questionnairesQuery={GET_QUESTIONNAIRES_I_MADE}/></Route>
           <Route component={PageNotFound} />
         </Switch>
       </GutterAwareFluidContainer>

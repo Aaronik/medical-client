@@ -1,44 +1,51 @@
-import React, { useState } from 'react'
-import { useQuery, useMutation } from '@apollo/client'
-import { UPDATE_QUESTION, GET_ALL_QUESTIONNAIRES, CREATE_QUESTIONNAIRE, DELETE_QUESTIONNAIRE, ADD_QUESTIONS, DELETE_QUESTION, CREATE_QUESTION_RELATIONS } from 'util/queries'
-import Container from 'react-bootstrap/Container'
-import Modal from 'react-bootstrap/Modal'
-import Form from 'react-bootstrap/Form'
-import Button from 'react-bootstrap/Button'
-import Row from 'react-bootstrap/Row'
-import ErrorPage from 'pages/Error'
-import Loading from 'pages/Loading'
+import { DocumentNode, useMutation, useQuery } from '@apollo/client'
+import { faTimes } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import FormInput from 'components/FormInput'
 import QuestionModal from 'components/QuestionModal'
-import Select from 'react-select'
-import onSelectChange from 'util/onSelectChange'
-import { TQuestionnaire } from 'types/Questionnaire.d'
-import { Question } from 'types/Question.d'
 import Questionnaire from 'components/Questionnaire'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faTimes } from '@fortawesome/free-solid-svg-icons' // TODO narrow
+import ErrorPage from 'pages/Error'
+import Loading from 'pages/Loading'
+import React, { useState } from 'react'
+import Button from 'react-bootstrap/Button'
+import Container from 'react-bootstrap/Container'
+import Form from 'react-bootstrap/Form'
+import Modal from 'react-bootstrap/Modal'
+import Row from 'react-bootstrap/Row'
+import Select from 'react-select'
+import { Question } from 'types/Question.d'
+import { TQuestionnaire } from 'types/Questionnaire.d'
+import onSelectChange from 'util/onSelectChange'
+import { ADD_QUESTIONS, CREATE_QUESTIONNAIRE, CREATE_QUESTION_RELATIONS, DELETE_QUESTION, DELETE_QUESTIONNAIRE, UPDATE_QUESTION } from 'util/queries'
 
-const AdminQuestionnairesPage = () => {
+type Props = {
+  questionnairesQuery: DocumentNode
+}
 
-  const { data, loading, error } = useQuery(GET_ALL_QUESTIONNAIRES)
+const EditQuestionnairesPage: React.FC<Props> = ({ questionnairesQuery }) => {
+
+  const { data, loading, error } = useQuery(questionnairesQuery)
 
   if (loading) return <Loading/>
   if (error) return <ErrorPage error={error}/>
-  if (!data?.questionnaires?.length) return <Wrapper><h2>No questionnaires!</h2></Wrapper>
+
+  const questionnaires = Object.values(data)?.[0] as TQuestionnaire[]
+
+  if (!questionnaires?.length) return <Wrapper questionnairesQuery={questionnairesQuery}><h2>No questionnaires!</h2></Wrapper>
 
   return (
-    <Wrapper>
-      { data.questionnaires.map((q: TQuestionnaire) => <QuestionnaireWrapper questionnaire={q} key={q.id}/>) }
+    <Wrapper questionnairesQuery={questionnairesQuery}>
+      { questionnaires.map((q: TQuestionnaire) => <QuestionnaireWrapper questionnairesQuery={questionnairesQuery} questionnaire={q} key={q.id}/>) }
     </Wrapper>
   )
 }
 
-const Wrapper: React.FC = ({ children }) => {
+const Wrapper: React.FC<Props> = ({ children, questionnairesQuery }) => {
   const [ isQuestionnaireModalOpen, setIsQuestionnaireModalOpen ] = useState(false)
   const [ questionnaireTitle, setQuestionnaireTitle ] = useState('')
 
   const [ createQuestionnaire ] = useMutation(CREATE_QUESTIONNAIRE, {
-    refetchQueries: [{ query: GET_ALL_QUESTIONNAIRES }]
+    refetchQueries: [{ query: questionnairesQuery }]
   })
 
   const onCreateClick = () => {
@@ -78,7 +85,7 @@ const Wrapper: React.FC = ({ children }) => {
   )
 }
 
-const QuestionnaireWrapper: React.FC<{ questionnaire: TQuestionnaire }> = ({ questionnaire }) => {
+const QuestionnaireWrapper: React.FC<{ questionnaire: TQuestionnaire, questionnairesQuery: DocumentNode }> = ({ questionnaire, questionnairesQuery }) => {
   const [ isQuestionModalOpen, setIsQuestionModalOpen ] = useState(false)
   const [ isRelationModalOpen, setIsRelationModalOpen ] = useState(false)
   const [ relationFromId, setRelationFromId ]           = useState(0)
@@ -86,7 +93,7 @@ const QuestionnaireWrapper: React.FC<{ questionnaire: TQuestionnaire }> = ({ que
   const [ relationIncludes, setRelationIncludes ]       = useState('')
   const [ relationEquals, setRelationEquals ]           = useState('')
 
-  const options = { refetchQueries: [{ query: GET_ALL_QUESTIONNAIRES }]}
+  const options = { refetchQueries: [{ query: questionnairesQuery }]}
 
   const [ deleteQuestionnaire ] = useMutation(DELETE_QUESTIONNAIRE, options)
   const [ addQuestion ]         = useMutation(ADD_QUESTIONS, options)
@@ -226,4 +233,4 @@ const QuestionnaireWrapper: React.FC<{ questionnaire: TQuestionnaire }> = ({ que
   )
 }
 
-export default AdminQuestionnairesPage
+export default EditQuestionnairesPage

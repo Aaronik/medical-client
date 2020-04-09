@@ -2,18 +2,18 @@ import React from 'react'
 import Container from 'react-bootstrap/Container'
 import Loading from 'pages/Loading'
 import ErrorPage from 'pages/Error'
-import { GET_ALL_QUESTIONNAIRES } from 'util/queries'
+import { GET_QUESTIONNAIRES_ASSIGNED_TO_ME } from 'util/queries'
 import { useQuery } from '@apollo/client'
 import { TQuestionnaire } from 'types/Questionnaire.d'
 import Questionnaire from 'components/Questionnaire'
 
 const PatientQuestionnaires: React.FunctionComponent = () => {
-  const { data, loading, error } = useQuery(GET_ALL_QUESTIONNAIRES)
+  const { data, loading, error } = useQuery(GET_QUESTIONNAIRES_ASSIGNED_TO_ME)
 
   if (loading) return <Loading/>
   if (error) return <ErrorPage error={error}/>
 
-  const questionnaires = data.questionnaires
+  const questionnaires = data.questionnairesAssignedToMe
 
   if (!questionnaires.length) return <h2>No questionnaires!</h2>
 
