@@ -203,7 +203,7 @@ const DoctorWithPatientBase: React.FunctionComponent<BaseProps & { patients: TUs
           <Route path='/activity'><DoctorActivityPage/></Route>
           <Route path='/messages'><DoctorMessagesPage/></Route>
           <Route path='/overview'><DoctorOverviewPage patient={patient} user={user} messages={[]} updates={data.updates}/></Route>
-          <Route path='/assignments'><DoctorAssignmentsPage/></Route>
+          <Route path='/assignments'><DoctorAssignmentsPage patient={patient}/></Route>
           <Route path='/questionnaires'><EditQuestionnairesPage questionnairesQuery={GET_QUESTIONNAIRES_I_MADE}/></Route>
           <Route component={PageNotFound} />
         </Switch>

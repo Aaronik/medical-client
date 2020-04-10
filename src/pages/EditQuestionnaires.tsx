@@ -13,9 +13,9 @@ import Form from 'react-bootstrap/Form'
 import Modal from 'react-bootstrap/Modal'
 import Row from 'react-bootstrap/Row'
 import Select from 'react-select'
+import onSelectChange from 'util/onSelectChange'
 import { Question } from 'types/Question.d'
 import { TQuestionnaire } from 'types/Questionnaire.d'
-import onSelectChange from 'util/onSelectChange'
 import { ADD_QUESTIONS, CREATE_QUESTIONNAIRE, CREATE_QUESTION_RELATIONS, DELETE_QUESTION, DELETE_QUESTIONNAIRE, UPDATE_QUESTION } from 'util/queries'
 
 type Props = {
