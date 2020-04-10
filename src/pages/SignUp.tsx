@@ -20,19 +20,6 @@ interface TProps {
 
 const Signup: React.FunctionComponent<TProps> = () => {
 
-  const [ signUp, { loading: signUpLoading, error: signUpError }] = useMutation(SIGNUP_MUTATION)
-  const [ signIn, { loading: signInLoading, error: signInError }] = useSignin()
-
-  const [ name, setName ] = useState('Aaron Sullivan')
-  const [ email, setEmail ] = useState('aaron@millihealth.com')
-  const [ password, setPassword ] = useState('password')
-
-  const onCreateClick = async () => {
-    signUp({ variables: { email, password, name }}).then(() => {
-      signIn({ variables: { email, password }})
-    }).catch(console.error)
-  }
-
   return (
     <Container fluid className='pt-5 signup bg-primary with-background'>
       <Fade>
@@ -53,43 +40,7 @@ const Signup: React.FunctionComponent<TProps> = () => {
           </Col>
 
           <Col lg={4} md={8} sm={8} xs={11} className='text-center pane-2'>
-            <Container className=''>
-              <Row className='p-4'>
-                <h3>{strings('createAccount')}</h3>
-              </Row>
-              <Row className='p-4 text-left'>
-                <Form className="w-100">
-
-                  <FormInput
-                    label={strings('fullName')}
-                    type="text"
-                    icon={icons.faUser}
-                    onChange={setName}
-                    value={name}/>
-
-                  <FormInput
-                    label={strings('email')}
-                    type="email"
-                    icon={icons.faAt}
-                    onChange={setEmail}
-                    value={email}/>
-
-                  <FormInput
-                    label={strings('password')}
-                    type="password"
-                    icon={icons.faLock}
-                    onChange={setPassword}
-                    value={password}/>
-
-                </Form>
-              </Row>
-              <code>{(signUpError || signInError)?.graphQLErrors?.[0]?.message || (signUpError || signInError)?.message}</code>
-              <Row className='p-4'>
-                <Button block size='lg' onClick={onCreateClick}>
-                { (signUpLoading || signInLoading) ? <Spinner animation='grow'/> : strings('createAccount') }
-                </Button>
-              </Row>
-            </Container>
+            <SignupForm/>
           </Col>
 
         </Row>
@@ -99,3 +50,62 @@ const Signup: React.FunctionComponent<TProps> = () => {
 }
 
 export default Signup
+
+// This is abstracted rather than inlined solely because of the limitation on <Fade>
+// not being able to handle children that take props.
+const SignupForm = () => {
+  const [ signUp, { loading: signUpLoading, error: signUpError }] = useMutation(SIGNUP_MUTATION)
+  const [ signIn, { loading: signInLoading, error: signInError }] = useSignin()
+
+  const [ name, setName ] = useState('Aaron Sullivan')
+  const [ email, setEmail ] = useState('aaron@millihealth.com')
+  const [ password, setPassword ] = useState('password')
+
+  const onCreateClick = async () => {
+    signUp({ variables: { email, password, name }}).then(() => {
+      signIn({ variables: { email, password }})
+    }).catch(console.error)
+  }
+
+  return (
+    <React.Fragment>
+      <Container>
+        <Row className='p-4'>
+          <h3>{strings('createAccount')}</h3>
+        </Row>
+        <Row className='p-4 text-left'>
+          <Form className="w-100">
+
+            <FormInput
+              label={strings('fullName')}
+              type="text"
+              icon={icons.faUser}
+              onChange={setName}
+              value={name}/>
+
+            <FormInput
+              label={strings('email')}
+              type="email"
+              icon={icons.faAt}
+              onChange={setEmail}
+              value={email}/>
+
+            <FormInput
+              label={strings('password')}
+              type="password"
+              icon={icons.faLock}
+              onChange={setPassword}
+              value={password}/>
+
+          </Form>
+        </Row>
+        <p className='text-danger'>{(signUpError || signInError)?.graphQLErrors?.[0]?.message || (signUpError || signInError)?.message}</p>
+        <Row className='p-4'>
+          <Button block size='lg' onClick={onCreateClick}>
+          { (signUpLoading || signInLoading) ? <Spinner animation='grow'/> : strings('createAccount') }
+          </Button>
+        </Row>
+      </Container>
+    </React.Fragment>
+  )
+}
