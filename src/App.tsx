@@ -168,12 +168,12 @@ const DoctorWithPatientBase: React.FunctionComponent<BaseProps & { patients: TUs
     { to: '/', text: strings('dashboard'), icon: icons.faBorderAll, exact: true },
     { to: '/settings', text: strings('settings'), icon: icons.faCog },
     { to: '/profile', text: strings('profile'), icon: icons.faUserEdit },
+    { to: '/questionnaires', text: strings('questionnaires'), icon: icons.faCheckCircle },
     { separator: true },
     { to: '/overview', text: strings('overview'), icon: icons.faTachometerAlt, fade: true },
     { to: '/messages', text: strings('messages'), icon: icons.faCommentDots, fade: true },
     { to: '/timeline', text: strings('healthTimeline'), icon: icons.faCalendar, fade: true },
     { to: '/assignments', text: strings('assignments'), icon: icons.faCheckSquare, fade: true },
-    { to: '/questionnaires', text: strings('questionnaires'), icon: icons.faCheckCircle, fade: true },
   ]
 
   return (
@@ -217,6 +217,7 @@ const DoctorNoPatientBase: React.FunctionComponent<BaseProps & { patients: TUser
     { to: '/', text: strings('dashboard'), icon: icons.faBorderAll, exact: true },
     { to: '/settings', text: strings('settings'), icon: icons.faCog },
     { to: '/profile', text: strings('profile'), icon: icons.faUserEdit },
+    { to: '/questionnaires', text: strings('questionnaires'), icon: icons.faCheckCircle },
   ]
 
   return (
@@ -240,6 +241,7 @@ const DoctorNoPatientBase: React.FunctionComponent<BaseProps & { patients: TUser
           <Route path='/' exact><DoctorDashboard user={user} patients={patients} notifications={[]}/></Route>
           <Route path='/settings'><DoctorSettingsPage/></Route>
           <Route path='/profile'><DoctorProfilePage user={user}/></Route>
+          <Route path='/questionnaires'><EditQuestionnairesPage questionnairesQuery={GET_QUESTIONNAIRES_I_MADE}/></Route>
           <Route component={PageNotFound} />
         </Switch>
       </GutterAwareFluidContainer>
