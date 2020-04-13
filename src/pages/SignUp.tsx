@@ -13,7 +13,7 @@ import Fade from 'components/Fade'
 import strings from './SignUp.strings'
 import './SignUp.sass'
 import { SIGNUP_MUTATION } from 'util/queries'
-import { useSignin } from 'util/hooks'
+import { useSignin, useKeyPress } from 'util/hooks'
 
 interface TProps {
 }
@@ -57,15 +57,17 @@ const SignupForm = () => {
   const [ signUp, { loading: signUpLoading, error: signUpError }] = useMutation(SIGNUP_MUTATION)
   const [ signIn, { loading: signInLoading, error: signInError }] = useSignin()
 
-  const [ name, setName ] = useState('Aaron Sullivan')
-  const [ email, setEmail ] = useState('aaron@millihealth.com')
-  const [ password, setPassword ] = useState('password')
+  const [ name, setName ] = useState('')
+  const [ email, setEmail ] = useState('')
+  const [ password, setPassword ] = useState('')
 
   const onCreateClick = async () => {
     signUp({ variables: { email, password, name }}).then(() => {
       signIn({ variables: { email, password }})
     }).catch(console.error)
   }
+
+  useKeyPress('Enter', onCreateClick)
 
   return (
     <React.Fragment>

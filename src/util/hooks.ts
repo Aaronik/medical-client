@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import * as queries from 'util/queries'
 import { useMutation, MutationHookOptions, MutationResult } from '@apollo/client'
 import { useHistory } from 'react-router-dom'
@@ -36,6 +37,7 @@ export const useSignin = (opts: MutationHookOptions = {}) => {
   return mutationResponse
 }
 
+// For doctors to choose which patient they're currently looking at
 export const useSetActivePatient = (opts: MutationHookOptions = {}): [ (id: number, redirPath: string) => void, MutationResult<any> ] => {
   const history = useHistory()
 
@@ -48,4 +50,59 @@ export const useSetActivePatient = (opts: MutationHookOptions = {}): [ (id: numb
   }
 
   return [ setActivePatient, mutate[1] ]
+}
+
+// Set a hook style keyboard event listener.
+//
+// There are two ways of using this. First, it returns a boolean value
+// which you can use to declaratively change your code when the key is pressed.
+// Ex.
+//
+// const isEnterPressed = useKeyPress('Enter')
+//
+// return (
+//  <Container>
+//   { isEnterPressed && <p>Pressed, noice</p>}
+//  </Container>
+// )
+//
+// The other way is to give it a callback which will be called on the keyboard
+// event.
+// Ex.
+//
+// useKeyPress('Enter', doThatThingOnEnter)
+export const useKeyPress = (targetKey: KeyboardEvent['key'], cb?: () => void): boolean => {
+  // State for keeping track of whether key is pressed
+  const [isKeyPressed, setIsKeyPressed] = useState(false)
+
+  type KeyEventHandler = (event: KeyboardEvent) => void
+
+  // If pressed key is our target key then set to true
+  const downHandler: KeyEventHandler = ({ key }) => {
+    if (key === targetKey) {
+      setIsKeyPressed(true)
+      cb?.()
+    }
+  }
+
+  // If released key is our target key then set to false
+  const upHandler: KeyEventHandler = ({ key }) => {
+    if (key === targetKey) {
+      setIsKeyPressed(false)
+    }
+  }
+
+  // Add event listeners
+  useEffect(() => {
+    window.addEventListener('keydown', downHandler)
+    window.addEventListener('keyup', upHandler)
+
+    // Remove event listeners on cleanup
+    return () => {
+      window.removeEventListener('keydown', downHandler)
+      window.removeEventListener('keyup', upHandler)
+    }
+  }, [cb])
+
+  return isKeyPressed
 }

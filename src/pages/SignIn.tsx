@@ -10,7 +10,7 @@ import FormInput from 'components/FormInput'
 import Fade from 'components/Fade'
 import './SignIn.sass'
 import strings from './SignIn.strings'
-import { useSignin } from 'util/hooks'
+import { useSignin, useKeyPress } from 'util/hooks'
 
 interface TProps {
 }
@@ -39,12 +39,14 @@ export default Signin
 const SigninForm = () => {
   const [ signIn, { loading, error }] = useSignin()
 
-  const [ email, setEmail ] = useState('aaron@millihealth.com')
-  const [ password, setPassword ] = useState('password')
+  const [ email, setEmail ] = useState('')
+  const [ password, setPassword ] = useState('')
 
   const onAuthenticateClick = async () => {
     signIn({ variables: { email, password }})
   }
+
+  useKeyPress('Enter', onAuthenticateClick)
 
   return (
     <React.Fragment>
