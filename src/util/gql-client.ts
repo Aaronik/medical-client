@@ -1,4 +1,4 @@
-import { ApolloClient, InMemoryCache } from '@apollo/client'
+import { ApolloClient, InMemoryCache, ApolloLink } from '@apollo/client'
 import { times, random } from 'lodash'
 import * as faker from 'faker'
 import * as Timeline from 'types/Timeline.d'
@@ -10,9 +10,7 @@ const client = new ApolloClient({
   cache: new InMemoryCache(),
   uri: 'http://localhost:4000',
   headers: {
-    get authorization() {
-      return localStorage.authToken
-    }
+    get authorization() { return localStorage.authToken }
   },
   resolvers: {
     Query: {
@@ -47,6 +45,8 @@ const client = new ApolloClient({
     }
   },
 })
+
+export default client
 
 let gutterNavActive = true
 let alerts: Alert.TAlert[] = []
@@ -89,5 +89,3 @@ const timelineData = (count: number) => {
 
   return items
 }
-
-export default client

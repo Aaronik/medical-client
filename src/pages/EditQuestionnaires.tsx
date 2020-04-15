@@ -31,11 +31,8 @@ const EditQuestionnairesPage: React.FC<Props> = ({ questionnairesQuery }) => {
   if (error) return <ErrorPage error={error}/>
 
   let questionnaires = Object.values(data)?.[0] as TQuestionnaire[]
-
-  // TODO This supremely does not belong here, but I'm having a heck of a hard time finding a way to get
-  // it closer to GQL.
-  //  * Looks like apollo is dropping the ball again: https://github.com/apollographql/apollo-feature-requests/issues/6
-  //  * Could have custom useQuery and useMutation's? That'd also let me bake in onError: console.error to useMutation options
+  // It'd be great if useQuery could do this automatically, but I'm not sure how to make that happen
+  // See: https://github.com/apollographql/apollo-feature-requests/issues/6
   questionnaires = omitDeep(questionnaires, '__typename')
 
   if (!questionnaires?.length) return <Wrapper questionnairesQuery={questionnairesQuery}><h2>No questionnaires!</h2></Wrapper>
