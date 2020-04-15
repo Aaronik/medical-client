@@ -21,7 +21,9 @@ const PatientQuestionnaires: React.FunctionComponent = () => {
     <Container>
       <h1>Patient Questionnaires</h1>
       <hr/>
-      { questionnaires.map((q: TQuestionnaire) => <Questionnaire questionnaire={q} key={q.id}/>)}
+      { questionnaires.map(
+        (q: TQuestionnaire) => <Questionnaire questionnaire={q} questionResponseRefetchQuery={GET_QUESTIONNAIRES_ASSIGNED_TO_ME} key={q.id}/>
+      )}
     </Container>
   )
 }

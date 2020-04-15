@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { ApolloError } from '@apollo/client'
+import { ApolloError, DocumentNode } from '@apollo/client'
 import Form from 'react-bootstrap/Form'
 import Row from 'react-bootstrap/Row'
 import Button from 'react-bootstrap/Button'
@@ -22,9 +22,11 @@ type QuestionnaireProps = {
   isAnswerable?: boolean
   QuestionnaireButtons?: React.FC<{}>
   QuestionButtons?: TQuestionTitleAdditions
+  questionResponseRefetchQuery?: DocumentNode
 }
 
-const Questionnaire: React.FC<QuestionnaireProps> = ({ questionnaire, isAnswerable, QuestionnaireButtons, QuestionButtons }) => {
+const Questionnaire: React.FC<QuestionnaireProps> = (props) => {
+  const { questionnaire, isAnswerable, QuestionnaireButtons, QuestionButtons, questionResponseRefetchQuery } = props
 
   const [ isExpanded, setIsExpanded ] = useState(false)
 
@@ -53,7 +55,7 @@ const Questionnaire: React.FC<QuestionnaireProps> = ({ questionnaire, isAnswerab
           const Component = questionTypeMap(q.type)
           return (
             <ListGroupItem key={q.id}>
-              <Component TitleAdditions={QuestionButtons} question={q} key={q.id} readOnly={isAnswerable === false}/>
+              <Component TitleAdditions={QuestionButtons} question={q} key={q.id} readOnly={isAnswerable === false} refetchQ={questionResponseRefetchQuery}/>
             </ListGroupItem>
           )
         })
@@ -66,21 +68,28 @@ const Questionnaire: React.FC<QuestionnaireProps> = ({ questionnaire, isAnswerab
 
 export default Questionnaire
 
+const questionSubmissionMutationOptions = (refetchQ?: DocumentNode) => {
+  const opts = { onError: console.error }
+  if (refetchQ) Object.assign(opts, { refetchQueries: [{ query: refetchQ }]})
+  return opts
+}
+
 type TQuestionTitleAdditions = React.FC<{ question: Q.Question }>
 
 type CommonQuestionProps = {
   readOnly?: boolean
   TitleAdditions?: TQuestionTitleAdditions
+  refetchQ?: DocumentNode
 }
 
 type TextQuestionProps = {
   question: Q.TextQuestion
 } & CommonQuestionProps
 
-const TextQuestion: React.FC<TextQuestionProps> = ({ question, readOnly, TitleAdditions }) => {
+const TextQuestion: React.FC<TextQuestionProps> = ({ question, readOnly, TitleAdditions, refetchQ }) => {
   const [ hasChangedSinceLastSave, setHasChangedSinceLastSave ] = useState(!question.textResp)
   const [ currentResponse, setCurrentResponse ] = useState(question.textResp || '')
-  const [ respondToQuestion, { loading, error } ] = useMutation(SUBMIT_TEXT_RESPONSE, { onError: console.error })
+  const [ respondToQuestion, { loading, error } ] = useMutation(SUBMIT_TEXT_RESPONSE, questionSubmissionMutationOptions(refetchQ))
 
   const onChange = (text: string) => {
     if (readOnly) return
@@ -119,12 +128,12 @@ type BoolQuestionProps = {
   question: Q.BooleanQuestion
 } & CommonQuestionProps
 
-const BoolQuestion: React.FC<BoolQuestionProps> = ({ question, readOnly, TitleAdditions }) => {
+const BoolQuestion: React.FC<BoolQuestionProps> = ({ question, readOnly, TitleAdditions, refetchQ }) => {
   const hasResponse = question.boolResp === true || question.boolResp === false
 
   const [ hasChangedSinceLastSave, setHasChangedSinceLastSave ] = useState(!hasResponse)
   const [ currentResponse, setCurrentResponse ] = useState(question.boolResp)
-  const [ respondToQuestion, { loading, error } ] = useMutation(SUBMIT_BOOLEAN_RESPONSE, { onError: console.error })
+  const [ respondToQuestion, { loading, error } ] = useMutation(SUBMIT_BOOLEAN_RESPONSE, questionSubmissionMutationOptions(refetchQ))
 
   const onChange = (b: unknown) => {
     if (readOnly) return
@@ -163,10 +172,10 @@ type SingleChoiceQuestionProps = {
   question: Q.SingleChoiceQuestion
 } & CommonQuestionProps
 
-const SingleChoiceQuestion: React.FC<SingleChoiceQuestionProps> = ({ question, readOnly, TitleAdditions }) => {
+const SingleChoiceQuestion: React.FC<SingleChoiceQuestionProps> = ({ question, readOnly, TitleAdditions, refetchQ }) => {
   const [ hasChangedSinceLastSave, setHasChangedSinceLastSave ] = useState(!question.singleChoiceResp)
   const [ currentResponse, setCurrentResponse ] = useState(question.singleChoiceResp?.id)
-  const [ respondToQuestion, { loading, error } ] = useMutation(SUBMIT_CHOICE_RESPONSE, { onError: console.error })
+  const [ respondToQuestion, { loading, error } ] = useMutation(SUBMIT_CHOICE_RESPONSE, questionSubmissionMutationOptions(refetchQ))
 
   const onChange = (optionId: number) => {
     if (readOnly) return
@@ -206,12 +215,12 @@ type MultipleChoiceQuestionProps = {
   question: Q.MultipleChoiceQuestion
 } & CommonQuestionProps
 
-const MultipleChoiceQuestion: React.FC<MultipleChoiceQuestionProps> = ({ question, readOnly, TitleAdditions }) => {
+const MultipleChoiceQuestion: React.FC<MultipleChoiceQuestionProps> = ({ question, readOnly, TitleAdditions, refetchQ }) => {
   const initialCurrentOptionIds = (question.multipleChoiceResp?.map(option => option.id) || []) as number[]
 
   const [ hasChangedSinceLastSave, setHasChangedSinceLastSave ] = useState(!question.multipleChoiceResp?.length)
   const [ currentOptionIds, setCurrentOptionIds ] = useState(initialCurrentOptionIds)
-  const [ respondToQuestion, { loading, error } ] = useMutation(SUBMIT_CHOICE_RESPONSES, { onError: console.error })
+  const [ respondToQuestion, { loading, error } ] = useMutation(SUBMIT_CHOICE_RESPONSES, questionSubmissionMutationOptions(refetchQ))
 
   const onChange = (optionIds: number[]) => {
     if (readOnly) return
