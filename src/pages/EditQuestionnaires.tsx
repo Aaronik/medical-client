@@ -17,6 +17,7 @@ import onSelectChange from 'util/onSelectChange'
 import { Question } from 'types/Question.d'
 import { TQuestionnaire } from 'types/Questionnaire.d'
 import { ADD_QUESTIONS, CREATE_QUESTIONNAIRE, CREATE_QUESTION_RELATIONS, DELETE_QUESTION, DELETE_QUESTIONNAIRE, UPDATE_QUESTION } from 'util/queries'
+import omitDeep from 'omit-deep-lodash'
 
 type Props = {
   questionnairesQuery: DocumentNode
@@ -29,13 +30,19 @@ const EditQuestionnairesPage: React.FC<Props> = ({ questionnairesQuery }) => {
   if (loading) return <Loading/>
   if (error) return <ErrorPage error={error}/>
 
-  const questionnaires = Object.values(data)?.[0] as TQuestionnaire[]
+  let questionnaires = Object.values(data)?.[0] as TQuestionnaire[]
+
+  // TODO This supremely does not belong here, but I'm having a heck of a hard time finding a way to get
+  // it closer to GQL.
+  //  * Looks like apollo is dropping the ball again: https://github.com/apollographql/apollo-feature-requests/issues/6
+  //  * Could have custom useQuery and useMutation's? That'd also let me bake in onError: console.error to useMutation options
+  questionnaires = omitDeep(questionnaires, '__typename')
 
   if (!questionnaires?.length) return <Wrapper questionnairesQuery={questionnairesQuery}><h2>No questionnaires!</h2></Wrapper>
 
   return (
     <Wrapper questionnairesQuery={questionnairesQuery}>
-      { questionnaires.map((q: TQuestionnaire) => <QuestionnaireWrapper questionnairesQuery={questionnairesQuery} questionnaire={q} key={q.id}/>) }
+      { questionnaires.map((q: TQuestionnaire) => <EditableQuestionnaire questionnairesQuery={questionnairesQuery} questionnaire={q} key={q.id}/>) }
     </Wrapper>
   )
 }
@@ -85,7 +92,7 @@ const Wrapper: React.FC<Props> = ({ children, questionnairesQuery }) => {
   )
 }
 
-const QuestionnaireWrapper: React.FC<{ questionnaire: TQuestionnaire, questionnairesQuery: DocumentNode }> = ({ questionnaire, questionnairesQuery }) => {
+const EditableQuestionnaire: React.FC<{ questionnaire: TQuestionnaire, questionnairesQuery: DocumentNode }> = ({ questionnaire, questionnairesQuery }) => {
   const [ isQuestionModalOpen, setIsQuestionModalOpen ] = useState(false)
   const [ isRelationModalOpen, setIsRelationModalOpen ] = useState(false)
   const [ relationFromId, setRelationFromId ]           = useState(0)
@@ -93,13 +100,17 @@ const QuestionnaireWrapper: React.FC<{ questionnaire: TQuestionnaire, questionna
   const [ relationIncludes, setRelationIncludes ]       = useState('')
   const [ relationEquals, setRelationEquals ]           = useState('')
 
-  const options = { refetchQueries: [{ query: questionnairesQuery }]}
+  const options = { refetchQueries: [{ query: questionnairesQuery }], onError: console.error }
 
-  const [ deleteQuestionnaire ] = useMutation(DELETE_QUESTIONNAIRE, options)
-  const [ addQuestion ]         = useMutation(ADD_QUESTIONS, options)
-  const [ updateQuestion ]      = useMutation(UPDATE_QUESTION, options)
-  const [ addRelation ]         = useMutation(CREATE_QUESTION_RELATIONS, options)
-  const [ deleteQuestion ]      = useMutation(DELETE_QUESTION, options)
+  const [ addQuestion, { error: addError } ]                         = useMutation(ADD_QUESTIONS, options)
+  const [ updateQuestion, { error: updateError } ]                   = useMutation(UPDATE_QUESTION, options)
+  const [ addRelation, { error: addRelationError } ]                 = useMutation(CREATE_QUESTION_RELATIONS, options)
+  const [ deleteQuestion, { error: deleteError } ]                   = useMutation(DELETE_QUESTION, options)
+  const [ deleteQuestionnaire, { error: deleteQuestionnaireError } ] = useMutation(DELETE_QUESTIONNAIRE, options)
+
+  for (let error of [ addError, updateError, addRelationError, deleteError, deleteQuestionnaireError ]) {
+    if (error) return <ErrorPage error={error}/>
+  }
 
   const onDeleteQuestionnaire = () => {
     deleteQuestionnaire({ variables: { id: questionnaire.id }})

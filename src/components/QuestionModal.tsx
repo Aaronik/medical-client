@@ -5,6 +5,7 @@ import Button from 'react-bootstrap/Button'
 import FormInput from 'components/FormInput'
 import Select from 'react-select'
 import onSelectChange from 'util/onSelectChange'
+import { useKeyPress } from 'util/hooks'
 
 type QuestionModalProps = {
   question?: Question
@@ -25,14 +26,12 @@ const QuestionModal = (props: QuestionModalProps) => {
   const [ type, setType ] = useState(initialType)
   const [ text, setText ] = useState(initialText)
   const [ options, setOptions ] = useState<QuestionOption[]>(initialOptions)
-  const [ optionValue, setOptionValue ] = useState('')
   const [ optionText, setOptionText ] = useState('')
 
   const questionTypeHasOptions = ['SINGLE_CHOICE', 'MULTIPLE_CHOICE'].includes(type)
 
   const onAddOptionClick = () => {
-    setOptions(options.concat([{value: optionValue, text: optionText}]))
-    setOptionValue('')
+    setOptions(options.concat([{ text: optionText }]))
     setOptionText('')
   }
 
@@ -44,9 +43,10 @@ const QuestionModal = (props: QuestionModalProps) => {
     setType(initialType)
     setText(initialText)
     setOptions(initialOptions)
-    setOptionValue('')
     setOptionText('')
   }
+
+  useKeyPress('Enter', onSaveClick)
 
   const modalTitle = question
     ? 'Edit Question'
@@ -73,14 +73,6 @@ const QuestionModal = (props: QuestionModalProps) => {
           onChange={setText}/>
 
         { questionTypeHasOptions && [
-
-          <FormInput
-            key='options-value'
-            autoFocus={true}
-            label={'Option Value'}
-            value={optionValue}
-            type="text"
-            onChange={setOptionValue}/>,
 
           <FormInput
             key='options-text'
@@ -114,4 +106,3 @@ const QUESTION_TYPE_OPTIONS = [
   { value: 'SINGLE_CHOICE', label: 'Radio Group (Choose Single Answer)' },
   { value: 'MULTIPLE_CHOICE', label: 'Check Boxes (Choose Multiple Answers)' },
 ]
-

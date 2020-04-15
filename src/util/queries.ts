@@ -77,59 +77,55 @@ export const SET_ACTIVE_PATIENT = gql`
   }
 `
 
-export const QUESTIONS_FRAGMENT = gql`
+const CHOICE_QUESTIONS_SUBFRAGMENT = `
+  id
+  type
+  text
+  options {
+   id
+   text
+  }
+  next {
+   includes
+   equals
+   nextQuestionId
+  }
+`
+
+const NON_CHOICE_QUESTIONS_SUBFRAGMENT = `
+  id
+  type
+  text
+  next {
+    includes
+    equals
+    nextQuestionId
+  }
+`
+
+const QUESTIONS_FRAGMENT = gql`
   {
     ... on BooleanQuestion {
-      id
-      type
-      text
       boolResp: response
-      next {
-        includes
-        equals
-        nextQuestionId
-      }
+      ${NON_CHOICE_QUESTIONS_SUBFRAGMENT}
     }
     ... on TextQuestion {
-      id
-      type
-      text
       textResp: response
-      next {
-        includes
-        equals
-        nextQuestionId
-      }
+      ${NON_CHOICE_QUESTIONS_SUBFRAGMENT}
     }
     ... on SingleChoiceQuestion {
-      id
-      type
-      text
-      singleChoiceResp: response
-      options {
-        value
+      singleChoiceResp: response {
+        id
         text
       }
-      next {
-        includes
-        equals
-        nextQuestionId
-      }
+      ${CHOICE_QUESTIONS_SUBFRAGMENT}
     }
     ... on MultipleChoiceQuestion {
-      id
-      type
-      text
-      multipleChoiceResp: response
-      options {
-        value
+      multipleChoiceResp: response {
+        id
         text
       }
-      next {
-        includes
-        equals
-        nextQuestionId
-      }
+      ${CHOICE_QUESTIONS_SUBFRAGMENT}
     }
   }
 `
@@ -213,14 +209,14 @@ export const SUBMIT_TEXT_RESPONSE = gql`
 `
 
 export const SUBMIT_CHOICE_RESPONSE = gql`
-  mutation SubmitChoice($questionId: Int!, $value: String!) {
-    submitChoiceQuestionResponse(questionId: $questionId, value: $value)
+  mutation SubmitChoice($questionId: Int!, $optionId: Int!) {
+    submitChoiceQuestionResponse(questionId: $questionId, optionId: $optionId)
   }
 `
 
 export const SUBMIT_CHOICE_RESPONSES = gql`
-  mutation SubmitChoice($questionId: Int!, $values: [String]!) {
-    submitChoiceQuestionResponses(questionId: $questionId, values: $values)
+  mutation SubmitChoice($questionId: Int!, $optionIds: [Int]!) {
+    submitChoiceQuestionResponses(questionId: $questionId, optionIds: $optionIds)
   }
 `
 

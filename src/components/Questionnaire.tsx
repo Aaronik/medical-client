@@ -165,21 +165,21 @@ type SingleChoiceQuestionProps = {
 
 const SingleChoiceQuestion: React.FC<SingleChoiceQuestionProps> = ({ question, readOnly, TitleAdditions }) => {
   const [ hasChangedSinceLastSave, setHasChangedSinceLastSave ] = useState(!question.singleChoiceResp)
-  const [ currentResponse, setCurrentResponse ] = useState(question.singleChoiceResp || null)
+  const [ currentResponse, setCurrentResponse ] = useState(question.singleChoiceResp?.id)
   const [ respondToQuestion, { loading, error } ] = useMutation(SUBMIT_CHOICE_RESPONSE, { onError: console.error })
 
-  const onChange = (b: unknown) => {
+  const onChange = (optionId: number) => {
     if (readOnly) return
-    setCurrentResponse(b as string)
-    onSave(b as string)
+    setCurrentResponse(optionId)
+    onSave(optionId)
   }
 
-  const onSave = (b?: string) => {
+  const onSave = (optionId?: number) => {
     if (readOnly) return
     // setting currentResponse and then saving immediately after results in saving the previous
     // value of currentResponse -- it doesn't have time to update yet. This is to circumvent that.
-    const value = b === undefined ? currentResponse : b
-    respondToQuestion({ variables: { questionId: question.id, value }})
+    const finalOptionId = optionId === undefined ? currentResponse : optionId
+    respondToQuestion({ variables: { questionId: question.id, optionId: finalOptionId }})
     setHasChangedSinceLastSave(false)
   }
 
@@ -193,7 +193,7 @@ const SingleChoiceQuestion: React.FC<SingleChoiceQuestionProps> = ({ question, r
       <ButtonRow readOnly={readOnly} error={error} loading={loading} hasChangedSinceLastSave={hasChangedSinceLastSave} onSave={() => onSave()}>
         <ToggleButtonGroup name='Single choice button group' type='radio' value={currentResponse} onChange={onChange}>
           {
-            question.options.map(option => <ToggleButton key={option.value} value={option.value}>{option.text}</ToggleButton>)
+            question.options.map(option => <ToggleButton key={option.id} value={option.id}>{option.text}</ToggleButton>)
           }
         </ToggleButtonGroup>
         {TitleAdditions && <div><TitleAdditions question={question}/></div>}
@@ -207,19 +207,21 @@ type MultipleChoiceQuestionProps = {
 } & CommonQuestionProps
 
 const MultipleChoiceQuestion: React.FC<MultipleChoiceQuestionProps> = ({ question, readOnly, TitleAdditions }) => {
+  const initialCurrentOptionIds = (question.multipleChoiceResp?.map(option => option.id) || []) as number[]
+
   const [ hasChangedSinceLastSave, setHasChangedSinceLastSave ] = useState(!question.multipleChoiceResp?.length)
-  const [ currentResponses, setCurrentResponse ] = useState(question.multipleChoiceResp || [])
+  const [ currentOptionIds, setCurrentOptionIds ] = useState(initialCurrentOptionIds)
   const [ respondToQuestion, { loading, error } ] = useMutation(SUBMIT_CHOICE_RESPONSES, { onError: console.error })
 
-  const onChange = (resp: string[]) => {
+  const onChange = (optionIds: number[]) => {
     if (readOnly) return
-    setCurrentResponse(resp)
+    setCurrentOptionIds(optionIds)
     setHasChangedSinceLastSave(true)
   }
 
   const onSave = () => {
     if (readOnly) return
-    respondToQuestion({ variables: { questionId: question.id, values: currentResponses }})
+    respondToQuestion({ variables: { questionId: question.id, optionIds: currentOptionIds }})
     setHasChangedSinceLastSave(false)
   }
 
@@ -231,9 +233,9 @@ const MultipleChoiceQuestion: React.FC<MultipleChoiceQuestionProps> = ({ questio
         </Row>
       </Form.Label>
       <ButtonRow readOnly={readOnly} error={error} loading={loading} hasChangedSinceLastSave={hasChangedSinceLastSave} onSave={onSave}>
-        <ToggleButtonGroup type='checkbox' value={currentResponses} onChange={onChange}>
+        <ToggleButtonGroup type='checkbox' value={currentOptionIds} onChange={onChange}>
           {
-            question.options.map(option => <ToggleButton key={option.value} value={option.value}>{option.text}</ToggleButton>)
+            question.options.map(option => <ToggleButton key={option.id} value={option.id}>{option.text}</ToggleButton>)
           }
         </ToggleButtonGroup>
         {TitleAdditions && <div><TitleAdditions question={question}/></div>}
