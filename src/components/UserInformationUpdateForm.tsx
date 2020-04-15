@@ -11,6 +11,7 @@ import { UPDATE_ME } from 'util/queries'
 import { Spinner } from 'react-bootstrap'
 import { faUser, faAt, faImage, faCalendarAlt } from '@fortawesome/free-solid-svg-icons'
 import DatePickerModal from 'components/DatePickerModal'
+import onKeyDown from 'util/onKeyDown'
 
 const UserInformationUpdateForm: React.FC<{ user: TUser }> = ({ user }) => {
   const [ name, setName ] = useState(user.name)
@@ -25,7 +26,7 @@ const UserInformationUpdateForm: React.FC<{ user: TUser }> = ({ user }) => {
   const onSaveClick = () => {
     saveUserInfo({ variables: { user: {
       name, email, imageUrl,
-      birthday: toMysqlDateString(birthday)
+      birthday: birthday ? toMysqlDateString(birthday) : undefined
     }}})
   }
 
@@ -36,7 +37,7 @@ const UserInformationUpdateForm: React.FC<{ user: TUser }> = ({ user }) => {
       : 'primary'
 
   return (
-    <Form className="pt-5">
+    <Form className="pt-5" onKeyDown={onKeyDown('Enter', onSaveClick)}>
       <Form.Row>
         <FormInput
           label={strings('name')}

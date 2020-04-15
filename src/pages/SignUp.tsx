@@ -13,7 +13,8 @@ import Fade from 'components/Fade'
 import strings from './SignUp.strings'
 import './SignUp.sass'
 import { SIGNUP_MUTATION } from 'util/queries'
-import { useSignin, useKeyPress } from 'util/hooks'
+import { useSignin } from 'util/hooks'
+import onKeyDown from 'util/onKeyDown'
 
 interface TProps {
 }
@@ -67,8 +68,6 @@ const SignupForm = () => {
     }).catch(console.error)
   }
 
-  useKeyPress('Enter', onCreateClick)
-
   return (
     <React.Fragment>
       <Container>
@@ -76,7 +75,7 @@ const SignupForm = () => {
           <h3>{strings('createAccount')}</h3>
         </Row>
         <Row className='p-4 text-left'>
-          <Form className="w-100">
+          <Form className="w-100" onKeyDown={onKeyDown('Enter', onCreateClick)}>
 
             <FormInput
               label={strings('fullName')}

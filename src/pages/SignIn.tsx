@@ -10,7 +10,8 @@ import FormInput from 'components/FormInput'
 import Fade from 'components/Fade'
 import './SignIn.sass'
 import strings from './SignIn.strings'
-import { useSignin, useKeyPress } from 'util/hooks'
+import { useSignin } from 'util/hooks'
+import onKeyDown from 'util/onKeyDown'
 
 interface TProps {
 }
@@ -46,15 +47,13 @@ const SigninForm = () => {
     signIn({ variables: { email, password }})
   }
 
-  useKeyPress('Enter', onAuthenticateClick)
-
   return (
     <React.Fragment>
       <Row className='p-4'>
         <h3>{strings('signIn')}</h3>
       </Row>
       <Row className='p-4 text-left'>
-        <Form className="w-100">
+        <Form className="w-100" onKeyDown={onKeyDown('Enter', onAuthenticateClick)}>
 
           <FormInput
             label="Email"

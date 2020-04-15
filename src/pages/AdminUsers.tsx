@@ -7,11 +7,13 @@ import Row from 'react-bootstrap/Row'
 import Button from 'react-bootstrap/Button'
 import Modal from 'react-bootstrap/Modal'
 import Form from 'react-bootstrap/Form'
+import Spinner from 'react-bootstrap/Spinner'
 import Loading from 'pages/Loading'
 import ErrorPage from 'pages/Error'
 import { TUser } from 'types/User.d'
 import Select from 'react-select'
 import onSelectChange from 'util/onSelectChange'
+import onKeyDown from 'util/onKeyDown'
 import './AdminUsers.sass'
 
 type TProps = {
@@ -21,8 +23,9 @@ type TProps = {
 const AdminUsersPage: React.FC<TProps> = () => {
 
   const { data, error, loading } = useQuery<{ users: TUser[]}>(USERS)
-  const [ associate ] = useMutation(ASSOCIATE, { refetchQueries: [{ query: USERS }]})
-  const [ unassociate ] = useMutation(UNASSOCIATE, { refetchQueries: [{ query: USERS }]})
+  const mutationOptions = { refetchQueries: [{ query: USERS }], onError: console.error }
+  const [ associate, { error: assError, loading: assLoading } ] = useMutation(ASSOCIATE, mutationOptions)
+  const [ unassociate, { error: unassError, loading: unassLoading } ] = useMutation(UNASSOCIATE, mutationOptions)
 
   const [ isAssociateModalOpen, setIsAssociateModalOpen ] = useState(false)
   const [ doctorId, setDoctorId ] = useState(0)
@@ -46,11 +49,14 @@ const AdminUsersPage: React.FC<TProps> = () => {
     unassociate({ variables: { doctorId, patientId }})
   }
 
+  const mainButtonContent = (assLoading || unassLoading) ? <Spinner animation='grow'/> : 'Associate'
+
   return (
     <Container>
       <Row className='d-flex flex-row justify-content-between m-3'>
         <h1>Users</h1>
-        <Button onClick={() => setIsAssociateModalOpen(true)} variant='success'>Associate</Button>
+        <p className='text-danger'>{assError?.message || unassError?.message || ''}</p>
+        <Button onClick={() => setIsAssociateModalOpen(true)} variant='success'>{mainButtonContent}</Button>
       </Row>
       <Table variant='primary' striped={true}>
         <thead>
@@ -83,7 +89,7 @@ const AdminUsersPage: React.FC<TProps> = () => {
 
       <Modal show={isAssociateModalOpen} centered onHide={() => setIsAssociateModalOpen(false)}>
         <Modal.Header><h3>Create a Doctor/Patient Association</h3></Modal.Header>
-        <Modal.Body>
+        <Modal.Body onKeyDown={onKeyDown('Enter', onAssociateClick)}>
 
           <Form.Label>Doctor</Form.Label>
           <Select

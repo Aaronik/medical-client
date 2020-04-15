@@ -18,6 +18,7 @@ import { Question } from 'types/Question.d'
 import { TQuestionnaire } from 'types/Questionnaire.d'
 import { ADD_QUESTIONS, CREATE_QUESTIONNAIRE, CREATE_QUESTION_RELATIONS, DELETE_QUESTION, DELETE_QUESTIONNAIRE, UPDATE_QUESTION } from 'util/queries'
 import omitDeep from 'omit-deep-lodash'
+import onKeyDown from 'util/onKeyDown'
 
 type Props = {
   questionnairesQuery: DocumentNode
@@ -70,7 +71,7 @@ const Wrapper: React.FC<Props> = ({ children, questionnairesQuery }) => {
           <Modal.Title>Add Questionnaire</Modal.Title>
         </Modal.Header>
 
-        <Modal.Body>
+        <Modal.Body onKeyDown={onKeyDown('Enter', onCreateClick)}>
           <FormInput
             autoFocus={true}
             label={'Questionnaire Title'}
@@ -203,7 +204,7 @@ const EditableQuestionnaire: React.FC<{ questionnaire: TQuestionnaire, questionn
           <Modal.Title>Add Relation</Modal.Title>
         </Modal.Header>
 
-          <Modal.Body>
+          <Modal.Body onKeyDown={onKeyDown('Enter', onCreateRelationClick)}>
             <Form.Label>From</Form.Label>
             <Select
               className='pb-3'

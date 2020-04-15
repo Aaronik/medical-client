@@ -5,7 +5,7 @@ import Button from 'react-bootstrap/Button'
 import FormInput from 'components/FormInput'
 import Select from 'react-select'
 import onSelectChange from 'util/onSelectChange'
-import { useKeyPress } from 'util/hooks'
+import onKeyDown from 'util/onKeyDown'
 
 type QuestionModalProps = {
   question?: Question
@@ -36,6 +36,7 @@ const QuestionModal = (props: QuestionModalProps) => {
   }
 
   const onSaveClick = () => {
+    console.log('onSaveClick called, type, text:', type, text)
     let updatedQuestion = { type, text } as Question
     if (question?.id) Object.assign(updatedQuestion, { id: question.id })
     if (options.length) Object.assign(updatedQuestion, { options })
@@ -45,8 +46,6 @@ const QuestionModal = (props: QuestionModalProps) => {
     setOptions(initialOptions)
     setOptionText('')
   }
-
-  useKeyPress('Enter', onSaveClick)
 
   const modalTitle = question
     ? 'Edit Question'
@@ -58,7 +57,7 @@ const QuestionModal = (props: QuestionModalProps) => {
         <Modal.Title>{modalTitle}</Modal.Title>
       </Modal.Header>
 
-      <Modal.Body>
+      <Modal.Body onKeyDown={onKeyDown('Enter', onSaveClick)}>
         <Select
           className='pb-3'
           onChange={onSelectChange(setType)}
