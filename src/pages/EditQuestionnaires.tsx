@@ -16,7 +16,7 @@ import Select from 'react-select'
 import onSelectChange from 'util/onSelectChange'
 import { Question } from 'types/Question.d'
 import { TQuestionnaire } from 'types/Questionnaire.d'
-import { ADD_QUESTIONS, CREATE_QUESTIONNAIRE, CREATE_QUESTION_RELATIONS, DELETE_QUESTION, DELETE_QUESTIONNAIRE, UPDATE_QUESTION } from 'util/queries'
+import { UPDATE_QUESTIONNAIRE, ADD_QUESTIONS, CREATE_QUESTIONNAIRE, CREATE_QUESTION_RELATIONS, DELETE_QUESTION, DELETE_QUESTIONNAIRE, UPDATE_QUESTION } from 'util/queries'
 import omitDeep from 'omit-deep-lodash'
 import onKeyDown from 'util/onKeyDown'
 
@@ -66,37 +66,58 @@ const Wrapper: React.FC<Props> = ({ children, questionnairesQuery }) => {
       <hr/>
       { children }
 
-      <Modal show={isQuestionnaireModalOpen} centered onHide={() => setIsQuestionnaireModalOpen(false)}>
-        <Modal.Header>
-          <Modal.Title>Add Questionnaire</Modal.Title>
-        </Modal.Header>
+      <AddQuestionnaireModal
+        show={isQuestionnaireModalOpen}
+        close={() => setIsQuestionnaireModalOpen(false)}
+        onSave={onCreateClick}
+        onTitleChange={setQuestionnaireTitle}
+        title={questionnaireTitle} />
 
-        <Modal.Body onKeyDown={onKeyDown('Enter', onCreateClick)}>
-          <FormInput
-            autoFocus={true}
-            label={'Questionnaire Title'}
-            value={questionnaireTitle}
-            type="text"
-            onChange={setQuestionnaireTitle}/>
-        </Modal.Body>
-
-        <Modal.Footer>
-          <Button variant="secondary" onClick={() => setIsQuestionnaireModalOpen(false)}>close</Button>
-          <Button variant="primary" onClick={onCreateClick}>save</Button>
-        </Modal.Footer>
-
-      </Modal>
     </Container>
   )
 }
 
+type AddQuestionnaireModalProps = {
+  show: boolean
+  close: () => void
+  title: string
+  onTitleChange: (title: string) => void
+  onSave: () => void
+}
+
+const AddQuestionnaireModal: React.FC<AddQuestionnaireModalProps> = ({ show, close, onSave, onTitleChange, title }) => {
+  return (
+    <Modal show={show} centered onHide={close}>
+      <Modal.Header>
+        <Modal.Title>Add Questionnaire</Modal.Title>
+      </Modal.Header>
+
+      <Modal.Body onKeyDown={onKeyDown('Enter', onSave)}>
+        <FormInput
+          autoFocus={true}
+          label={'Questionnaire Title'}
+          value={title}
+          type="text"
+          onChange={onTitleChange}/>
+      </Modal.Body>
+
+      <Modal.Footer>
+        <Button variant="secondary" onClick={close}>close</Button>
+        <Button variant="primary" onClick={onSave}>save</Button>
+      </Modal.Footer>
+    </Modal>
+  )
+}
+
 const EditableQuestionnaire: React.FC<{ questionnaire: TQuestionnaire, questionnairesQuery: DocumentNode }> = ({ questionnaire, questionnairesQuery }) => {
-  const [ isQuestionModalOpen, setIsQuestionModalOpen ] = useState(false)
-  const [ isRelationModalOpen, setIsRelationModalOpen ] = useState(false)
-  const [ relationFromId, setRelationFromId ]           = useState(0)
-  const [ relationToId, setRelationToId ]               = useState(0)
-  const [ relationIncludes, setRelationIncludes ]       = useState('')
-  const [ relationEquals, setRelationEquals ]           = useState('')
+  const [ isQuestionModalOpen, setIsQuestionModalOpen ]                   = useState(false)
+  const [ isRelationModalOpen, setIsRelationModalOpen ]                   = useState(false)
+  const [ isEditQuestionnaireModalOpen, setIsEditQuestionnaireModalOpen ] = useState(false)
+  const [ questionnaireTitle, setQuestionnaireTitle ]                     = useState(questionnaire.title)
+  const [ relationFromId, setRelationFromId ]                             = useState(0)
+  const [ relationToId, setRelationToId ]                                 = useState(0)
+  const [ relationIncludes, setRelationIncludes ]                         = useState('')
+  const [ relationEquals, setRelationEquals ]                             = useState('')
 
   const options = { refetchQueries: [{ query: questionnairesQuery }], onError: console.error }
 
@@ -105,9 +126,15 @@ const EditableQuestionnaire: React.FC<{ questionnaire: TQuestionnaire, questionn
   const [ addRelation, { error: addRelationError } ]                 = useMutation(CREATE_QUESTION_RELATIONS, options)
   const [ deleteQuestion, { error: deleteError } ]                   = useMutation(DELETE_QUESTION, options)
   const [ deleteQuestionnaire, { error: deleteQuestionnaireError } ] = useMutation(DELETE_QUESTIONNAIRE, options)
+  const [ updateQuestionnaire, { error: updateQuestionnaireError }]  = useMutation(UPDATE_QUESTIONNAIRE, options)
 
-  for (let error of [ addError, updateError, addRelationError, deleteError, deleteQuestionnaireError ]) {
+  for (let error of [ addError, updateError, addRelationError, deleteError, deleteQuestionnaireError, updateQuestionnaireError ]) {
     if (error) return <ErrorPage error={error}/>
+  }
+
+  const onUpdateQuestionnaire = () => {
+    updateQuestionnaire({ variables: { id: questionnaire.id, title: questionnaireTitle }})
+    setIsEditQuestionnaireModalOpen(false)
   }
 
   const onDeleteQuestionnaire = () => {
@@ -154,7 +181,7 @@ const EditableQuestionnaire: React.FC<{ questionnaire: TQuestionnaire, questionn
 
   const QuestionnaireTitleAdditions = () => (
     <React.Fragment>
-      <Button className='mr-1' variant='success' onClick={withoutPropagation(() => {})}>Update Title</Button>
+      <Button className='mr-1' variant='success' onClick={withoutPropagation(() => setIsEditQuestionnaireModalOpen(true))}>Update Title</Button>
       <Button className='mr-1' onClick={withoutPropagation(() => setIsQuestionModalOpen(true))}>Add Question</Button>
       <Button className='mr-1' onClick={withoutPropagation(() => setIsRelationModalOpen(true))}>Add Question Relation</Button>
       <Button className='mr-1' variant='danger' onClick={withoutPropagation(onDeleteQuestionnaire)}>
@@ -197,6 +224,14 @@ const EditableQuestionnaire: React.FC<{ questionnaire: TQuestionnaire, questionn
         show={isQuestionModalOpen}
         close={() => setIsQuestionModalOpen(false)}
         save={(question: Question) => onCreateQuestionClick(question)}
+      />
+
+      <AddQuestionnaireModal
+        show={isEditQuestionnaireModalOpen}
+        close={() => setIsEditQuestionnaireModalOpen(false)}
+        title={questionnaireTitle}
+        onTitleChange={setQuestionnaireTitle}
+        onSave={onUpdateQuestionnaire}
       />
 
       <Modal show={isRelationModalOpen} centered onHide={() => setIsRelationModalOpen(false)}>

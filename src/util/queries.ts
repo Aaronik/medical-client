@@ -172,6 +172,16 @@ export const CREATE_QUESTIONNAIRE = gql`
   }
 `
 
+export const UPDATE_QUESTIONNAIRE = gql`
+  mutation UpdateQuestionnaire($id: Int!, $title: String, $questions: [QuestionInput]){
+    updateQuestionnaire(id: $id, title: $title, questions: $questions) {
+      id
+      title
+      questions ${QUESTIONS_FRAGMENT}
+    }
+  }
+`
+
 export const ADD_QUESTIONS = gql`
   mutation AddQuestions($questions: [QuestionInput]) {
     addQuestions(questions: $questions) ${QUESTIONS_FRAGMENT}
