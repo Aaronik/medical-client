@@ -61,8 +61,19 @@ const SignupForm = () => {
   const [ name, setName ] = useState('')
   const [ email, setEmail ] = useState('')
   const [ password, setPassword ] = useState('')
+  const [ customError, setCustomError ] = useState('')
 
   const onCreateClick = async () => {
+    let error = '' // shortcut to circumvent async React setStates
+    setCustomError(error = '')
+
+    // Validate that the fields are viable before sending off to the server
+    if (name === '') setCustomError(error = strings('noNameError'))
+    if (email === '') setCustomError(error = strings('noEmailError'))
+    if (password === '') setCustomError(error = strings('noPasswordError'))
+
+    if (!!error) return
+
     signUp({ variables: { email, password, name }}).then(() => {
       signIn({ variables: { email, password }})
     }).catch(console.error)
@@ -100,7 +111,7 @@ const SignupForm = () => {
 
           </Form>
         </Row>
-        <p className='text-danger'>{(signUpError || signInError)?.graphQLErrors?.[0]?.message || (signUpError || signInError)?.message}</p>
+        <p className='text-danger'>{(signUpError || signInError)?.graphQLErrors?.[0]?.message || (signUpError || signInError)?.message || customError}</p>
         <Row className='p-4'>
           <Button block size='lg' onClick={onCreateClick}>
           { (signUpLoading || signInLoading) ? <Spinner animation='grow'/> : strings('createAccount') }
