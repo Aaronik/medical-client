@@ -35,8 +35,12 @@ const Questionnaire: React.FC<QuestionnaireProps> = (props) => {
   }
 
   if (!isExpanded) return (
-    <Card style={headerStyle} onClick={() => setIsExpanded(true)}>
-      <Card.Header><h4>{questionnaire.title}</h4></Card.Header>
+    <Card>
+      <Card.Header style={headerStyle} onClick={() => setIsExpanded(true)}>
+        <Row className='align-items-center'>
+          <h4 className='m-2'>{questionnaire.title}</h4>
+        </Row>
+      </Card.Header>
     </Card>
   )
 
