@@ -14,11 +14,13 @@ import Modal from 'react-bootstrap/Modal'
 import Row from 'react-bootstrap/Row'
 import Select from 'react-select'
 import onSelectChange from 'util/onSelectChange'
+import onKeyDown from 'util/onKeyDown'
+import withoutPropagation from 'util/withoutPropagation'
+import withoutResponses from 'util/withoutResponses'
 import { Question } from 'types/Question.d'
 import { TQuestionnaire } from 'types/Questionnaire.d'
 import { UPDATE_QUESTIONNAIRE, ADD_QUESTIONS, CREATE_QUESTIONNAIRE, CREATE_QUESTION_RELATIONS, DELETE_QUESTION, DELETE_QUESTIONNAIRE, UPDATE_QUESTION } from 'util/queries'
 import omitDeep from 'omit-deep-lodash'
-import onKeyDown from 'util/onKeyDown'
 
 type Props = {
   questionnairesQuery: DocumentNode
@@ -110,6 +112,10 @@ const AddQuestionnaireModal: React.FC<AddQuestionnaireModalProps> = ({ show, clo
 }
 
 const EditableQuestionnaire: React.FC<{ questionnaire: TQuestionnaire, questionnairesQuery: DocumentNode }> = ({ questionnaire, questionnairesQuery }) => {
+  // The apollo cache can get confused sometimes :/ Make sure no responses are passed in,
+  // edit questionnaires should hopefully never need to have any responses.
+  questionnaire = withoutResponses(questionnaire)
+
   const [ isQuestionModalOpen, setIsQuestionModalOpen ]                   = useState(false)
   const [ isRelationModalOpen, setIsRelationModalOpen ]                   = useState(false)
   const [ isEditQuestionnaireModalOpen, setIsEditQuestionnaireModalOpen ] = useState(false)
@@ -172,12 +178,6 @@ const EditableQuestionnaire: React.FC<{ questionnaire: TQuestionnaire, questionn
   }
 
   const questionIdOptions = questionnaire.questions.map(q => ({ value: q.id, label: q.text }))
-
-  const withoutPropagation = (fn: Function) => (e: React.SyntheticEvent) => {
-    e.preventDefault()
-    e.stopPropagation()
-    fn()
-  }
 
   const QuestionnaireTitleAdditions = () => (
     <React.Fragment>

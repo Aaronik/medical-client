@@ -9,6 +9,11 @@ import strings from 'pages/DoctorOverview.strings'
 const client = new ApolloClient({
   cache: new InMemoryCache(),
   uri: 'http://localhost:4000',
+  defaultOptions: {
+    query: {
+      fetchPolicy: 'network-only'
+    }
+  },
   headers: {
     get authorization() { return localStorage.authToken }
   },

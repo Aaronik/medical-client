@@ -162,6 +162,12 @@ export const GET_QUESTIONNAIRES_I_MADE = gql`
   }
 `
 
+export const GET_QUESTIONNAIRES_FOR_MY_PATIENT = gql`
+  query QuestionnairesForMyPatient($patientId: Int!) {
+    questionnairesForMyPatient(patientId: $patientId) ${QUESTIONNAIRE_FRAGMENT}
+  }
+`
+
 export const CREATE_QUESTIONNAIRE = gql`
   mutation CreateQuestionnaire($title: String, $questions: [QuestionInput]){
     createQuestionnaire(title: $title, questions: $questions) {
