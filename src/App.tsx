@@ -330,7 +330,7 @@ const Base: React.FunctionComponent = () => {
 
   const alerts = flags?.alerts || []
   const activePatientId = flags?.activePatientId
-  const gutterNavActive = flags?.gutterNavActive || true
+  const gutterNavActive = flags?.gutterNavActive
   const me = data?.me
   const patients = me?.patients || []
   const patient = patients.find((p: TUser) => p.id === Number(activePatientId))
