@@ -1,4 +1,3 @@
-import { useEffect } from 'react'
 import * as queries from 'util/queries'
 import { useMutation, MutationHookOptions, MutationResult } from '@apollo/client'
 import { useHistory } from 'react-router-dom'

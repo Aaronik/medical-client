@@ -1,4 +1,4 @@
-import { ApolloClient, InMemoryCache, ApolloLink } from '@apollo/client'
+import { ApolloClient, InMemoryCache } from '@apollo/client'
 import { times, random } from 'lodash'
 import * as faker from 'faker'
 import * as Timeline from 'types/Timeline.d'
@@ -9,11 +9,6 @@ import strings from 'pages/DoctorOverview.strings'
 const client = new ApolloClient({
   cache: new InMemoryCache(),
   uri: 'http://localhost:4000',
-  defaultOptions: {
-    query: {
-      fetchPolicy: 'network-only'
-    }
-  },
   headers: {
     get authorization() { return localStorage.authToken }
   },

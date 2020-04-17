@@ -1,6 +1,6 @@
 // TODO It'd be really great to have these shared b/t repos
 
-export type Question =
+export type TQuestion =
     BooleanQuestion
   | TextQuestion
   | SingleChoiceQuestion
@@ -41,15 +41,15 @@ export interface QuestionMeta {
 export type QuestionOption = {
   id?: number
   questionId?: number
-  question?: Question
+  question?: TQuestion
   text: string
 }
 
 export type QuestionRelation = {
   questionId?: number
-  question?: Question
+  question?: TQuestion
   nextQuestionId: number
-  nextQuestion?: Question
+  nextQuestion?: TQuestion
   includes?: string
   equals?: string
 }

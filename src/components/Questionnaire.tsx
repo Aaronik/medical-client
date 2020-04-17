@@ -11,6 +11,7 @@ import ListGroup from 'react-bootstrap/ListGroup'
 import ListGroupItem from 'react-bootstrap/ListGroupItem'
 import FormInput from 'components/FormInput'
 import { SUBMIT_BOOLEAN_RESPONSE, SUBMIT_TEXT_RESPONSE, SUBMIT_CHOICE_RESPONSE, SUBMIT_CHOICE_RESPONSES } from 'util/queries'
+import onKeyDown from 'util/onKeyDown'
 import { useMutation } from '@apollo/client'
 import { TQuestionnaire } from 'types/Questionnaire.d'
 import * as Q from 'types/Question.d'
@@ -23,10 +24,11 @@ type QuestionnaireProps = {
   QuestionnaireButtons?: React.FC<{}>
   QuestionButtons?: TQuestionTitleAdditions
   questionResponseRefetchQuery?: DocumentNode
+  className?: string
 }
 
 const Questionnaire: React.FC<QuestionnaireProps> = (props) => {
-  const { questionnaire, isAnswerable, QuestionnaireButtons, QuestionButtons, questionResponseRefetchQuery } = props
+  const { questionnaire, isAnswerable, QuestionnaireButtons, QuestionButtons, questionResponseRefetchQuery, className } = props
 
   const [ isExpanded, setIsExpanded ] = useState(false)
 
@@ -35,7 +37,7 @@ const Questionnaire: React.FC<QuestionnaireProps> = (props) => {
   }
 
   if (!isExpanded) return (
-    <Card>
+    <Card className={className}>
       <Card.Header style={headerStyle} onClick={() => setIsExpanded(true)}>
         <Row className='align-items-center'>
           <h4 className='m-2'>{questionnaire.title}</h4>
@@ -45,7 +47,7 @@ const Questionnaire: React.FC<QuestionnaireProps> = (props) => {
   )
 
   return (
-    <Card>
+    <Card className={className}>
       <Card.Header style={headerStyle} onClick={() => setIsExpanded(false)}>
         <Row className='align-items-center'>
           <h4 className='m-2'>{questionnaire.title}</h4>
@@ -55,7 +57,7 @@ const Questionnaire: React.FC<QuestionnaireProps> = (props) => {
       <Card.Body>
       <ListGroup className='list-group-flush'>
       {
-        questionnaire.questions.map((q: Q.Question) => {
+        questionnaire.questions.map((q: Q.TQuestion) => {
           const Component = questionTypeMap(q.type)
           return (
             <ListGroupItem key={q.id}>
@@ -78,7 +80,7 @@ const questionSubmissionMutationOptions = (refetchQ?: DocumentNode) => {
   return opts
 }
 
-type TQuestionTitleAdditions = React.FC<{ question: Q.Question }>
+type TQuestionTitleAdditions = React.FC<{ question: Q.TQuestion }>
 
 type CommonQuestionProps = {
   readOnly?: boolean
@@ -108,7 +110,7 @@ const TextQuestion: React.FC<TextQuestionProps> = ({ question, readOnly, TitleAd
   }
 
   return (
-    <div>
+    <div onKeyDown={onKeyDown('Enter', onSave)}>
       <Form.Label>
         <Row className='align-items-center'>
           <h5 className='mr-1'>{question.text}</h5>
@@ -239,7 +241,7 @@ const MultipleChoiceQuestion: React.FC<MultipleChoiceQuestionProps> = ({ questio
   }
 
   return (
-    <div>
+    <div onKeyDown={onKeyDown('Enter', onSave)}>
       <Form.Label>
         <Row className='align-items-center'>
           <h5 className='mr-1'>{question.text}</h5>

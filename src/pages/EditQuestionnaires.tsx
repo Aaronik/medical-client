@@ -17,7 +17,7 @@ import onSelectChange from 'util/onSelectChange'
 import onKeyDown from 'util/onKeyDown'
 import withoutPropagation from 'util/withoutPropagation'
 import withoutResponses from 'util/withoutResponses'
-import { Question } from 'types/Question.d'
+import { TQuestion } from 'types/Question.d'
 import { TQuestionnaire } from 'types/Questionnaire.d'
 import { UPDATE_QUESTIONNAIRE, ADD_QUESTIONS, CREATE_QUESTIONNAIRE, CREATE_QUESTION_RELATIONS, DELETE_QUESTION, DELETE_QUESTIONNAIRE, UPDATE_QUESTION } from 'util/queries'
 import omitDeep from 'omit-deep-lodash'
@@ -147,18 +147,18 @@ const EditableQuestionnaire: React.FC<{ questionnaire: TQuestionnaire, questionn
     deleteQuestionnaire({ variables: { id: questionnaire.id }})
   }
 
-  const onDeleteQuestion = (question: Question) => () => {
+  const onDeleteQuestion = (question: TQuestion) => () => {
     deleteQuestion({ variables: { id: question.id }})
   }
 
-  const onCreateQuestionClick = (question: Question) => {
+  const onCreateQuestionClick = (question: TQuestion) => {
     addQuestion({ variables: { questions: [
       { questionnaireId: questionnaire.id, ...question }
     ]}})
     setIsQuestionModalOpen(false)
   }
 
-  const onUpdateQuestion = (question: Question) => {
+  const onUpdateQuestion = (question: TQuestion) => {
     updateQuestion({ variables: { question }})
   }
 
@@ -177,7 +177,9 @@ const EditableQuestionnaire: React.FC<{ questionnaire: TQuestionnaire, questionn
     setIsRelationModalOpen(false)
   }
 
-  const questionIdOptions = questionnaire.questions.map(q => ({ value: q.id, label: q.text }))
+  // We're guaranteed to have a question from the db (so it'll have an id) b/c we're adding relations to already
+  // existing questions. The questions have to have been saved to get here.
+  const questionIdOptions = questionnaire.questions.map(q => ({ value: q.id as number, label: q.text }))
 
   const QuestionnaireTitleAdditions = () => (
     <React.Fragment>
@@ -190,7 +192,7 @@ const EditableQuestionnaire: React.FC<{ questionnaire: TQuestionnaire, questionn
     </React.Fragment>
   )
 
-  const QuestionTitleAdditions: React.FC<{ question: Question }> = ({ question }) => {
+  const QuestionTitleAdditions: React.FC<{ question: TQuestion }> = ({ question }) => {
     const [ isUpdateModalOpen, setIsUpdateModalOpen ] = useState(false)
 
     return (
@@ -223,7 +225,7 @@ const EditableQuestionnaire: React.FC<{ questionnaire: TQuestionnaire, questionn
       <QuestionModal
         show={isQuestionModalOpen}
         close={() => setIsQuestionModalOpen(false)}
-        save={(question: Question) => onCreateQuestionClick(question)}
+        save={(question: TQuestion) => onCreateQuestionClick(question)}
       />
 
       <AddQuestionnaireModal

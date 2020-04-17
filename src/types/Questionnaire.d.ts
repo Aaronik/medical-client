@@ -1,9 +1,9 @@
-import Question from 'types/Question.d'
+import { TQuestion } from 'types/Question.d'
 
 export type TQuestionnaire = {
   id: number
   title: string
-  questions: Question[]
+  questions: TQuestion[]
   next: any[]
 }
 
