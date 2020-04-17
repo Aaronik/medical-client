@@ -16,13 +16,14 @@ type TProps = {
   onIconClick?: () => void
   autoFocus?: boolean
   readOnly?: boolean
+  onKeyDown?: (evt: React.KeyboardEvent<HTMLElement>) => void
 }
 
 // hate to codify the event: any pattern but typing it is very difficult
 const deconstructEvent = (onChange: Function) => (event: any) => onChange(event.currentTarget.value)
 
 // This component is here to abstract common input fields.
-const FormInput: React.FunctionComponent<TProps> = ({ label, type, onChange, value, icon, onIconClick, autoFocus, placeholder, readOnly }) => {
+const FormInput: React.FunctionComponent<TProps> = ({ label, type, onChange, value, icon, onIconClick, autoFocus, placeholder, onKeyDown, readOnly }) => {
 
   // Have to use "any" as there's no FormControl export:
   // https://github.com/react-bootstrap/react-bootstrap/issues/3568
@@ -38,7 +39,7 @@ const FormInput: React.FunctionComponent<TProps> = ({ label, type, onChange, val
     <Form.Group as={Col} className='custom-form-group'>
       <Form.Label className="text-muted">{label}</Form.Label>
       <InputGroup>
-        <Form.Control readOnly={readOnly} ref={formControlEl} type={type} onChange={deconstructEvent(onChange)} value={value} placeholder={placeholder}></Form.Control>
+        <Form.Control onKeyDown={onKeyDown} readOnly={readOnly} ref={formControlEl} type={type} onChange={deconstructEvent(onChange)} value={value} placeholder={placeholder}></Form.Control>
         { icon &&
           <InputGroup.Append onClick={onIconClick} style={{ cursor: onIconClick ? "pointer" : "default" }}>
             <InputGroup.Text><FontAwesomeIcon icon={icon} /></InputGroup.Text>

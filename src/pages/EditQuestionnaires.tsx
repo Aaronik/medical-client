@@ -201,8 +201,6 @@ const EditableQuestionnaire: React.FC<{ questionnaire: TQuestionnaire, questionn
 
     return (
       <Row>
-        <p className='mr-1'>({question.id})</p>
-        <p className='mr-1'>({question.type})</p>
         <Button className='mr-1' variant='success' onClick={() => setIsUpdateModalOpen(true)}>Update</Button>
         <Button className='mr-1' variant='danger' size='sm' onClick={onDeleteQuestion(question)}>
           <FontAwesomeIcon icon={faTimes} className='icon' size='sm'/>

@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { TQuestion, QuestionOption } from 'types/Question.d'
 import Modal from 'react-bootstrap/Modal'
 import Button from 'react-bootstrap/Button'
+import Col from 'react-bootstrap/Col'
 import FormInput from 'components/FormInput'
 import Select from 'react-select'
 import onSelectChange from 'util/onSelectChange'
@@ -50,17 +51,36 @@ const QuestionModal = (props: QuestionModalProps) => {
     ? 'Edit Question'
     : 'Add Question'
 
+  const OptionRows = () => {
+    const removeOption = (option: QuestionOption) => {
+      const newOptions = options.filter(existingOption => option.id ? option.id !== existingOption.id : option.text !== existingOption.text)
+      setOptions(newOptions)
+    }
+
+    return (
+      <Col xs={6} className='d-flex flex-column'>
+        {
+          options.map(option => (
+            <Button onClick={() => removeOption(option)} className='mb-1' key={option.id || option.text}>{option.text}</Button>
+          ))
+        }
+      </Col>
+    )
+  }
+
+  const defaultSelectType = QUESTION_TYPE_OPTIONS.find(op => op.value === type)
+
   return (
     <Modal show={show} centered onHide={close}>
       <Modal.Header>
         <Modal.Title>{modalTitle}</Modal.Title>
       </Modal.Header>
 
-      <Modal.Body onKeyDown={onKeyDown('Enter', onSaveClick)}>
+      <Modal.Body>
         <Select
           className='pb-3'
           onChange={onSelectChange(setType)}
-          defaultValue={QUESTION_TYPE_OPTIONS[0]}
+          defaultValue={defaultSelectType}
           options={QUESTION_TYPE_OPTIONS}/>
 
         <FormInput
@@ -68,19 +88,21 @@ const QuestionModal = (props: QuestionModalProps) => {
           label='Question Text'
           value={text}
           type="text"
-          onChange={setText}/>
+          onChange={setText}
+          onKeyDown={onKeyDown('Enter', onSaveClick)}/>
 
         { questionTypeHasOptions && [
 
           <FormInput
             key='options-text'
-            autoFocus={true}
+            autoFocus={false}
             label={'Option Text'}
             value={optionText}
             type="text"
-            onChange={setOptionText}/>,
+            onChange={setOptionText}
+            onKeyDown={onKeyDown('Enter', onAddOptionClick)}/>,
 
-          <code key='options'>Question Options: {JSON.stringify(options, null, 2)}</code>
+          <OptionRows key='option-rows'/>
         ]}
 
       </Modal.Body>
