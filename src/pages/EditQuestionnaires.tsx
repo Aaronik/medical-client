@@ -12,6 +12,7 @@ import Container from 'react-bootstrap/Container'
 import Form from 'react-bootstrap/Form'
 import Modal from 'react-bootstrap/Modal'
 import Row from 'react-bootstrap/Row'
+import Spinner from 'react-bootstrap/Spinner'
 import Select from 'react-select'
 import onSelectChange from 'util/onSelectChange'
 import onKeyDown from 'util/onKeyDown'
@@ -51,9 +52,11 @@ const Wrapper: React.FC<Props> = ({ children, questionnairesQuery }) => {
   const [ isQuestionnaireModalOpen, setIsQuestionnaireModalOpen ] = useState(false)
   const [ questionnaireTitle, setQuestionnaireTitle ] = useState('')
 
-  const [ createQuestionnaire ] = useMutation(CREATE_QUESTIONNAIRE, {
+  const [ createQuestionnaire, { loading: createQuestionnaireLoading, error: createQuestionnaireError }] = useMutation(CREATE_QUESTIONNAIRE, {
     refetchQueries: [{ query: questionnairesQuery }]
   })
+
+  if (createQuestionnaireError) return <ErrorPage error={createQuestionnaireError}/>
 
   const onCreateClick = () => {
     createQuestionnaire({ variables: { title: questionnaireTitle, questions: [] }})
@@ -63,7 +66,7 @@ const Wrapper: React.FC<Props> = ({ children, questionnairesQuery }) => {
 
   return (
     <Container>
-      <h1>Questionnaires</h1>
+      <h1>Questionnaires { createQuestionnaireLoading && <Spinner animation='grow'/>}</h1>
       <Button onClick={() => setIsQuestionnaireModalOpen(true)}>Create Questionnaire</Button>
       <hr/>
       { children }
@@ -131,8 +134,8 @@ const EditableQuestionnaire: React.FC<{ questionnaire: TQuestionnaire, questionn
   const [ updateQuestion, { error: updateError } ]                   = useMutation(UPDATE_QUESTION, options)
   const [ addRelation, { error: addRelationError } ]                 = useMutation(CREATE_QUESTION_RELATIONS, options)
   const [ deleteQuestion, { error: deleteError } ]                   = useMutation(DELETE_QUESTION, options)
-  const [ deleteQuestionnaire, { error: deleteQuestionnaireError } ] = useMutation(DELETE_QUESTIONNAIRE, options)
-  const [ updateQuestionnaire, { error: updateQuestionnaireError }]  = useMutation(UPDATE_QUESTIONNAIRE, options)
+  const [ deleteQuestionnaire, { error: deleteQuestionnaireError, loading: deleteQuestionnaireLoading }] = useMutation(DELETE_QUESTIONNAIRE, options)
+  const [ updateQuestionnaire, { error: updateQuestionnaireError, loading: updateQuestionnaireLoading }] = useMutation(UPDATE_QUESTIONNAIRE, options)
 
   for (let error of [ addError, updateError, addRelationError, deleteError, deleteQuestionnaireError, updateQuestionnaireError ]) {
     if (error) return <ErrorPage error={error}/>
@@ -187,8 +190,9 @@ const EditableQuestionnaire: React.FC<{ questionnaire: TQuestionnaire, questionn
       <Button className='mr-1' onClick={withoutPropagation(() => setIsQuestionModalOpen(true))}>Add Question</Button>
       <Button className='mr-1' onClick={withoutPropagation(() => setIsRelationModalOpen(true))}>Add Question Relation</Button>
       <Button className='mr-1' variant='danger' onClick={withoutPropagation(onDeleteQuestionnaire)}>
-          <FontAwesomeIcon icon={faTimes} className='icon' size='sm'/>
+        { deleteQuestionnaireLoading ? <Spinner animation='grow' size='sm'/> : <FontAwesomeIcon icon={faTimes} className='icon' size='sm'/> }
       </Button>
+      { updateQuestionnaireLoading && <Spinner animation='grow' size='sm'/> }
     </React.Fragment>
   )
 

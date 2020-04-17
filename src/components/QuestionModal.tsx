@@ -36,7 +36,6 @@ const QuestionModal = (props: QuestionModalProps) => {
   }
 
   const onSaveClick = () => {
-    console.log('onSaveClick called, type, text:', type, text)
     let updatedQuestion = { type, text } as TQuestion
     if (question?.id) Object.assign(updatedQuestion, { id: question.id })
     if (options.length) Object.assign(updatedQuestion, { options })
