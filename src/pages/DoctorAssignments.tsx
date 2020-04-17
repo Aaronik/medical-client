@@ -86,22 +86,26 @@ const DoctorAssignmentsPage: React.FC<TProps> = ({ patient }) => {
 
   return (
     <Container className='mt-5'>
-      <h3>Assignments</h3>
+      <section className='mb-5'>
+        <h3>Questionnaires Assigned to {patient.name}</h3>
 
-      <Select
-        options={dropdownOptions}
-        onChange={onSelectChange(onAssign)}
-        placeholder={'Assign a questionnaire...'}
-        />
+        <Table>
+          <tbody>
+            { rows }
+          </tbody>
+        </Table>
 
-      <Table>
-        <tbody>
-          { rows }
-        </tbody>
-      </Table>
+        <Select
+          options={dropdownOptions}
+          onChange={onSelectChange(onAssign)}
+          placeholder={'Assign a questionnaire...'}
+          />
+      </section>
 
-      <h3>Responses</h3>
-      {questionnaires}
+      <section>
+        <h3>Responses</h3>
+        {questionnaires}
+      </section>
 
     </Container>
   )

@@ -64,7 +64,7 @@ const Wrapper: React.FC<Props> = ({ children, questionnairesQuery }) => {
   return (
     <Container>
       <h1>Questionnaires</h1>
-      <Button onClick={() => setIsQuestionnaireModalOpen(true)}>Add Questionnaire</Button>
+      <Button onClick={() => setIsQuestionnaireModalOpen(true)}>Create Questionnaire</Button>
       <hr/>
       { children }
 
@@ -91,7 +91,7 @@ const AddQuestionnaireModal: React.FC<AddQuestionnaireModalProps> = ({ show, clo
   return (
     <Modal show={show} centered onHide={close}>
       <Modal.Header>
-        <Modal.Title>Add Questionnaire</Modal.Title>
+        <Modal.Title>Create Questionnaire</Modal.Title>
       </Modal.Header>
 
       <Modal.Body onKeyDown={onKeyDown('Enter', onSave)}>
