@@ -79,19 +79,16 @@ const PatientPicker: React.FC<TProps> = ({ patients, className, activePatient })
   // The Avatar list will be sorted by the server, hopefully by frequency of use.
   const alphabeticallySortedPatientOptions = mapPatientsToOptions(patients).sort((a, b) => a.label[0] < b.label[0] ? -1 : 1)
 
-  const onAvatarClick = (patient: TUser) => () => {
-    setActivePatient(patient.id, '/overview')
+  const onAvatarClick = ({ id }: { id: number }) => () => {
+    // If we're going from user to user, stay on the same page.
+    // But if we're going from no user to a user, redir to that user's overview.
+    if (!activePatient) setActivePatient(id, '/overview')
+    else                setActivePatient(id)
   }
 
   const onSelectChange = (option: ValueType<TOption>) => {
-    if (!option) {
-      return setActivePatient(0, '/')
-    }
-    setActivePatient(
-      // @ts-ignore -- i really don't know how to type this, sorry
-      option.value,
-      '/'
-    )
+    if (option) onAvatarClick({ id: (option as TOption).value })()
+    else        setActivePatient(0, '/')
   }
 
   const onAddPatient = (name: string) => {
