@@ -6,13 +6,21 @@ import Row from 'react-bootstrap/Row'
 import Container from 'react-bootstrap/Container'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import * as icons from '@fortawesome/free-solid-svg-icons'
-import { TUser } from 'types/User.d'
+import { TUser, TUserRole } from 'types/User.d'
 import PatientPicker from 'components/PatientPicker'
 import Avatar from 'components/Avatar'
 import Fade from 'components/Fade'
 import './AppGutterNav.sass'
 
-const AppGutterNav: React.FC<AppGutterNavProps> = ({ entries, gutterNavActive, patients, activePatient }) => {
+type AppGutterNavProps = {
+  role: TUserRole
+  entries: LinkEntryProps[]
+  gutterNavActive: boolean
+  patients?: TUser[] // If this is not supplied, we won't show the patient picker at all.
+  activePatient?: TUser
+}
+
+const AppGutterNav: React.FC<AppGutterNavProps> = ({ role, entries, gutterNavActive, patients, activePatient }) => {
   let containerClassName = 'app-gutter-nav flex-column'
   containerClassName += ` col-xl-${cs.xl}`
   containerClassName += ` col-lg-${cs.lg}`
@@ -23,7 +31,7 @@ const AppGutterNav: React.FC<AppGutterNavProps> = ({ entries, gutterNavActive, p
 
   const navEntries = entries.map((e, idx) => <NavEntry user={activePatient} key={idx} {...e}/>)
 
-  if (!patients) return <Nav className={containerClassName}>{navEntries}</Nav>
+  if (role !== 'DOCTOR' || !patients) return <Nav className={containerClassName}>{navEntries}</Nav>
 
   return (
     <Nav className={containerClassName}>
@@ -142,13 +150,6 @@ const cs = {
   md: 3,
   sm: 4,
   xs: 6 // note: not an actual bootstrap size in classes
-}
-
-type AppGutterNavProps = {
-  entries: LinkEntryProps[]
-  gutterNavActive: boolean
-  patients?: TUser[] // If this is not supplied, we won't show the patient picker at all.
-  activePatient?: TUser
 }
 
 const TOGGLE_GUTTER_NAV = gql`

@@ -133,7 +133,7 @@ const AdminBase: React.FunctionComponent<BaseProps> = ({ user, gutterNavActive, 
 
       <Alert alerts={alerts}/>
 
-      <AppGutterNav entries={gutterRoutes} gutterNavActive={gutterNavActive}/>
+      <AppGutterNav role={user.role} entries={gutterRoutes} gutterNavActive={gutterNavActive}/>
 
       <GutterAwareFluidContainer gutterNavActive={gutterNavActive}>
         <Switch>
@@ -190,7 +190,7 @@ const DoctorWithPatientBase: React.FunctionComponent<BaseProps & { patients: TUs
 
       <Alert alerts={alerts}/>
 
-      <AppGutterNav entries={gutterRoutes} patients={patients} activePatient={patient} gutterNavActive={gutterNavActive}/>
+      <AppGutterNav role={user.role} entries={gutterRoutes} patients={patients} activePatient={patient} gutterNavActive={gutterNavActive}/>
 
       <GutterAwareFluidContainer gutterNavActive={gutterNavActive}>
         <Switch>
@@ -234,7 +234,7 @@ const DoctorNoPatientBase: React.FunctionComponent<BaseProps & { patients: TUser
 
       <Alert alerts={alerts}/>
 
-      <AppGutterNav entries={gutterRoutes} patients={patients} gutterNavActive={gutterNavActive}/>
+      <AppGutterNav role={user.role} entries={gutterRoutes} patients={patients} gutterNavActive={gutterNavActive}/>
 
       <GutterAwareFluidContainer gutterNavActive={gutterNavActive}>
         <Switch>
@@ -290,7 +290,7 @@ const PatientBase: React.FunctionComponent<BaseProps> = ({ user, alerts, gutterN
         </Nav>
       </AppNavBar>
 
-      <AppGutterNav entries={gutterRoutes} gutterNavActive={gutterNavActive}/>
+      <AppGutterNav role={user.role} entries={gutterRoutes} gutterNavActive={gutterNavActive}/>
 
       <Alert alerts={alerts}/>
 
