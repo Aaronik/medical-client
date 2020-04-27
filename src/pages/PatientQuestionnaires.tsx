@@ -16,6 +16,7 @@ const PatientQuestionnaires: React.FunctionComponent = () => {
   if (error) return <ErrorPage error={error}/>
 
   const questionnaires = data?.questionnairesAssignedToMe
+  console.log(questionnaires)
 
   if (!questionnaires?.length) return <h2>No questionnaires!</h2>
 
@@ -23,7 +24,7 @@ const PatientQuestionnaires: React.FunctionComponent = () => {
     const completionIcon = getQuestionnaireCompletionStatusIcon(q)
 
     return (
-      <Row className='d-flex flex-row justify-content-between align-items-center' key={q.id}>
+      <Row className='d-flex flex-row justify-content-between align-items-center' key={`${q.id}-${q.assignmentInstanceId}`}>
         <Questionnaire
           questionnaire={q}
           isAnswerable={true}

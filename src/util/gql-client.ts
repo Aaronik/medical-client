@@ -1,4 +1,4 @@
-import { ApolloClient, InMemoryCache } from '@apollo/client'
+import { ApolloClient, InMemoryCache, defaultDataIdFromObject } from '@apollo/client'
 import { times, random } from 'lodash'
 import * as faker from 'faker'
 import * as Timeline from 'types/Timeline.d'
@@ -6,8 +6,23 @@ import * as Alert from 'types/Alert.d'
 import uuid from 'uuid/v4'
 import strings from 'pages/DoctorOverview.strings'
 
+const cacheOptions = {
+  // This is necessary because we often fetch questionnaires with the same id, but with different data, like many
+  // responses to a single questionnaire. I tried using typePolicies with keyFields: ['id', 'assignmentInstanceId']
+  // like specified in https://www.apollographql.com/docs/react/v3.0-beta/caching/cache-configuration/, but apollo
+  // crashed when not every questionnaire had an assignmentInstanceId on it.
+  dataIdFromObject: (responseObject: any, ...args: any[]) => {
+    if (responseObject.__typename === 'Questionnaire') return `Questionnaire:${responseObject.id}:${responseObject.assignmentInstanceId}`
+    if (responseObject.__typename === 'TextQuestion') return uuid()
+    if (responseObject.__typename === 'BooleanQuestion') return uuid()
+    if (responseObject.__typename === 'SingleChoiceQuestion') return uuid()
+    if (responseObject.__typename === 'MultipleChoiceQuestion') return uuid()
+    return defaultDataIdFromObject(responseObject)
+  }
+}
+
 const client = new ApolloClient({
-  cache: new InMemoryCache(),
+  cache: new InMemoryCache(cacheOptions),
   uri: 'http://localhost:4000',
   headers: {
     get authorization() { return localStorage.authToken }

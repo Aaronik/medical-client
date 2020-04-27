@@ -134,6 +134,7 @@ const QUESTIONNAIRE_FRAGMENT = gql`
   {
     id
     title
+    assignmentInstanceId
     questions ${QUESTIONS_FRAGMENT}
   }
 `
@@ -162,9 +163,9 @@ export const GET_QUESTIONNAIRES_I_MADE = gql`
   }
 `
 
-export const GET_QUESTIONNAIRES_FOR_MY_PATIENT = gql`
-  query QuestionnairesForMyPatient($patientId: Int!) {
-    questionnairesForMyPatient(patientId: $patientId) ${QUESTIONNAIRE_FRAGMENT}
+export const GET_PATIENT_QUESTIONNAIRE_RESPONSES = gql`
+  query PatientQuestionnaireResponses($patientId: Int!) {
+    patientQuestionnaireResponses(patientId: $patientId) ${QUESTIONNAIRE_FRAGMENT}
   }
 `
 
@@ -213,26 +214,26 @@ export const CREATE_QUESTION_RELATIONS = gql`
 `
 
 export const SUBMIT_BOOLEAN_RESPONSE = gql`
-  mutation SubmitBoolean($questionId: Int!, $value: Boolean!) {
-    submitBooleanQuestionResponse(questionId: $questionId, value: $value)
+  mutation SubmitBoolean($questionId: Int!, $assignmentInstanceId: Int!, $value: Boolean!) {
+    submitBooleanQuestionResponse(questionId: $questionId, assignmentInstanceId: $assignmentInstanceId, value: $value)
   }
 `
 
 export const SUBMIT_TEXT_RESPONSE = gql`
-  mutation SubmitText($questionId: Int!, $value: String!) {
-    submitTextQuestionResponse(questionId: $questionId, value: $value)
+  mutation SubmitText($questionId: Int!, $assignmentInstanceId: Int!, $value: String!) {
+    submitTextQuestionResponse(questionId: $questionId, assignmentInstanceId: $assignmentInstanceId, value: $value)
   }
 `
 
 export const SUBMIT_CHOICE_RESPONSE = gql`
-  mutation SubmitChoice($questionId: Int!, $optionId: Int!) {
-    submitChoiceQuestionResponse(questionId: $questionId, optionId: $optionId)
+  mutation SubmitChoice($questionId: Int!, $assignmentInstanceId: Int!, $optionId: Int!) {
+    submitChoiceQuestionResponse(questionId: $questionId, assignmentInstanceId: $assignmentInstanceId, optionId: $optionId)
   }
 `
 
 export const SUBMIT_CHOICE_RESPONSES = gql`
-  mutation SubmitChoice($questionId: Int!, $optionIds: [Int]!) {
-    submitChoiceQuestionResponses(questionId: $questionId, optionIds: $optionIds)
+  mutation SubmitChoice($questionId: Int!, $assignmentInstanceId: Int!, $optionIds: [Int]!) {
+    submitChoiceQuestionResponses(questionId: $questionId, assignmentInstanceId: $assignmentInstanceId, optionIds: $optionIds)
   }
 `
 

@@ -61,7 +61,13 @@ const Questionnaire: React.FC<QuestionnaireProps> = (props) => {
           const Component = questionTypeMap(q.type)
           return (
             <ListGroupItem key={q.id}>
-              <Component TitleAdditions={QuestionButtons} question={q} key={q.id} readOnly={isAnswerable === false} refetchQ={questionResponseRefetchQuery}/>
+              <Component
+                TitleAdditions={QuestionButtons}
+                question={q}
+                key={q.id}
+                readOnly={isAnswerable === false}
+                refetchQ={questionResponseRefetchQuery}
+                assignmentInstanceId={questionnaire.assignmentInstanceId}/>
             </ListGroupItem>
           )
         })
@@ -83,6 +89,7 @@ const questionSubmissionMutationOptions = (refetchQ?: DocumentNode) => {
 type TQuestionTitleAdditions = React.FC<{ question: Q.TQuestion }>
 
 type CommonQuestionProps = {
+  assignmentInstanceId: number
   readOnly?: boolean
   TitleAdditions?: TQuestionTitleAdditions
   refetchQ?: DocumentNode
@@ -92,7 +99,7 @@ type TextQuestionProps = {
   question: Q.TextQuestion
 } & CommonQuestionProps
 
-const TextQuestion: React.FC<TextQuestionProps> = ({ question, readOnly, TitleAdditions, refetchQ }) => {
+const TextQuestion: React.FC<TextQuestionProps> = ({ question, readOnly, TitleAdditions, refetchQ, assignmentInstanceId }) => {
   const [ hasChangedSinceLastSave, setHasChangedSinceLastSave ] = useState(!question.textResp)
   const [ currentResponse, setCurrentResponse ] = useState(question.textResp || '')
   const [ respondToQuestion, { loading, error } ] = useMutation(SUBMIT_TEXT_RESPONSE, questionSubmissionMutationOptions(refetchQ))
@@ -105,7 +112,7 @@ const TextQuestion: React.FC<TextQuestionProps> = ({ question, readOnly, TitleAd
 
   const onSave = () => {
     if (readOnly) return
-    respondToQuestion({ variables: { questionId: question.id, value: currentResponse }})
+    respondToQuestion({ variables: { questionId: question.id, value: currentResponse, assignmentInstanceId }})
     setHasChangedSinceLastSave(false)
   }
 
@@ -134,7 +141,7 @@ type BoolQuestionProps = {
   question: Q.BooleanQuestion
 } & CommonQuestionProps
 
-const BoolQuestion: React.FC<BoolQuestionProps> = ({ question, readOnly, TitleAdditions, refetchQ }) => {
+const BoolQuestion: React.FC<BoolQuestionProps> = ({ question, readOnly, TitleAdditions, refetchQ, assignmentInstanceId }) => {
   const hasResponse = question.boolResp === true || question.boolResp === false
 
   const [ hasChangedSinceLastSave, setHasChangedSinceLastSave ] = useState(!hasResponse)
@@ -152,7 +159,7 @@ const BoolQuestion: React.FC<BoolQuestionProps> = ({ question, readOnly, TitleAd
     // setting currentResponse and then saving immediately after results in saving the previous
     // value of currentResponse -- it doesn't have time to update yet. This is to circumvent that.
     const value = b === undefined ? currentResponse : b
-    respondToQuestion({ variables: { questionId: question.id, value }})
+    respondToQuestion({ variables: { questionId: question.id, value, assignmentInstanceId }})
     setHasChangedSinceLastSave(false)
   }
 
@@ -178,7 +185,7 @@ type SingleChoiceQuestionProps = {
   question: Q.SingleChoiceQuestion
 } & CommonQuestionProps
 
-const SingleChoiceQuestion: React.FC<SingleChoiceQuestionProps> = ({ question, readOnly, TitleAdditions, refetchQ }) => {
+const SingleChoiceQuestion: React.FC<SingleChoiceQuestionProps> = ({ question, readOnly, TitleAdditions, refetchQ, assignmentInstanceId }) => {
   const [ hasChangedSinceLastSave, setHasChangedSinceLastSave ] = useState(!question.singleChoiceResp)
   const [ currentResponse, setCurrentResponse ] = useState(question.singleChoiceResp?.id)
   const [ respondToQuestion, { loading, error } ] = useMutation(SUBMIT_CHOICE_RESPONSE, questionSubmissionMutationOptions(refetchQ))
@@ -194,7 +201,7 @@ const SingleChoiceQuestion: React.FC<SingleChoiceQuestionProps> = ({ question, r
     // setting currentResponse and then saving immediately after results in saving the previous
     // value of currentResponse -- it doesn't have time to update yet. This is to circumvent that.
     const finalOptionId = optionId === undefined ? currentResponse : optionId
-    respondToQuestion({ variables: { questionId: question.id, optionId: finalOptionId }})
+    respondToQuestion({ variables: { questionId: question.id, optionId: finalOptionId, assignmentInstanceId }})
     setHasChangedSinceLastSave(false)
   }
 
@@ -221,7 +228,7 @@ type MultipleChoiceQuestionProps = {
   question: Q.MultipleChoiceQuestion
 } & CommonQuestionProps
 
-const MultipleChoiceQuestion: React.FC<MultipleChoiceQuestionProps> = ({ question, readOnly, TitleAdditions, refetchQ }) => {
+const MultipleChoiceQuestion: React.FC<MultipleChoiceQuestionProps> = ({ question, readOnly, TitleAdditions, refetchQ, assignmentInstanceId }) => {
   const initialCurrentOptionIds = (question.multipleChoiceResp?.map(option => option.id) || []) as number[]
 
   const [ hasChangedSinceLastSave, setHasChangedSinceLastSave ] = useState(!question.multipleChoiceResp?.length)
@@ -236,7 +243,7 @@ const MultipleChoiceQuestion: React.FC<MultipleChoiceQuestionProps> = ({ questio
 
   const onSave = () => {
     if (readOnly) return
-    respondToQuestion({ variables: { questionId: question.id, optionIds: currentOptionIds }})
+    respondToQuestion({ variables: { questionId: question.id, optionIds: currentOptionIds, assignmentInstanceId }})
     setHasChangedSinceLastSave(false)
   }
 
