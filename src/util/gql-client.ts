@@ -23,7 +23,7 @@ const cacheOptions = {
 
 const client = new ApolloClient({
   cache: new InMemoryCache(cacheOptions),
-  uri: 'http://localhost:4000',
+  uri: process.env.REACT_APP_API_URL || 'http://localhost:4000',
   headers: {
     get authorization() { return localStorage.authToken }
   },

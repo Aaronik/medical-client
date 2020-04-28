@@ -42,6 +42,8 @@ import gqlClient from 'util/gql-client'
 import { ME_QUERY, GET_ALL_QUESTIONNAIRES, GET_QUESTIONNAIRES_I_MADE } from 'util/queries'
 import 'App.sass'
 
+console.log(process.env)
+
 // Things to do once when the page loads
 StylesManager.applyTheme('bootstrap')
 
