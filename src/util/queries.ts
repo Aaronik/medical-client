@@ -127,6 +127,14 @@ const QUESTIONS_FRAGMENT = gql`
       }
       ${CHOICE_QUESTIONS_SUBFRAGMENT}
     }
+    ... on EventQuestion {
+      eventResp: response {
+        title
+        start
+        end
+      }
+      ${NON_CHOICE_QUESTIONS_SUBFRAGMENT}
+    }
   }
 `
 
@@ -232,8 +240,14 @@ export const SUBMIT_CHOICE_RESPONSE = gql`
 `
 
 export const SUBMIT_CHOICE_RESPONSES = gql`
-  mutation SubmitChoice($questionId: Int!, $assignmentInstanceId: Int!, $optionIds: [Int]!) {
+  mutation SubmitChoices($questionId: Int!, $assignmentInstanceId: Int!, $optionIds: [Int]!) {
     submitChoiceQuestionResponses(questionId: $questionId, assignmentInstanceId: $assignmentInstanceId, optionIds: $optionIds)
+  }
+`
+
+export const SUBMIT_EVENT_RESPONSE = gql`
+  mutation SubmitEvent($questionId: Int!, $assignmentInstanceId: Int!, $event: EventResponseInput!) {
+    submitEventQuestionResponse(questionId: $questionId, assignmentInstanceId: $assignmentInstanceId, event: $event)
   }
 `
 

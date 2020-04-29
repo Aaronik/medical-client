@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { TQuestion, QuestionOption } from 'types/Question.d'
+import { TQuestion, QuestionOption, QuestionType } from 'types/Question.d'
 import Modal from 'react-bootstrap/Modal'
 import Button from 'react-bootstrap/Button'
 import Col from 'react-bootstrap/Col'
@@ -120,9 +120,10 @@ const QuestionModal = (props: QuestionModalProps) => {
 
 export default QuestionModal
 
-const QUESTION_TYPE_OPTIONS = [
+const QUESTION_TYPE_OPTIONS: { value: QuestionType, label: string }[] = [
   { value: 'TEXT', label: 'Text' },
   { value: 'BOOLEAN', label: 'Boolean' },
   { value: 'SINGLE_CHOICE', label: 'Radio Group (Choose Single Answer)' },
   { value: 'MULTIPLE_CHOICE', label: 'Check Boxes (Choose Multiple Answers)' },
+  { value: 'EVENT', label: 'Event' },
 ]

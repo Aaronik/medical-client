@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from 'react'
+import { useQuery, gql } from '@apollo/client'
 import { without } from 'lodash'
+import Loading from 'pages/Loading'
+import ErrorPage from 'pages/Error'
 import Container from 'react-bootstrap/Container'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
@@ -26,11 +29,19 @@ import onSelectChange, { TOption } from 'util/onSelectChange'
 
 type TProps = {
   patient: TUser
-  patientTimelineData: TTimelineItem[]
-  patientTimelineGroups: TTimelineGroup[]
 }
 
-const DoctorTimelinePage: React.FC<TProps> = ({ patient, patientTimelineData, patientTimelineGroups }) => {
+const DoctorTimelinePage: React.FC<TProps> = ({ patient }) => {
+  const { data: patientTimelineItemsData, loading: itemsLoading, error: itemsError } = useQuery<{ timelineItems: TTimelineItem[] }>(TIMELINE_ITEMS, { variables: { userId: patient.id }})
+  const { data: patientTimelineGroupsData, loading: groupsLoading, error: groupsError } = useQuery(TIMELINE_GROUPS)
+
+  const patientTimelineGroups = patientTimelineGroupsData?.timelineGroups || []
+  const patientTimelineItems = (patientTimelineItemsData?.timelineItems || []).map(item => {
+    let newItem = Object.assign({}, item, { start: new Date(+item.start), content: item.title })
+    item.end && Object.assign(newItem, { end: new Date(+item.end) })
+    return newItem
+  })
+
   const [ isEventModalActive, setIsEventModalActive ] = useState(false)
   const [ filterString, setFilterString ] = useState('')
   const [ activeGroupIds, setActiveGroupIds ] = useState<string[]>(mapGroupsToIds(patientTimelineGroups))
@@ -42,6 +53,11 @@ const DoctorTimelinePage: React.FC<TProps> = ({ patient, patientTimelineData, pa
   useEffect(() => {
     setActiveGroupIds(mapGroupsToIds(patientTimelineGroups))
   }, [patientTimelineGroups])
+
+  if (itemsLoading || groupsLoading) return <Loading/>
+  if (itemsError) return <ErrorPage error={itemsError}/>
+  if (groupsError) return <ErrorPage error={groupsError}/>
+
 
   const updateActiveTimelineItem = (update: Partial<TTimelineItem>) => {
     setActiveTimelineItem({ ...activeTimelineItem, ...update })
@@ -64,7 +80,7 @@ const DoctorTimelinePage: React.FC<TProps> = ({ patient, patientTimelineData, pa
   const onModalSaveClick = () => {
     /* const type = activeTimelineItem.end === activeTimelineItem.start ? 'point' as 'point' : 'range' as 'range' */
     /* const item = { ...activeTimelineItem, type } */
-    /* const isExistingItem = patientTimelineData.map(d => d.id).includes(activeTimelineItem.id) */
+    /* const isExistingItem = patientTimelineItems.map(d => d.id).includes(activeTimelineItem.id) */
 
     alert('Sorry, item updating/adding has been temporarily disabled (TODO)')
     /* if (isExistingItem) updateTimelineItem(patient.id, item) */
@@ -106,7 +122,7 @@ const DoctorTimelinePage: React.FC<TProps> = ({ patient, patientTimelineData, pa
 
 
       <Timeline
-        items={filterTimelineData(filterString, patientTimelineData)}
+        items={filterTimelineData(filterString, patientTimelineItems)}
         groups={filterTimelineGroups(activeGroupIds, patientTimelineGroups)}
         onAdd={onTimelineDoubleClick}
         onUpdate={onTimelineDoubleClick}
@@ -287,3 +303,28 @@ const EventModal: React.FC<TEventModalProps> = ({ show, item, onSave, updateItem
 const mapGroupsToIds = (groups: TTimelineGroup[]) => groups.map(g => g.id.toString())
 
 export default DoctorTimelinePage
+
+const TIMELINE_ITEMS = gql`
+  query TimelineItems($userId: Int!) {
+    timelineItems(userId: $userId) {
+      id
+      content
+      end
+      group
+      start
+      title
+      type
+    }
+  }
+`
+
+const TIMELINE_GROUPS = gql`
+  query TimelineGroups {
+    timelineGroups {
+      id
+      content
+      style
+      title
+    }
+  }
+`

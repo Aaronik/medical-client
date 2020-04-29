@@ -1,10 +1,12 @@
 // TODO It'd be really great to have these shared b/t repos
+import { TTimelineItem } from 'types/Timeline.d'
 
 export type TQuestion =
     BooleanQuestion
   | TextQuestion
   | SingleChoiceQuestion
   | MultipleChoiceQuestion
+  | EventQuestion
 
 export interface BooleanQuestion extends QuestionMeta {
   type: 'BOOLEAN'
@@ -26,6 +28,11 @@ export interface MultipleChoiceQuestion extends QuestionMeta {
   type: 'MULTIPLE_CHOICE'
   options: QuestionOption[]
   multipleChoiceResp?: QuestionOption[]
+}
+
+export interface EventQuestion extends QuestionMeta {
+  type: 'EVENT'
+  eventResp?: TTimelineItem
 }
 
 export interface QuestionMeta {
@@ -54,5 +61,5 @@ export type QuestionRelation = {
   equals?: string
 }
 
-export type QuestionType = 'TEXT' | 'MULTIPLE_CHOICE' | 'SINGLE_CHOICE' | 'BOOLEAN'
+export type QuestionType = 'TEXT' | 'MULTIPLE_CHOICE' | 'SINGLE_CHOICE' | 'BOOLEAN' | 'EVENT'
 

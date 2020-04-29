@@ -10,6 +10,7 @@ const getQuestionnaireCompletionStatus = (questionnaire: TQuestionnaire): Comple
     if (q.type === 'BOOLEAN' && (q.boolResp === true || q.boolResp === false)) return true
     if (q.type === 'SINGLE_CHOICE' && !!q.singleChoiceResp) return true
     if (q.type === 'MULTIPLE_CHOICE' && q.multipleChoiceResp?.length !== 0) return true
+    if (q.type === 'EVENT' && !!q.eventResp) return true
     return false
   })
 

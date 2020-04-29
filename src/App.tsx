@@ -42,8 +42,6 @@ import gqlClient from 'util/gql-client'
 import { ME_QUERY, GET_ALL_QUESTIONNAIRES, GET_QUESTIONNAIRES_I_MADE } from 'util/queries'
 import 'App.sass'
 
-console.log(process.env)
-
 // Things to do once when the page loads
 StylesManager.applyTheme('bootstrap')
 
@@ -153,7 +151,6 @@ const AdminBase: React.FunctionComponent<BaseProps> = ({ user, gutterNavActive, 
 
 const PATIENT_QUERY = gql`
   query {
-    timeline @client
     updates @client
   }
 `
@@ -200,7 +197,7 @@ const DoctorWithPatientBase: React.FunctionComponent<BaseProps & { patients: TUs
           <Route path='/settings'><DoctorSettingsPage/></Route>
           <Route path='/profile' ><DoctorProfilePage user={user}/></Route>
           <Route path='/timeline'>
-            <DoctorTimelinePage patient={patient} patientTimelineData={timeline.data} patientTimelineGroups={timeline.groups}/>
+            <DoctorTimelinePage patient={patient}/>
           </Route>
           <Route path='/activity'><DoctorActivityPage/></Route>
           <Route path='/messages'><DoctorMessagesPage/></Route>

@@ -17,6 +17,7 @@ const cacheOptions = {
     if (responseObject.__typename === 'BooleanQuestion') return uuid()
     if (responseObject.__typename === 'SingleChoiceQuestion') return uuid()
     if (responseObject.__typename === 'MultipleChoiceQuestion') return uuid()
+    if (responseObject.__typename === 'EventQuestion') return uuid()
     return defaultDataIdFromObject(responseObject)
   }
 }
@@ -36,11 +37,11 @@ const client = new ApolloClient({
       activePatientId() { return localStorage.activePatientId },
       alerts() { return alerts },
 
-      timeline() {
-        const data = timelineData(300)
-        const groups = timelineGroups(20)
-        return { data, groups }
-      },
+      // timeline() {
+      //   const data = timelineData(300)
+      //   const groups = timelineGroups(20)
+      //   return { data, groups }
+      // },
 
       updates() {
         return [

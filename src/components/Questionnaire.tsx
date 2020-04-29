@@ -3,6 +3,7 @@ import { ApolloError, DocumentNode } from '@apollo/client'
 import Form from 'react-bootstrap/Form'
 import Row from 'react-bootstrap/Row'
 import Button from 'react-bootstrap/Button'
+import ButtonGroup from 'react-bootstrap/ButtonGroup'
 import Spinner from 'react-bootstrap/Spinner'
 import ToggleButtonGroup from 'react-bootstrap/ToggleButtonGroup'
 import ToggleButton from 'react-bootstrap/ToggleButton'
@@ -10,13 +11,14 @@ import Card from 'react-bootstrap/Card'
 import ListGroup from 'react-bootstrap/ListGroup'
 import ListGroupItem from 'react-bootstrap/ListGroupItem'
 import FormInput from 'components/FormInput'
-import { SUBMIT_BOOLEAN_RESPONSE, SUBMIT_TEXT_RESPONSE, SUBMIT_CHOICE_RESPONSE, SUBMIT_CHOICE_RESPONSES } from 'util/queries'
+import { SUBMIT_BOOLEAN_RESPONSE, SUBMIT_TEXT_RESPONSE, SUBMIT_CHOICE_RESPONSE, SUBMIT_CHOICE_RESPONSES, SUBMIT_EVENT_RESPONSE } from 'util/queries'
 import onKeyDown from 'util/onKeyDown'
 import { useMutation } from '@apollo/client'
 import { TQuestionnaire } from 'types/Questionnaire.d'
 import * as Q from 'types/Question.d'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faCheck, faExclamation } from '@fortawesome/free-solid-svg-icons' // TODO narrow
+import { faCheck, faExclamation } from '@fortawesome/free-solid-svg-icons'
+import DatePickerModal from 'components/DatePickerModal'
 
 type QuestionnaireProps = {
   questionnaire: TQuestionnaire
@@ -266,11 +268,99 @@ const MultipleChoiceQuestion: React.FC<MultipleChoiceQuestionProps> = ({ questio
   )
 }
 
+type EventQuestionProps = {
+  question: Q.EventQuestion
+} & CommonQuestionProps
+
+const EventQuestion: React.FC<EventQuestionProps> = ({ question, readOnly, TitleAdditions, refetchQ, assignmentInstanceId }) => {
+
+  const initialStart = question.eventResp?.start ? new Date(Number(question.eventResp.start)) : undefined
+  const initialEnd = question.eventResp?.end ? new Date(Number(question.eventResp.end)): undefined
+
+  const [ start, setStart ] = useState(initialStart)
+  const [ end, setEnd ] = useState(initialEnd)
+  const [ isStartModalOpen, setIsStartModalOpen ] = useState(false)
+  const [ isEndModalOpen, setIsEndModalOpen ] = useState(false)
+  const [ hasChangedSinceLastSave, setHasChangedSinceLastSave ] = useState(!question.eventResp)
+  const [ respondToQuestion, { loading, error } ] = useMutation(SUBMIT_EVENT_RESPONSE, questionSubmissionMutationOptions(refetchQ))
+
+  const onChange = (args: any) => {
+    if (readOnly) return
+    setHasChangedSinceLastSave(true)
+  }
+
+  const onSave = () => {
+    if (readOnly) return
+    respondToQuestion({ variables: {
+      questionId: question.id,
+      assignmentInstanceId: assignmentInstanceId,
+      event: { start, end, title: question.text, details: '' }
+    }})
+    setHasChangedSinceLastSave(false)
+  }
+
+  const onStartClick = () => {
+    if (readOnly) return
+    setIsStartModalOpen(true)
+  }
+
+  const onEndClick = () => {
+    if (readOnly) return
+    setIsEndModalOpen(true)
+  }
+
+  const onStartDateSelect = (date: Date) => {
+    if (readOnly) return
+    setStart(date)
+    setHasChangedSinceLastSave(true)
+  }
+
+  const onEndDateSelect = (date: Date) => {
+    if (readOnly) return
+    setEnd(date)
+    setHasChangedSinceLastSave(true)
+  }
+
+  const startString = start?.toLocaleDateString()
+  const endString = end?.toLocaleDateString()
+
+  return (
+    <div onKeyDown={onKeyDown('Enter', onSave)}>
+      <Form.Label>
+        <Row className='align-items-center'>
+          <h5 className='mr-1'>{question.text}</h5>
+        </Row>
+      </Form.Label>
+      <ButtonRow readOnly={readOnly} error={error} loading={loading} hasChangedSinceLastSave={hasChangedSinceLastSave} onSave={onSave}>
+        <ButtonGroup>
+          <Button onClick={onStartClick}>{startString || 'Select start date'}</Button>
+          <Button onClick={onEndClick}>{endString || 'Select end date'}</Button>
+        </ButtonGroup>
+        {TitleAdditions && <div><TitleAdditions question={question}/></div>}
+      </ButtonRow>
+
+      <DatePickerModal
+        show={isStartModalOpen}
+        onClose={() => setIsStartModalOpen(false)}
+        initialDate={start}
+        onSelect={onStartDateSelect}
+      />
+      <DatePickerModal
+        show={isEndModalOpen}
+        onClose={() => setIsEndModalOpen(false)}
+        initialDate={end}
+        onSelect={onEndDateSelect}
+      />
+    </div>
+  )
+}
+
 const questionTypeMap = (type: Q.QuestionType): React.FC<any> => ({
   TEXT: TextQuestion,
   BOOLEAN: BoolQuestion,
   SINGLE_CHOICE: SingleChoiceQuestion,
-  MULTIPLE_CHOICE: MultipleChoiceQuestion
+  MULTIPLE_CHOICE: MultipleChoiceQuestion,
+  EVENT: EventQuestion
 }[type])
 
 type ButtonRowProps = {

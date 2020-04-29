@@ -105,9 +105,12 @@ const renderTimeline = (container: HTMLDivElement, items: T.TTimelineItem[], gro
 }
 
 const redrawTimeline = (ref: timeline.Timeline, items: T.TTimelineItem[], groups: T.TTimelineGroup[], options: timeline.TimelineOptions) => {
-  const dataSetGroups = new timeline.DataSet(groups)
-
-  ref.setData({ groups: dataSetGroups, items })
+  if (groups.length) {
+    const dataSetGroups = new timeline.DataSet(groups)
+    ref.setData({ groups: dataSetGroups, items })
+  } else {
+    ref.setData({ items })
+  }
   ref.setOptions(options)
 }
 
