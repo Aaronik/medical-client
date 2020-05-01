@@ -56,10 +56,6 @@ const ProfileDropdown: React.FunctionComponent<IProps> = ({ user }) => {
     history.push('/')
   }
 
-  const onMakeAdminClick = () => changeRole('ADMIN')
-  const onMakeDoctorClick = () => changeRole('DOCTOR')
-  const onMakePatientClick = () => changeRole('PATIENT')
-
   return (
     <NavDropdown bsPrefix='d-flex text-decoration-none text-black-50 align-items-center' drop="left" id="auth-dropdown" className='clickable' title={
       user ? <Avatar user={user} size={40} onClick={() => {}}/> : strings('profile')}
@@ -71,10 +67,6 @@ const ProfileDropdown: React.FunctionComponent<IProps> = ({ user }) => {
       <NavDropdown.Item onClick={onSignoutPress}>{
         loading ? <Spinner animation='grow'/> : strings('signOut')
       }</NavDropdown.Item>
-      <NavDropdown.Divider/>
-      <NavDropdown.Header><Button variant="danger" onClick={onMakeAdminClick}>Make Me an Admin</Button></NavDropdown.Header>
-      <NavDropdown.Header><Button variant="primary" onClick={onMakeDoctorClick}>Make Me a Doctor</Button></NavDropdown.Header>
-      <NavDropdown.Header><Button variant="info" onClick={onMakePatientClick}>Make Me a Patient</Button></NavDropdown.Header>
     </NavDropdown>
   )
 }

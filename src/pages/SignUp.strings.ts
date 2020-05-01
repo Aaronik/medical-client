@@ -13,6 +13,10 @@ const map = {
   noNameError: 'We need a name so we know who we\'re talking to!',
   noEmailError: 'We need a valid email address.',
   noPasswordError: 'We need you to use a password for your own account safety.',
+  noRoleError: 'Please select whether you\'re a doctor or a patient.',
+
+  IAmADoctor: 'I\'m A Doctor',
+  IAmAPatient: 'I\'m A Patient',
 }
 
 export default strings(map)

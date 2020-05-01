@@ -61,7 +61,11 @@ const SignupForm = () => {
   const [ name, setName ] = useState('')
   const [ email, setEmail ] = useState('')
   const [ password, setPassword ] = useState('')
+  const [ role, setRole ] = useState('')
   const [ customError, setCustomError ] = useState('')
+
+  const onDoctorClick = () => setRole('DOCTOR')
+  const onPatientClick = () => setRole('PATIENT')
 
   const onCreateClick = async () => {
     let error = '' // shortcut to circumvent async React setStates
@@ -71,10 +75,11 @@ const SignupForm = () => {
     if (name === '') setCustomError(error = strings('noNameError'))
     if (email === '') setCustomError(error = strings('noEmailError'))
     if (password === '') setCustomError(error = strings('noPasswordError'))
+    if (role === '') setCustomError(error = strings('noRoleError'))
 
     if (!!error) return
 
-    signUp({ variables: { email, password, name }}).then(() => {
+    signUp({ variables: { email, password, name, role }}).then(() => {
       signIn({ variables: { email, password }})
     }).catch(console.error)
   }
@@ -112,9 +117,13 @@ const SignupForm = () => {
           </Form>
         </Row>
         <p className='text-danger'>{(signUpError || signInError)?.graphQLErrors?.[0]?.message || (signUpError || signInError)?.message || customError}</p>
+        <Row className='d-flex justify-content-around'>
+          <Button active={role === 'DOCTOR'} size='lg' onClick={onDoctorClick}>{strings('IAmADoctor')}</Button>
+          <Button active={role === 'PATIENT'} size='lg' onClick={onPatientClick}>{strings('IAmAPatient')}</Button>
+        </Row>
         <Row className='p-4'>
           <Button block size='lg' onClick={onCreateClick}>
-          { (signUpLoading || signInLoading) ? <Spinner animation='grow'/> : strings('createAccount') }
+            { (signUpLoading || signInLoading) ? <Spinner animation='grow'/> : strings('createAccount') }
           </Button>
         </Row>
       </Container>

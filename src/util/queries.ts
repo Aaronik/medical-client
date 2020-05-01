@@ -7,8 +7,8 @@ export const SIGNIN_MUTATION = gql`
 `
 
 export const SIGNUP_MUTATION = gql`
-  mutation SignUp($email:String!, $password:String!, $name:String) {
-    createUser(email:$email, password:$password, role:DOCTOR, name:$name) {
+  mutation SignUp($email:String!, $password:String!, $name:String, $role:Role) {
+    createUser(email:$email, password:$password, role:$role, name:$name) {
       id
     }
   }
