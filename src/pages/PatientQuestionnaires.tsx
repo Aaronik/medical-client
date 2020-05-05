@@ -16,7 +16,6 @@ const PatientQuestionnaires: React.FunctionComponent = () => {
   if (error) return <ErrorPage error={error}/>
 
   const questionnaires = data?.questionnairesAssignedToMe
-  console.log(questionnaires)
 
   if (!questionnaires?.length) return <h2>No questionnaires!</h2>
 

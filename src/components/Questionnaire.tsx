@@ -13,6 +13,7 @@ import ListGroupItem from 'react-bootstrap/ListGroupItem'
 import FormInput from 'components/FormInput'
 import { SUBMIT_BOOLEAN_RESPONSE, SUBMIT_TEXT_RESPONSE, SUBMIT_CHOICE_RESPONSE, SUBMIT_CHOICE_RESPONSES, SUBMIT_EVENT_RESPONSE } from 'util/queries'
 import onKeyDown from 'util/onKeyDown'
+import filterVisibleQuestions from 'util/filterVisibleQuestions'
 import { useMutation } from '@apollo/client'
 import { TQuestionnaire } from 'types/Questionnaire.d'
 import * as Q from 'types/Question.d'
@@ -32,7 +33,7 @@ type QuestionnaireProps = {
 const Questionnaire: React.FC<QuestionnaireProps> = (props) => {
   const { questionnaire, isAnswerable, QuestionnaireButtons, QuestionButtons, questionResponseRefetchQuery, className } = props
 
-  const [ isExpanded, setIsExpanded ] = useState(false)
+  const [ isExpanded, setIsExpanded ] = useState(true) // TODO
 
   const headerStyle = {
     cursor: 'pointer',
@@ -48,6 +49,10 @@ const Questionnaire: React.FC<QuestionnaireProps> = (props) => {
     </Card>
   )
 
+  const questions = props.isAnswerable
+    ? filterVisibleQuestions(orderQuestions(questionnaire.questions))
+    : orderQuestions(questionnaire.questions)
+
   return (
     <Card className={className}>
       <Card.Header style={headerStyle} onClick={() => setIsExpanded(false)}>
@@ -59,7 +64,7 @@ const Questionnaire: React.FC<QuestionnaireProps> = (props) => {
       <Card.Body>
       <ListGroup className='list-group-flush'>
       {
-        questionnaire.questions.map((q: Q.TQuestion) => {
+        questions.map((q: Q.TQuestion) => {
           const Component = questionTypeMap(q.type)
           return (
             <ListGroupItem key={q.id}>
@@ -76,11 +81,43 @@ const Questionnaire: React.FC<QuestionnaireProps> = (props) => {
       }
       </ListGroup>
       </Card.Body>
+      { !props.isAnswerable &&
+        <Card.Footer>
+          <code>{JSON.stringify(questionnaire.questions.map(q => q.next))}</code>
+        </Card.Footer>
+      }
     </Card>
   )
 }
 
 export default Questionnaire
+
+// This takes a bunch of questions and orders them based on {next} values.
+// So if a question is referenced by another question's next, this function
+// will sort the question to the position after the question it's referenced by.
+const orderQuestions = (questions: Q.TQuestion[]): Q.TQuestion[] => {
+  let orderedQuestions: Q.TQuestion[] = []
+
+  const getFirstNextIndex = (id: number) => orderedQuestions.findIndex(orderedQuestion => {
+    return orderedQuestion.next.some(next => next.nextQuestionId === id)
+  })
+
+  questions.forEach(question => {
+    // * Go through orderedQuestions and find any nexts for this question
+    // * If found, insert this question after it
+    // * If not found, this question goes at the end.
+    const index = getFirstNextIndex(question.id)
+
+    if (index === -1) {
+      orderedQuestions.push(question)
+    } else {
+      orderedQuestions.splice(index + 1, 0, question)
+    }
+
+  })
+
+  return orderedQuestions
+}
 
 const questionSubmissionMutationOptions = (refetchQ?: DocumentNode) => {
   const opts = { onError: console.error }
@@ -283,11 +320,6 @@ const EventQuestion: React.FC<EventQuestionProps> = ({ question, readOnly, Title
   const [ isEndModalOpen, setIsEndModalOpen ] = useState(false)
   const [ hasChangedSinceLastSave, setHasChangedSinceLastSave ] = useState(!question.eventResp)
   const [ respondToQuestion, { loading, error } ] = useMutation(SUBMIT_EVENT_RESPONSE, questionSubmissionMutationOptions(refetchQ))
-
-  const onChange = (args: any) => {
-    if (readOnly) return
-    setHasChangedSinceLastSave(true)
-  }
 
   const onSave = () => {
     if (readOnly) return

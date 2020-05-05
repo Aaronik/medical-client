@@ -161,8 +161,6 @@ const DoctorWithPatientBase: React.FunctionComponent<BaseProps & { patients: TUs
 
   if (loading) return <LoadingPage />
 
-  const timeline = data.timeline
-
   const gutterRoutes: LinkEntryProps[] = [
     { to: '/', text: strings('dashboard'), icon: icons.faBorderAll, exact: true },
     { to: '/settings', text: strings('settings'), icon: icons.faCog },

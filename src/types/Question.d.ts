@@ -36,13 +36,13 @@ export interface EventQuestion extends QuestionMeta {
 }
 
 export interface QuestionMeta {
-  id?: number
+  id: number
   questionnaireId?: number
   questionnaire?: Questionnaire
   text: string
   type: QuestionType
   options?: QuestionOption[]
-  next?: QuestionRelation[]
+  next: QuestionRelation[]
 }
 
 export type QuestionOption = {

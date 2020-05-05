@@ -2,10 +2,13 @@ import React from 'react'
 import { TQuestionnaire } from 'types/Questionnaire'
 import * as icons from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import filterVisibleQuestions from 'util/filterVisibleQuestions'
 
 const getQuestionnaireCompletionStatus = (questionnaire: TQuestionnaire): CompletionStatus => {
+  const questions = filterVisibleQuestions(questionnaire.questions)
+
   // an array of booleans indicating whether the question has an answer
-  const bools = questionnaire.questions.map(q => {
+  const bools = questions.map(q => {
     if (q.type === 'TEXT' && !!q.textResp) return true
     if (q.type === 'BOOLEAN' && (q.boolResp === true || q.boolResp === false)) return true
     if (q.type === 'SINGLE_CHOICE' && !!q.singleChoiceResp) return true
