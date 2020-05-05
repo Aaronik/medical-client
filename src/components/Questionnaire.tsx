@@ -333,8 +333,8 @@ const EventQuestion: React.FC<EventQuestionProps> = ({ question, readOnly, Title
       </Form.Label>
       <ButtonRow readOnly={readOnly} error={error} loading={loading} hasChangedSinceLastSave={hasChangedSinceLastSave} onSave={onSave}>
         <ButtonGroup>
-          <Button onClick={onStartClick}>{startString || 'Select start date'}</Button>
-          <Button onClick={onEndClick}>{endString || 'Select end date'}</Button>
+          <Button active={!!startString} onClick={onStartClick}>{startString || 'Select start date'}</Button>
+          <Button active={!!endString} onClick={onEndClick}>{endString || 'Select end date'}</Button>
         </ButtonGroup>
         {TitleAdditions && <div><TitleAdditions question={question}/></div>}
       </ButtonRow>
