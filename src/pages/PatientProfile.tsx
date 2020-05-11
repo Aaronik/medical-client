@@ -1,8 +1,6 @@
 import React from 'react'
 import Container from 'react-bootstrap/Container'
-import Row from 'react-bootstrap/Row'
 import { TUser } from 'types/User.d'
-import strings from './PatientProfile.strings'
 import UserInformationUpdateForm from 'components/UserInformationUpdateForm'
 
 interface IProps {
