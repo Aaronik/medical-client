@@ -20,7 +20,9 @@ export const useSignin = (opts: MutationHookOptions = {}) => {
     onCompleted: async ({ authenticate }: { authenticate: string }) => {
       localStorage.authToken = authenticate
       await mutationResponse[1].client?.reFetchObservableQueries()
-      history.push('/')
+      // For some reason, if this is not brought to the back of the event loop, the route
+      // does not get registered and there's a 404 when someone is signing up.
+      setTimeout(() => history.push('/'))
     }
   }, opts))
 
