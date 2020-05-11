@@ -14,10 +14,6 @@ const DoctorProfile: React.FunctionComponent<IProps> = ({ user }) => {
   return (
     <Container fluid className='bg-white with-background'>
       <Container>
-        <Row className="pt-5">
-          <h1>{strings('patientProfile', user.name)}</h1>
-        </Row>
-        <hr/>
         <UserInformationUpdateForm user={user}/>
       </Container>
     </Container>

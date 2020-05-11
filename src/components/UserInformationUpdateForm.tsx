@@ -68,7 +68,6 @@ const UserInformationUpdateForm: React.FC<{ user: TUser }> = ({ user }) => {
       <Form.Row>
         <FormInput
           label={strings('birthday')}
-          readOnly={true}
           type="text"
           placeholder={strings('birthdayPlaceholder')}
           onChange={setBirthday}
