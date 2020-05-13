@@ -10,8 +10,8 @@ import FormInput from 'components/FormInput'
 import Fade from 'components/Fade'
 import './SignIn.sass'
 import strings from './SignIn.strings'
-import { useSignin } from 'util/hooks'
 import onKeyDown from 'util/onKeyDown'
+import { useMutation, gql } from '@apollo/client'
 
 interface TProps {
 }
@@ -38,13 +38,13 @@ export default Signin
 // This is abstracted rather than inlined solely because of the limitation on <Fade>
 // not being able to handle children that take props.
 const SigninForm = () => {
-  const [ signIn, { loading, error }] = useSignin()
+  const [ requestAuthCode, { data, loading, error }] = useMutation(REQUEST_AUTH_CODE, { onError: console.error })
 
   const [ email, setEmail ] = useState('')
-  const [ password, setPassword ] = useState('')
+  const [ phone, setPhone ] = useState('')
 
   const onAuthenticateClick = async () => {
-    signIn({ variables: { email, password }})
+    requestAuthCode({ variables: { email, phone }})
   }
 
   return (
@@ -53,7 +53,7 @@ const SigninForm = () => {
         <h3>{strings('signIn')}</h3>
       </Row>
       <Row className='p-4 text-left'>
-        <Form className="w-100" onKeyDown={onKeyDown('Enter', onAuthenticateClick)}>
+        <Form className="w-100 d-flex flex-column" onKeyDown={onKeyDown('Enter', onAuthenticateClick)}>
 
           <FormInput
             label="Email"
@@ -62,21 +62,30 @@ const SigninForm = () => {
             onChange={setEmail}
             value={email}/>
 
+          <span className='text-center'>-- or --</span>
+
           <FormInput
-            label="password"
-            type="password"
-            icon={icons.faLock}
-            onChange={setPassword}
-            value={password}/>
+            label="Phone number"
+            type="tel"
+            icon={icons.faHashtag}
+            onChange={setPhone}
+            value={phone}/>
 
         </Form>
       </Row>
       <p className='text-danger'>{error?.graphQLErrors?.[0]?.message || error?.message}</p>
+      <p className='text-success'>{data && 'Link sent successfully!'}</p>
       <Row className='p-4'>
         <Button block size='lg' onClick={onAuthenticateClick}>
-          { loading ? <Spinner animation="grow"/> : strings('signIn') }
+          { loading ? <Spinner animation="grow"/> : 'Get link' }
         </Button>
       </Row>
-</React.Fragment>
+    </React.Fragment>
   )
 }
+
+const REQUEST_AUTH_CODE = gql`
+  mutation RequestAuthCode($email:String, $phone:String) {
+    requestAuthCode(email: $email, phone: $phone)
+  }
+`

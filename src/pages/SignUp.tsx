@@ -61,7 +61,7 @@ const SignupForm = () => {
   const [ name, setName ] = useState('')
   const [ email, setEmail ] = useState('')
   const [ password, setPassword ] = useState('')
-  const [ role, setRole ] = useState('')
+  const [ role, setRole ] = useState('DOCTOR')
   const [ customError, setCustomError ] = useState('')
 
   const onDoctorClick = () => setRole('DOCTOR')
@@ -87,35 +87,36 @@ const SignupForm = () => {
   return (
     <React.Fragment>
       <Container>
-        <Row className='p-4'>
-          <h3>{strings('createAccount')}</h3>
-        </Row>
-        <Row className='p-4 text-left'>
-          <Form className="w-100" onKeyDown={onKeyDown('Enter', onCreateClick)}>
+        <Row className='p-4'><h3>{strings('createAccount')}</h3></Row>
+        { role === 'DOCTOR' &&
+          <Row className='p-4 text-left'>
+            <Form className="w-100" onKeyDown={onKeyDown('Enter', onCreateClick)}>
 
-            <FormInput
-              label={strings('fullName')}
-              type="text"
-              icon={icons.faUser}
-              onChange={setName}
-              value={name}/>
+              <FormInput
+                label={strings('fullName')}
+                type="text"
+                icon={icons.faUser}
+                onChange={setName}
+                value={name}/>
 
-            <FormInput
-              label={strings('email')}
-              type="email"
-              icon={icons.faAt}
-              onChange={setEmail}
-              value={email}/>
+              <FormInput
+                label={strings('email')}
+                type="email"
+                icon={icons.faAt}
+                onChange={setEmail}
+                value={email}/>
 
-            <FormInput
-              label={strings('password')}
-              type="password"
-              icon={icons.faLock}
-              onChange={setPassword}
-              value={password}/>
+              <FormInput
+                label={strings('password')}
+                type="password"
+                icon={icons.faLock}
+                onChange={setPassword}
+                value={password}/>
 
-          </Form>
-        </Row>
+            </Form>
+          </Row>
+        }
+        { role === 'PATIENT' && <p>{strings('noPatientBlurb')}</p>}
         <p className='text-danger'>{(signUpError || signInError)?.graphQLErrors?.[0]?.message || (signUpError || signInError)?.message || customError}</p>
         <Row className='d-flex justify-content-around'>
           <Button active={role === 'DOCTOR'} size='lg' onClick={onDoctorClick}>{strings('IAmADoctor')}</Button>

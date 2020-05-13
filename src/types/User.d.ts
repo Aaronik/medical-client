@@ -2,8 +2,9 @@ import { ActionKeys } from 'common/actionKeys'
 
 export type TUser = {
   id: number
-  name: string
-  email: string
+  name?: string
+  email?: string
+  phone?: string
   role: TUserRole
   imageUrl?: string
   birthday?: string

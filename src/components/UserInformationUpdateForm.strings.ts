@@ -4,6 +4,7 @@ const map = {
   update: 'Update',
   name: 'Name',
   email: 'Email',
+  phone: 'Phone number',
   birthday: 'Birthday',
   imageUrl: 'Image URL',
   fullName: 'Full Name',

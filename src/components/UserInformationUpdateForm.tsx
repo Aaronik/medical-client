@@ -9,13 +9,14 @@ import strings from './UserInformationUpdateForm.strings'
 import { useMutation } from '@apollo/client'
 import { UPDATE_ME } from 'util/queries'
 import { Spinner } from 'react-bootstrap'
-import { faUser, faAt, faImage, faCalendarAlt } from '@fortawesome/free-solid-svg-icons'
+import { faUser, faAt, faImage, faCalendarAlt, faHashtag } from '@fortawesome/free-solid-svg-icons'
 import DatePickerModal from 'components/DatePickerModal'
 import onKeyDown from 'util/onKeyDown'
 
 const UserInformationUpdateForm: React.FC<{ user: TUser }> = ({ user }) => {
-  const [ name, setName ] = useState(user.name)
-  const [ email, setEmail ] = useState(user.email)
+  const [ name, setName ] = useState(user.name || '')
+  const [ email, setEmail ] = useState(user.email || '')
+  const [ phone, setPhone ] = useState(user.phone || '')
   const [ birthday, setBirthday ] = useState(user.birthday ? fromMysqlDateString(user.birthday) : '')
   const [ imageUrl, setImageUrl ] = useState(user.imageUrl || '')
 
@@ -25,7 +26,7 @@ const UserInformationUpdateForm: React.FC<{ user: TUser }> = ({ user }) => {
 
   const onSaveClick = () => {
     saveUserInfo({ variables: { user: {
-      name, email, imageUrl,
+      name, email, imageUrl, phone,
       birthday: birthday ? toMysqlDateString(birthday) : undefined
     }}})
   }
@@ -53,6 +54,13 @@ const UserInformationUpdateForm: React.FC<{ user: TUser }> = ({ user }) => {
           onChange={setEmail}
           value={email}
           icon={faAt}/>
+        <FormInput
+          label={strings('phone')}
+          type="tel"
+          placeholder={strings('phone')}
+          onChange={setPhone}
+          value={phone}
+          icon={faHashtag}/>
       </Form.Row>
 
       <Form.Row>

@@ -1,7 +1,7 @@
 import strings from 'util/strings'
 
 const map = {
-  signIn: 'Sign In',
+  signIn: 'Let\'s get started.',
 }
 
 export default strings(map)

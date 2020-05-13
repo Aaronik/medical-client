@@ -1,7 +1,4 @@
 import { ApolloClient, InMemoryCache, defaultDataIdFromObject } from '@apollo/client'
-import { times, random } from 'lodash'
-import * as faker from 'faker'
-import * as Timeline from 'types/Timeline.d'
 import * as Alert from 'types/Alert.d'
 import uuid from 'uuid/v4'
 import strings from 'pages/DoctorOverview.strings'
@@ -37,12 +34,6 @@ const client = new ApolloClient({
       activePatientId() { return localStorage.activePatientId },
       alerts() { return alerts },
 
-      // timeline() {
-      //   const data = timelineData(300)
-      //   const groups = timelineGroups(20)
-      //   return { data, groups }
-      // },
-
       updates() {
         return [
           { symbol: 'up', charge: 'bad', body: '11', footer: strings('alertsDetected') },
@@ -66,42 +57,3 @@ export default client
 
 let gutterNavActive = true
 let alerts: Alert.TAlert[] = []
-
-// Takes an array, returns a random member of that array
-const randomOf = <T>(...array: T[]): T => {
-  const idx = random(array.length)
-  return array[idx]
-}
-
-// Make some fake groups
-const timelineGroups = (count: number) => {
-  let groups: Timeline.TTimelineGroup[] = []
-
-  times(count, idx => {
-    groups.push({
-      id: idx,
-      content: faker.lorem.word(),
-      style: 'max-width: 15vw; padding-left: 0px',
-    })
-  })
-
-  return groups
-}
-
-// Add timeline items
-const timelineData = (count: number) => {
-  let items: Timeline.TTimelineItem[] = []
-
-  times(count, () => {
-    items.push({
-      id: uuid(),
-      type: randomOf('range', 'point'),
-      start: faker.date.past(20),
-      end: faker.date.future(),
-      content: faker.lorem.words(),
-      group: random(20)
-    })
-  })
-
-  return items
-}

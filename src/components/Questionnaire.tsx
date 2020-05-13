@@ -33,7 +33,7 @@ type QuestionnaireProps = {
 const Questionnaire: React.FC<QuestionnaireProps> = (props) => {
   const { questionnaire, isAnswerable, QuestionnaireButtons, QuestionButtons, questionResponseRefetchQuery, className } = props
 
-  const [ isExpanded, setIsExpanded ] = useState(true) // TODO
+  const [ isExpanded, setIsExpanded ] = useState(false)
 
   const headerStyle = {
     cursor: 'pointer',

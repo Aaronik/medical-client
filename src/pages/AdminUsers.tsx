@@ -37,7 +37,7 @@ const AdminUsersPage: React.FC<TProps> = () => {
   const users = data?.users || []
 
   const userOptions = users.map(user => {
-    return { value: user.id, label: user.name }
+    return { value: user.id, label: user.name || user.id.toString() }
   })
 
   const onAssociateClick = () => {

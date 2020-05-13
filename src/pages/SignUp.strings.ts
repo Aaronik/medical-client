@@ -4,6 +4,7 @@ const map = {
   enterEmail: "Enter email",
   createAccount: "Create Account",
   milliBlurb: "self-teaching personalized medical intelligence platform built from real-time analysis of millions of patient/doctor interactions.",
+  noPatientBlurb: "Sorry, right now patients can only join by invite from their doctor.",
 
   fullName: 'Full Name',
   businessUrl: 'Business Url',

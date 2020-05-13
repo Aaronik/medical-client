@@ -19,6 +19,7 @@ const COMPLETE_USER_FRAGMENT = gql`
     id
     name
     email
+    phone
     role
     joinDate
     birthday
@@ -33,6 +34,7 @@ export const ME_QUERY = gql`
       id
       name
       email
+      phone
       role
       joinDate
       birthday

@@ -10,10 +10,11 @@ $active-color: #5bcef5 // match the underline color of bootstrap
 .custom-form-group
   input
     @include auth-input-border
+    background-color: rgba(0,0,0,0)
 
   .input-group-text
     transition: border-bottom-color, color 0.3s
-    background-color: $white
+    background-color: rgba(0,0,0,0)
     @include auth-input-border
 
   // This rule selects the icon, and when the input turns its underline
@@ -24,3 +25,6 @@ $active-color: #5bcef5 // match the underline color of bootstrap
   input:focus + .input-group-append > .input-group-text
     border-bottom-color: $active-color
     color: darken($active-color, 15%) // just looked nicer to my eye darkened.
+
+  input:focus
+    background-color: rgba(0,0,0,0)

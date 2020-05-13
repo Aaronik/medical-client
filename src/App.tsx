@@ -20,6 +20,7 @@ import AdminProfile from 'pages/AdminProfile'
 import ProfileDropdown from 'components/ProfileDropdown'
 import SigninPage from 'pages/SignIn'
 import SignupPage from 'pages/SignUp'
+import SubmitAuthCodePage from 'pages/SubmitAuthCode'
 import DoctorProfilePage from 'pages/DoctorProfile'
 import DoctorSettingsPage from 'pages/DoctorSettings'
 import PatientDashboard from 'pages/PatientDashboard'
@@ -30,6 +31,7 @@ import DoctorActivityPage from 'pages/DoctorActivity'
 import DoctorMessagesPage from 'pages/DoctorMessages'
 import DoctorAssignmentsPage from 'pages/DoctorAssignments'
 import DoctorOverviewPage from 'pages/DoctorOverview'
+import CompleteInformationPage from 'pages/CompleteInformation'
 import LoadingPage from 'pages/Loading'
 
 import Alert from 'components/Alert'
@@ -87,21 +89,12 @@ type BaseProps = {
 const SignedOutBase: React.FunctionComponent<{ alerts: TAlert[] }> = ({ alerts }) => {
   return (
     <React.Fragment>
-      <AppNavBar>
-        <Nav>
-          <MilliBrandLink/>
-        </Nav>
-        <Nav>
-          <NavLink to='/signin' text={strings('signIn')} />
-          <NavLink to='/signup' text={strings('signUp')} />
-        </Nav>
-      </AppNavBar>
-
       <Alert alerts={alerts}/>
 
       <Switch>
         <Route path='/' exact><NotSignedInPage/></Route>
         <Route path='/signin' noFade><SigninPage/></Route>
+        <Route path='/auth/:authCode' noFade><SubmitAuthCodePage/></Route>
         <Route path='/signup' noFade><SignupPage/></Route>
         <Route><PageNotFound/></Route>
       </Switch>
@@ -348,6 +341,11 @@ const Base: React.FunctionComponent = () => {
     case 'PATIENT':
       Component = <PatientBase user={me} gutterNavActive={gutterNavActive} alerts={alerts}/>
       break
+  }
+
+  // Users need to have both email and phone number in the system.
+  if (me && (!me.phone || !me.email)) {
+    Component = <CompleteInformationPage user={me}/>
   }
 
   return <Router>{Component}</Router>

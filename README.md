@@ -24,3 +24,17 @@ https://millihealth.atlassian.net/jira/software/projects/MDD/boards/8
 We use pages to denote every "top-level" view. Largely they coincide with
 each page you can visit, each URL. Components are everything else,
 all the smaller components, often being reused across pages.
+
+### Ideation on Signin
+
+* Doctors
+  * Phone Number
+    * Bad b/c makes it harder to sign in on computer
+  * Email
+    * Good b/c easier to sign in
+
+* Patients
+  * Phone Number
+    * Required for invites
+  * Email
+    * Easier for computer, but computer will probably be less often used

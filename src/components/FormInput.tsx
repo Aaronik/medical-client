@@ -8,7 +8,7 @@ import './FormInput.sass'
 
 type TProps = {
   label: string
-  type: 'text' | 'password' | 'email'
+  type: 'text' | 'password' | 'email' | 'tel'
   onChange: (value: string) => void
   value: string
   placeholder?: string

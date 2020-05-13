@@ -6,9 +6,11 @@ const map = {
   selectPatient: 'PATIENTS...',
   patientNotFound: 'no patient found',
   addNewPatient: '+ ADD NEW PATIENT',
-  addPatientModalHeader: 'Add New Patient',
+  addPatientModalHeader: 'Invite Patient to Milli',
   name: 'Name',
-  addPatient: 'Add Patient',
+  phone: 'Phone number',
+  email: 'Email',
+  addPatient: 'Send Invite',
 }
 
 export default strings(map)
