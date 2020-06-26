@@ -51,6 +51,10 @@ const NotSignedInPage: React.FC = () => {
           <p className='text-danger'>{error?.graphQLErrors?.[0]?.message || error?.message}</p>
           <p className='text-success'>{successText}</p>
 
+          {/* TODO: This will only work while the bridge-api returns the auth code. This won't happen past a demo
+              phase, and in fact CANNOT be present while this is live, since it voids all security. */}
+          { data && <p><a href={data.requestAuthCode}>{`Note that this link appears for demo purposes only: ${data.requestAuthCode}`}</a></p>}
+
           <Button block size='lg' onClick={onAuthenticateClick}>
             { loading ? <Spinner animation="grow"/> : 'Get link' }
           </Button>
