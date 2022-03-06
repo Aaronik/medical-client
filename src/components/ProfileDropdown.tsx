@@ -43,7 +43,7 @@ const ProfileDropdown: React.FunctionComponent<IProps> = ({ user }) => {
     >
       <NavDropdown.Header>{headerText()}</NavDropdown.Header>
       <NavDropdown.Divider/>
-      <NavDropdown.Item target="_blank" href="https://millihealth.com">{strings('about')}</NavDropdown.Item>
+      <NavDropdown.Item target="_blank" href="">{strings('about')}</NavDropdown.Item>
       <NavDropdown.Divider/>
       <NavDropdown.Item onClick={onSignoutPress}>{
         loading ? <Spinner animation='grow'/> : strings('signOut')
